@@ -1,0 +1,54 @@
+:root {
+  /* Azul — ação */
+  --lastro-blue-50: #EFF5FF;
+  --lastro-blue-100: #DBE8FE;
+  --lastro-blue-200: #BED4FD;
+  --lastro-blue-300: #92B8FB;
+  --lastro-blue-400: #5F93F7;
+  --lastro-blue-500: #2F6DF0;
+  --lastro-blue-600: #1A52D6;
+  --lastro-blue-700: #163FA8;
+  --lastro-blue-800: #16326B;
+  --lastro-navy: #0A1A2F;
+
+  /* Cinza — superfícies e texto */
+  --lastro-gray-50: #F6F8FA;
+  --lastro-gray-100: #ECF0F4;
+  --lastro-gray-200: #DCE3EA;
+  --lastro-gray-300: #C0CBD6;
+  --lastro-gray-400: #8E9CAB;
+  --lastro-gray-500: #6B7A8B;
+  --lastro-gray-600: #4F5D6C;
+  --lastro-gray-700: #3A4653;
+  --lastro-gray-800: #27313C;
+  --lastro-gray-900: #18202A;
+
+  /* Semântico */
+  --lastro-success: #12876A;
+  --lastro-success-bg: #E7F5F0;
+  --lastro-warning: #C2760A;
+  --lastro-warning-bg: #FDF3E3;
+  --lastro-danger: #C7382E;
+  --lastro-danger-bg: #FCEDEB;
+  --lastro-ai: #6D4AE0;
+  --lastro-ai-bg: #F1EDFD;
+
+  /* Tema escuro */
+  --lastro-dark-bg: #0A1A2F;
+  --lastro-dark-surface: #10263F;
+  --lastro-dark-raised: #16324F;
+  --lastro-dark-border: #1D3A5C;
+  --lastro-dark-action: #5F93F7;
+
+  /* Tipografia */
+  --lastro-font-display: 'Space Grotesk', sans-serif;
+  --lastro-font-body: 'Manrope', sans-serif;
+  --lastro-font-mono: 'IBM Plex Mono', monospace;
+
+  /* Estrutura */
+  --lastro-radius-sm: 6px;
+  --lastro-radius-md: 12px;
+  --lastro-radius-pill: 999px;
+  --lastro-shadow-sm: 0 1px 2px rgba(10,26,47,0.06), 0 2px 8px rgba(10,26,47,0.04);
+  --lastro-shadow-lg: 0 8px 28px rgba(10,26,47,0.14);
+}
