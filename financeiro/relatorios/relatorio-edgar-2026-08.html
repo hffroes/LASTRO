@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatório Financeiro — Edgar Pereira — Agosto/2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue-50:#EFF5FF; --blue-100:#DBE8FE; --blue-200:#BED4FD; --blue-400:#5F93F7;
+  --blue-500:#2F6DF0; --blue-600:#1A52D6; --blue-800:#16326B; --navy:#0A1A2F;
+  --gray-50:#F6F8FA; --gray-100:#ECF0F4; --gray-200:#DCE3EA; --gray-300:#C0CBD6;
+  --gray-400:#8E9CAB; --gray-500:#6B7A8B; --gray-600:#4F5D6C; --gray-700:#3A4653;
+  --gray-800:#27313C; --gray-900:#18202A;
+  --success:#12876A; --success-bg:#E7F5F0; --warning:#C2760A; --warning-bg:#FDF3E3;
+  --danger:#C7382E; --danger-bg:#FCEDEB;
+  --radius-sm:6px; --radius-md:12px; --pill:999px;
+  --shadow-sm:0 1px 2px rgba(10,26,47,.06), 0 2px 8px rgba(10,26,47,.04);
+  --font-display:'Space Grotesk',sans-serif; --font-body:'Manrope',sans-serif; --font-mono:'IBM Plex Mono',monospace;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--gray-50); color:var(--gray-800);
+  font-family:var(--font-body); font-size:15px; line-height:1.5;
+  -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1080px; margin:0 auto; padding:24px 16px 64px; }
+h1,h2,h3 { font-family:var(--font-display); color:var(--navy); margin:0; }
+h1 { font-size:28px; font-weight:600; letter-spacing:-.4px; }
+h2 { font-size:20px; font-weight:600; margin-bottom:12px; }
+h3 { font-size:13.5px; font-weight:600; color:var(--gray-500); text-transform:uppercase; letter-spacing:.4px; }
+.num, .kpi-valor, td.num, .mono { font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+header.topo { display:flex; align-items:flex-start; justify-content:space-between;
+  gap:16px; flex-wrap:wrap; padding-bottom:16px; border-bottom:1px solid var(--gray-200); margin-bottom:24px; }
+.marca { display:flex; align-items:center; gap:12px; }
+.marca .sub { font-size:13.5px; color:var(--gray-500); }
+.meta { text-align:right; font-size:13.5px; color:var(--gray-500); font-family:var(--font-mono); }
+.meta strong { color:var(--gray-700); }
+.kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-bottom:24px; }
+.kpi { background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-md); padding:16px; box-shadow:var(--shadow-sm); }
+.kpi-valor { font-size:24px; font-weight:500; margin:8px 0 4px; letter-spacing:-.5px; }
+.kpi-nota { margin:0; font-size:13px; color:var(--gray-500); }
+.pos { color:var(--success); } .neg { color:var(--danger); }
+.aviso { border-radius:var(--radius-md); padding:16px; margin-bottom:24px; border:1px solid; }
+.aviso.ok { background:var(--success-bg); border-color:#BFE3D8; color:#0C6350; }
+.aviso.alerta { background:var(--danger-bg); border-color:#F3C9C4; color:#8E2921; }
+.aviso-topo { display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:8px; font-size:14px; }
+.aviso-topo span { font-family:var(--font-mono); font-size:13px; opacity:.75; }
+.abas { display:flex; gap:4px; border-bottom:1px solid var(--gray-200); margin-bottom:16px; flex-wrap:wrap; }
+.aba { appearance:none; background:none; border:0; border-bottom:2px solid transparent; cursor:pointer;
+  font-family:var(--font-body); font-size:14px; font-weight:600; color:var(--gray-500); padding:10px 12px; }
+.aba[aria-selected="true"] { color:var(--blue-600); border-bottom-color:var(--blue-500); }
+.painel[hidden] { display:none; }
+.card { background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius-md);
+  padding:16px; box-shadow:var(--shadow-sm); margin-bottom:16px; overflow-x:auto; }
+.tabela { width:100%; border-collapse:collapse; font-size:14px; }
+.tabela th { text-align:left; font-size:12.5px; text-transform:uppercase; letter-spacing:.4px;
+  color:var(--gray-500); font-weight:600; padding:8px; border-bottom:1px solid var(--gray-200); white-space:nowrap; }
+.tabela td { padding:8px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+.tabela tfoot td { border-top:2px solid var(--gray-200); border-bottom:0; font-weight:600; }
+.tabela .num { text-align:right; white-space:nowrap; }
+.tabela th.num { text-align:right; }
+.tabela .forte { font-weight:600; }
+.tabela tr.mes-atual td { background:var(--blue-50); }
+.tabela tr.passado td:first-child::after { content:" ·"; color:var(--gray-300); }
+.compacta td, .compacta th { padding:6px 8px; }
+.tag { display:inline-block; font-size:11.5px; font-weight:600; padding:2px 8px; border-radius:var(--pill); white-space:nowrap; }
+.tag-ent { background:var(--success-bg); color:var(--success); }
+.tag-sai { background:var(--blue-50); color:var(--blue-600); }
+.pill { display:inline-block; font-size:12px; font-weight:600; padding:2px 10px; border-radius:var(--pill); white-space:nowrap; }
+.pill.ok { background:var(--success-bg); color:var(--success); }
+.pill.aberto { background:var(--gray-100); color:var(--gray-600); }
+.pill.atraso { background:var(--danger-bg); color:var(--danger); }
+.atraso { color:var(--danger); font-weight:600; }
+.barra-cel { min-width:160px; }
+.barra { display:inline-block; height:8px; border-radius:var(--pill); background:var(--blue-400); vertical-align:middle; }
+.barra-num { font-family:var(--font-mono); font-size:12px; color:var(--gray-500); margin-left:8px; }
+.controles { display:flex; gap:16px; flex-wrap:wrap; align-items:flex-end; margin-bottom:16px; }
+.campo { display:flex; flex-direction:column; gap:4px; }
+.campo label, .filtro-linha label { font-size:12.5px; font-weight:600; color:var(--gray-500);
+  text-transform:uppercase; letter-spacing:.4px; }
+select, input { font-family:var(--font-body); font-size:14px; padding:7px 10px;
+  border:1px solid var(--gray-300); border-radius:var(--radius-sm); background:#fff; color:var(--gray-800); }
+input[type=number] { font-family:var(--font-mono); width:120px; }
+.filtro-linha { display:flex; gap:8px; align-items:center; margin-bottom:12px; }
+.btn { font-family:var(--font-body); font-size:14px; font-weight:600; padding:8px 14px;
+  border-radius:var(--radius-sm); border:1px solid var(--blue-500); background:var(--blue-500);
+  color:#fff; cursor:pointer; }
+.botoes { display:flex; gap:8px; }
+.btn.secundario { background:#fff; color:var(--blue-600); }
+.grafico { width:100%; height:220px; display:block; }
+.legenda { display:flex; gap:16px; flex-wrap:wrap; font-size:13px; color:var(--gray-500); margin-top:8px; }
+.legenda i { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:middle; }
+.nota { font-size:13px; color:var(--gray-500); }
+.rodape { margin-top:32px; padding-top:16px; border-top:1px solid var(--gray-200); font-size:13px; color:var(--gray-500); }
+.rodape a { color:var(--blue-600); }
+.rodape ul { margin:8px 0 0; padding-left:18px; }
+.sim-aviso { font-size:13px; color:var(--warning); background:var(--warning-bg);
+  border:1px solid #F0DCB8; border-radius:var(--radius-sm); padding:8px 12px; margin-top:12px; }
+@media (max-width:640px) { h1 { font-size:22px; } .meta { text-align:left; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="topo">
+  <div class="marca">
+    <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><rect x="4" y="6" width="11" height="11" rx="2" fill="#2F6DF0"></rect><rect x="17" y="6" width="11" height="11" rx="5.5" fill="#2F6DF0" opacity="0.4"></rect><rect x="4" y="19" width="24" height="7" rx="2" fill="#0A1A2F"></rect></svg>
+    <div>
+      <h1>Relatório Financeiro — Edgar Pereira</h1>
+      <div class="sub">Fluxo de caixa e competência · Agosto/2026</div>
+    </div>
+  </div>
+  <div class="meta">
+    Atualizado em <strong>19/08/2026</strong><br>
+    Base: Notion · captura 19/08/2026<br>
+    Saldo Mai/26: <strong>R$ 2.398,88</strong>
+  </div>
+</header>
+
+<section class="kpis">
+<article class="kpi"><h3>Saldo em caixa hoje</h3><p class="kpi-valor pos">R$ 535,12</p><p class="kpi-nota">Fecho de jul/26: R$ 765,00</p></article>
+<article class="kpi"><h3>Projeção de fechamento do mês</h3><p class="kpi-valor pos">R$ 5.414,62</p><p class="kpi-nota">Caixa de hoje + tudo que vence até o fim do mês</p></article>
+<article class="kpi"><h3>Realizado no mês</h3><p class="kpi-valor neg">-R$ 229,88</p><p class="kpi-nota">Entradas R$ 4.540,00 · Saídas R$ 4.769,88</p></article>
+<article class="kpi"><h3>Resultado do mês (competência)</h3><p class="kpi-valor pos">+R$ 4.649,62</p><p class="kpi-nota">Todo lançamento do mês, pago ou não</p></article>
+<article class="kpi"><h3>A receber vencido</h3><p class="kpi-valor neg">R$ 2.050,00</p><p class="kpi-nota">3 título(s) em atraso</p></article>
+<article class="kpi"><h3>A pagar vencido</h3><p class="kpi-valor neg">R$ 30,50</p><p class="kpi-nota">1 título(s) em atraso</p></article>
+</section>
+<section class="aviso alerta">
+  <div class="aviso-topo"><strong>4 título(s) vencido(s)</strong>
+  <span>posição em 19/08/2026</span></div>
+  <table class="tabela compacta">
+    <thead><tr><th></th><th>Descrição</th><th>Contraparte</th><th class="num">Vencimento</th><th class="num">Atraso</th><th class="num">Valor</th></tr></thead>
+    <tbody><tr><td><span class="tag tag-ent">A receber</span></td><td>Aluguel Ago/2026 — Rick</td><td>Rick</td><td class="num">15/08/2026</td><td class="num"><span class="atraso">4 d</span></td><td class="num forte">R$ 800,00</td></tr><tr><td><span class="tag tag-ent">A receber</span></td><td>Aluguel Ago/2026 — Hermes</td><td>Hermes</td><td class="num">15/08/2026</td><td class="num"><span class="atraso">4 d</span></td><td class="num forte">R$ 550,00</td></tr><tr><td><span class="tag tag-ent">A receber</span></td><td>Aluguel Ago/2026 — Natalia</td><td>Natalia</td><td class="num">15/08/2026</td><td class="num"><span class="atraso">4 d</span></td><td class="num forte">R$ 700,00</td></tr><tr><td><span class="tag tag-sai">A pagar</span></td><td>CEMIG Edgar</td><td>Edgar Pereira</td><td class="num">18/08/2026</td><td class="num"><span class="atraso">1 d</span></td><td class="num forte">R$ 30,50</td></tr></tbody>
+  </table>
+</section>
+
+<div class="abas" role="tablist">
+  <button class="aba" role="tab" aria-selected="true" data-painel="caixa">Fluxo de caixa</button>
+  <button class="aba" role="tab" aria-selected="false" data-painel="competencia">Competência</button>
+  <button class="aba" role="tab" aria-selected="false" data-painel="custos">Custos por centro</button>
+  <button class="aba" role="tab" aria-selected="false" data-painel="lancamentos">Lançamentos</button>
+</div>
+
+<section class="painel" id="painel-caixa">
+  <div class="card">
+    <div class="controles">
+      <div class="campo">
+        <label for="cenario">Cenário</label>
+        <select id="cenario">
+          <option value="base">Base — tudo entra no vencimento</option>
+          <option value="conservador">Conservador — atraso a receber não entra</option>
+          <option value="realizado">Só realizado — ignora previsões</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="horizonte">Horizonte</label>
+        <select id="horizonte">
+          <option value="6">6 meses à frente</option>
+          <option value="12" selected>12 meses à frente</option>
+          <option value="99">Tudo que está lançado</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="simValor">Simular custo extra</label>
+        <input id="simValor" type="number" min="0" step="100" placeholder="0,00">
+      </div>
+      <div class="campo">
+        <label for="simParcelas">Parcelas</label>
+        <input id="simParcelas" type="number" min="1" max="60" value="1">
+      </div>
+      <div class="campo">
+        <label for="simInicio">A partir de</label>
+        <select id="simInicio"></select>
+      </div>
+      <div class="botoes"><button class="btn" id="simAplicar">Aplicar</button><button class="btn secundario" id="simLimpar">Limpar</button></div>
+    </div>
+    <div id="simAviso" class="sim-aviso" hidden></div>
+    <svg class="grafico" id="grafico" role="img" aria-label="Saldo acumulado projetado"></svg>
+    <div class="legenda">
+      <span><i style="background:var(--blue-500)"></i>Saldo realizado</span>
+      <span><i style="background:var(--blue-200)"></i>Saldo projetado</span>
+      <span><i style="background:var(--danger)"></i>Saldo negativo</span>
+    </div>
+  </div>
+  <div class="card">
+    <table class="tabela" id="tabelaCaixa">
+      <thead><tr>
+        <th>Mês</th>
+        <th class="num">Entradas realizadas</th><th class="num">Saídas realizadas</th>
+        <th class="num">Entradas previstas</th><th class="num">Saídas previstas</th>
+        <th class="num">Resultado</th><th class="num">Saldo no fim do mês</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="nota">Meses até Agosto/2026 usam o que foi efetivamente pago/recebido.
+    A partir daí, o saldo é projeção pelo cenário escolhido.</p>
+  </div>
+</section>
+
+<section class="painel" id="painel-competencia" hidden>
+  <div class="card">
+    <h2>Resultado por competência</h2>
+    <p class="nota">Considera todo lançamento pela data de vencimento, tenha sido liquidado ou não.</p>
+    <table class="tabela">
+  <thead><tr><th>Mês</th><th class="num">Receitas</th><th class="num">Custos</th><th class="num">Resultado</th></tr></thead>
+  <tbody><tr><td>Junho/2026</td><td class="num">R$ 8.100,00</td><td class="num">R$ 7.734,46</td><td class="num forte pos">+R$ 365,54</td></tr><tr><td>Julho/2026</td><td class="num">R$ 5.750,00</td><td class="num">R$ 7.749,42</td><td class="num forte neg">-R$ 1.999,42</td></tr><tr class="mes-atual"><td>Agosto/2026</td><td class="num">R$ 9.590,00</td><td class="num">R$ 4.940,38</td><td class="num forte pos">+R$ 4.649,62</td></tr><tr><td>Setembro/2026</td><td class="num">R$ 6.750,00</td><td class="num">R$ 4.876,33</td><td class="num forte pos">+R$ 1.873,67</td></tr><tr><td>Outubro/2026</td><td class="num">R$ 6.750,00</td><td class="num">R$ 4.774,49</td><td class="num forte pos">+R$ 1.975,51</td></tr><tr><td>Novembro/2026</td><td class="num">R$ 6.750,00</td><td class="num">R$ 4.774,49</td><td class="num forte pos">+R$ 1.975,51</td></tr><tr><td>Dezembro/2026</td><td class="num">R$ 6.050,00</td><td class="num">R$ 4.555,67</td><td class="num forte pos">+R$ 1.494,33</td></tr><tr><td>Janeiro/2027</td><td class="num">R$ 5.400,00</td><td class="num">R$ 0,00</td><td class="num forte pos">+R$ 5.400,00</td></tr><tr><td>Fevereiro/2027</td><td class="num">R$ 1.600,00</td><td class="num">R$ 0,00</td><td class="num forte pos">+R$ 1.600,00</td></tr><tr><td>Março/2027</td><td class="num">R$ 1.600,00</td><td class="num">R$ 0,00</td><td class="num forte pos">+R$ 1.600,00</td></tr><tr><td>Abril/2027</td><td class="num">R$ 1.600,00</td><td class="num">R$ 0,00</td><td class="num forte pos">+R$ 1.600,00</td></tr><tr><td>Maio/2027</td><td class="num">R$ 1.600,00</td><td class="num">R$ 0,00</td><td class="num forte pos">+R$ 1.600,00</td></tr></tbody>
+  <tfoot><tr><td>Total do horizonte</td><td class="num">R$ 61.540,00</td>
+  <td class="num">R$ 39.405,24</td>
+  <td class="num forte pos">+R$ 22.134,76</td></tr></tfoot>
+</table>
+  </div>
+</section>
+
+<section class="painel" id="painel-custos" hidden>
+  <div class="card">
+    <h2>Custos por centro de custo</h2>
+    <p class="nota">Todo o período lançado — pago e em aberto.</p>
+    <table class="tabela">
+  <thead><tr><th>Centro de custo</th><th class="num">Pago</th><th class="num">Em aberto</th><th class="num">Total</th><th>Peso</th></tr></thead>
+  <tbody><tr><td>Haval</td><td class="num">R$ 9.891,66</td><td class="num">R$ 13.188,88</td><td class="num forte">R$ 23.080,54</td><td class="barra-cel"><span class="barra" style="width:58.6%"></span><span class="barra-num">58.6%</span></td></tr><tr><td>Moby Gabriel</td><td class="num">R$ 2.780,85</td><td class="num">R$ 3.707,80</td><td class="num forte">R$ 6.488,65</td><td class="barra-cel"><span class="barra" style="width:16.5%"></span><span class="barra-num">16.5%</span></td></tr><tr><td>Edgar Pereira</td><td class="num">R$ 1.775,61</td><td class="num">R$ 1.610,80</td><td class="num forte">R$ 3.386,41</td><td class="barra-cel"><span class="barra" style="width:8.6%"></span><span class="barra-num">8.6%</span></td></tr><tr><td>Casa</td><td class="num">R$ 2.098,86</td><td class="num">R$ 0,00</td><td class="num forte">R$ 2.098,86</td><td class="barra-cel"><span class="barra" style="width:5.3%"></span><span class="barra-num">5.3%</span></td></tr><tr><td>Diversos</td><td class="num">R$ 1.923,17</td><td class="num">R$ 0,00</td><td class="num forte">R$ 1.923,17</td><td class="barra-cel"><span class="barra" style="width:4.9%"></span><span class="barra-num">4.9%</span></td></tr><tr><td>Caminhão 710</td><td class="num">R$ 1.199,00</td><td class="num">R$ 0,00</td><td class="num forte">R$ 1.199,00</td><td class="barra-cel"><span class="barra" style="width:3.0%"></span><span class="barra-num">3.0%</span></td></tr><tr><td>Arauca</td><td class="num">R$ 484,61</td><td class="num">R$ 644,00</td><td class="num forte">R$ 1.128,61</td><td class="barra-cel"><span class="barra" style="width:2.9%"></span><span class="barra-num">2.9%</span></td></tr><tr><td>Galpão Esplanada</td><td class="num">R$ 100,00</td><td class="num">R$ 0,00</td><td class="num forte">R$ 100,00</td><td class="barra-cel"><span class="barra" style="width:0.3%"></span><span class="barra-num">0.3%</span></td></tr></tbody>
+</table>
+  </div>
+</section>
+
+<section class="painel" id="painel-lancamentos" hidden>
+  <div class="card">
+    <h2>Lançamentos do mês e do mês seguinte</h2>
+    <div class="filtro-linha">
+  <label for="filtroMes">Mês</label>
+  <select id="filtroMes">
+    <option value="2026-08">Agosto/2026</option>
+    <option value="2026-09">Setembro/2026</option>
+    <option value="todos">Os dois</option>
+  </select>
+</div>
+<table class="tabela" id="tabelaLancamentos">
+  <thead><tr><th></th><th class="num">Venc.</th><th>Descrição</th><th>Contraparte</th><th class="num">Valor</th><th>Status</th></tr></thead>
+  <tbody><tr data-mes="2026-08"><td><span class="tag tag-sai">Saída</span></td><td class="num">02/08</td><td>MOBY</td><td>Moby Gabriel</td><td class="num forte neg">-R$ 926,95</td><td><span class="pill ok">Pago</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-ent">Entrada</span></td><td class="num">03/08</td><td>Aluguel Jul/2026 — Alessandra</td><td>Alessandra</td><td class="num forte pos">+R$ 1.500,00</td><td><span class="pill ok">Recebido</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-ent">Entrada</span></td><td class="num">03/08</td><td>Aluguel Parcelamento 4 de 4 - Thalles</td><td>Thalles</td><td class="num forte pos">+R$ 790,00</td><td><span class="pill ok">Recebido</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-ent">Entrada</span></td><td class="num">10/08</td><td>Aluguel Ago/2026 — Paulo</td><td>Paulo</td><td class="num forte pos">+R$ 650,00</td><td><span class="pill ok">Recebido</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-ent">Entrada</span></td><td class="num">10/08</td><td>Aluguel Ago/2026 — João</td><td>João</td><td class="num forte pos">+R$ 950,00</td><td><span class="pill ok">Recebido</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-ent">Entrada</span></td><td class="num">15/08</td><td>Aluguel Ago/2026 — Rick</td><td>Rick</td><td class="num forte pos">+R$ 800,00</td><td><span class="pill atraso">A Receber · vencido</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-ent">Entrada</span></td><td class="num">15/08</td><td>Aluguel Ago/2026 — Hermes</td><td>Hermes</td><td class="num forte pos">+R$ 550,00</td><td><span class="pill atraso">A Receber · vencido</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-ent">Entrada</span></td><td class="num">15/08</td><td>Aluguel Ago/2026 — Natalia</td><td>Natalia</td><td class="num forte pos">+R$ 700,00</td><td><span class="pill atraso">A Receber · vencido</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-ent">Entrada</span></td><td class="num">15/08</td><td>Aluguel Ago/2026 — Amadeu</td><td>Amadeu</td><td class="num forte pos">+R$ 650,00</td><td><span class="pill ok">Recebido</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-sai">Saída</span></td><td class="num">15/08</td><td>Contabilidade ARAUCA</td><td>Arauca</td><td class="num forte neg">-R$ 160,18</td><td><span class="pill ok">Pago</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-sai">Saída</span></td><td class="num">15/08</td><td>Parcela IPTU - 132</td><td>Edgar Pereira</td><td class="num forte neg">-R$ 68,26</td><td><span class="pill ok">Pago</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-sai">Saída</span></td><td class="num">15/08</td><td>Parcela IPTU - 118</td><td>Edgar Pereira</td><td class="num forte neg">-R$ 150,56</td><td><span class="pill ok">Pago</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-sai">Saída</span></td><td class="num">16/08</td><td>Taxa de Lixo 118</td><td>Edgar Pereira</td><td class="num forte neg">-R$ 101,84</td><td><span class="pill ok">Pago</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-sai">Saída</span></td><td class="num">16/08</td><td>Taxa de Lixo 132</td><td>Edgar Pereira</td><td class="num forte neg">-R$ 64,87</td><td><span class="pill ok">Pago</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-sai">Saída</span></td><td class="num">18/08</td><td>CEMIG Edgar</td><td>Edgar Pereira</td><td class="num forte neg">-R$ 30,50</td><td><span class="pill atraso">A Pagar · vencido</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-sai">Saída</span></td><td class="num">18/08</td><td>HAVAL</td><td>Haval</td><td class="num forte neg">-R$ 3.297,22</td><td><span class="pill ok">Pago</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-sai">Saída</span></td><td class="num">19/08</td><td>Faxina Ago/26 - 2 por mês</td><td>Edgar Pereira</td><td class="num forte neg">-R$ 140,00</td><td><span class="pill aberto">A Pagar</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-ent">Entrada</span></td><td class="num">25/08</td><td>Aluguel Ago/2026 — Alessandra</td><td>Alessandra</td><td class="num forte pos">+R$ 1.500,00</td><td><span class="pill aberto">A Receber</span></td></tr><tr data-mes="2026-08"><td><span class="tag tag-ent">Entrada</span></td><td class="num">25/08</td><td>Aluguel Ago/2026 — Lipa/Natália</td><td>Lipa/Natália</td><td class="num forte pos">+R$ 1.500,00</td><td><span class="pill aberto">A Receber</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-sai">Saída</span></td><td class="num">02/09</td><td>MOBY</td><td>Moby Gabriel</td><td class="num forte neg">-R$ 926,95</td><td><span class="pill aberto">A Pagar</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-ent">Entrada</span></td><td class="num">10/09</td><td>Aluguel Set/2026 — João</td><td>João</td><td class="num forte pos">+R$ 950,00</td><td><span class="pill aberto">A Receber</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-ent">Entrada</span></td><td class="num">10/09</td><td>Aluguel Set/2026 — Paulo</td><td>Paulo</td><td class="num forte pos">+R$ 650,00</td><td><span class="pill aberto">A Receber</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-ent">Entrada</span></td><td class="num">15/09</td><td>Aluguel Set/2026 — Amadeu</td><td>Amadeu</td><td class="num forte pos">+R$ 650,00</td><td><span class="pill aberto">A Receber</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-ent">Entrada</span></td><td class="num">15/09</td><td>Aluguel Set/2026 — Natalia</td><td>Natalia</td><td class="num forte pos">+R$ 700,00</td><td><span class="pill aberto">A Receber</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-ent">Entrada</span></td><td class="num">15/09</td><td>Aluguel Set/2026 — Rick</td><td>Rick</td><td class="num forte pos">+R$ 800,00</td><td><span class="pill aberto">A Receber</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-sai">Saída</span></td><td class="num">15/09</td><td>Parcela IPTU - 118</td><td>Edgar Pereira</td><td class="num forte neg">-R$ 150,56</td><td><span class="pill aberto">A Pagar</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-sai">Saída</span></td><td class="num">15/09</td><td>Parcela IPTU - 132</td><td>Edgar Pereira</td><td class="num forte neg">-R$ 68,26</td><td><span class="pill aberto">A Pagar</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-sai">Saída</span></td><td class="num">15/09</td><td>Contabilidade ARAUCA</td><td>Arauca</td><td class="num forte neg">-R$ 161,00</td><td><span class="pill aberto">A Pagar</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-sai">Saída</span></td><td class="num">16/09</td><td>Taxa de Lixo 118</td><td>Edgar Pereira</td><td class="num forte neg">-R$ 101,84</td><td><span class="pill aberto">A Pagar</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-sai">Saída</span></td><td class="num">18/09</td><td>HAVAL</td><td>Haval</td><td class="num forte neg">-R$ 3.297,22</td><td><span class="pill aberto">A Pagar</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-sai">Saída</span></td><td class="num">18/09</td><td>CEMIG Edgar</td><td>Edgar Pereira</td><td class="num forte neg">-R$ 30,50</td><td><span class="pill aberto">A Pagar</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-sai">Saída</span></td><td class="num">19/09</td><td>Faxina Set/26 - 2 por mês</td><td>Edgar Pereira</td><td class="num forte neg">-R$ 140,00</td><td><span class="pill aberto">A Pagar</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-ent">Entrada</span></td><td class="num">25/09</td><td>Aluguel Set/2026 — Lipa/Natália</td><td>Lipa/Natália</td><td class="num forte pos">+R$ 1.500,00</td><td><span class="pill aberto">A Receber</span></td></tr><tr data-mes="2026-09"><td><span class="tag tag-ent">Entrada</span></td><td class="num">25/09</td><td>Aluguel Set/2026 — Alessandra</td><td>Alessandra</td><td class="num forte pos">+R$ 1.500,00</td><td><span class="pill aberto">A Receber</span></td></tr></tbody>
+</table>
+  </div>
+</section>
+
+<footer class="rodape">
+  <strong>Origem dos números</strong>
+  <ul>
+    <li>Contas a Receber e Contas a Pagar do Notion, capturadas em 19/08/2026.</li>
+    <li>Regime de caixa aproximado pela data de vencimento dos títulos liquidados (as bases não guardam data de pagamento).</li>
+    <li>Saldo inicial informado na página de Controle Financeiro: Saldo Mai/26 = R$ 2.398,88.</li>
+    <li>1 registro sem data e sem valor em Contas a Receber foi ignorado.</li><li>Não há contas a pagar lançadas a partir de jan/2027 — a projeção de saldo desses meses considera apenas entradas.</li>
+  </ul>
+  <p>Fontes: <a href="https://app.notion.com/p/21d03f29410b4b378772de48857b5e56">Contas a Receber</a> ·
+     <a href="https://app.notion.com/p/8f170df8b2f04c8898611ddd73f097e4">Contas a Pagar</a> ·
+     <a href="https://app.notion.com/p/380132563860801893ebd62655a7f84a">Centro de custo</a></p>
+</footer>
+
+</div>
+<script>
+const DADOS = {"meses": [{"mes": "2026-06", "rotulo": "jun/26", "entRe": 8100.0, "saiRe": 7734.46, "entPr": 0.0, "saiPr": 0.0, "entAtraso": 0.0, "saiAtraso": 0.0}, {"mes": "2026-07", "rotulo": "jul/26", "entRe": 5750.0, "saiRe": 7749.42, "entPr": 0.0, "saiPr": 0.0, "entAtraso": 0.0, "saiAtraso": 0.0}, {"mes": "2026-08", "rotulo": "ago/26", "entRe": 4540.0, "saiRe": 4769.88, "entPr": 5050.0, "saiPr": 170.5, "entAtraso": 2050.0, "saiAtraso": 30.5}, {"mes": "2026-09", "rotulo": "set/26", "entRe": 0.0, "saiRe": 0.0, "entPr": 6750.0, "saiPr": 4876.33, "entAtraso": 0.0, "saiAtraso": 0.0}, {"mes": "2026-10", "rotulo": "out/26", "entRe": 0.0, "saiRe": 0.0, "entPr": 6750.0, "saiPr": 4774.49, "entAtraso": 0.0, "saiAtraso": 0.0}, {"mes": "2026-11", "rotulo": "nov/26", "entRe": 0.0, "saiRe": 0.0, "entPr": 6750.0, "saiPr": 4774.49, "entAtraso": 0.0, "saiAtraso": 0.0}, {"mes": "2026-12", "rotulo": "dez/26", "entRe": 0.0, "saiRe": 0.0, "entPr": 6050.0, "saiPr": 4555.67, "entAtraso": 0.0, "saiAtraso": 0.0}, {"mes": "2027-01", "rotulo": "jan/27", "entRe": 0.0, "saiRe": 0.0, "entPr": 5400.0, "saiPr": 0.0, "entAtraso": 0.0, "saiAtraso": 0.0}, {"mes": "2027-02", "rotulo": "fev/27", "entRe": 0.0, "saiRe": 0.0, "entPr": 1600.0, "saiPr": 0.0, "entAtraso": 0.0, "saiAtraso": 0.0}, {"mes": "2027-03", "rotulo": "mar/27", "entRe": 0.0, "saiRe": 0.0, "entPr": 1600.0, "saiPr": 0.0, "entAtraso": 0.0, "saiAtraso": 0.0}, {"mes": "2027-04", "rotulo": "abr/27", "entRe": 0.0, "saiRe": 0.0, "entPr": 1600.0, "saiPr": 0.0, "entAtraso": 0.0, "saiAtraso": 0.0}, {"mes": "2027-05", "rotulo": "mai/27", "entRe": 0.0, "saiRe": 0.0, "entPr": 1600.0, "saiPr": 0.0, "entAtraso": 0.0, "saiAtraso": 0.0}], "saldoInicial": 2398.88, "mesAtual": "2026-08", "saldoHoje": 535.12};
+
+const fmt = v => (v < 0 ? "-" : "") + "R$ " +
+  Math.abs(v).toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const idxAtual = DADOS.meses.findIndex(m => m.mes === DADOS.mesAtual);
+let extras = [];
+
+function projetar() {
+  const cenario = document.getElementById("cenario").value;
+  const linhas = [];
+  let saldo = DADOS.saldoInicial;
+  // Atrasos são realocados para o mês corrente: já venceram e não foram liquidados.
+  let entAtrasoAcum = 0, saiAtrasoAcum = 0;
+  DADOS.meses.forEach((m, i) => {
+    const passado = i < idxAtual;
+    let entPr = m.entPr, saiPr = m.saiPr;
+    if (passado) { entAtrasoAcum += m.entAtraso; saiAtrasoAcum += m.saiAtraso; entPr = 0; saiPr = 0; }
+    if (i === idxAtual) { entPr += entAtrasoAcum; saiPr += saiAtrasoAcum; }
+    if (cenario === "realizado") { entPr = 0; saiPr = 0; }
+    if (cenario === "conservador") {
+      const atrasoEnt = (i === idxAtual ? entAtrasoAcum + m.entAtraso : 0);
+      entPr = Math.max(0, entPr - atrasoEnt);
+    }
+    const extra = extras.filter(e => e.mes === m.mes).reduce((s, e) => s + e.valor, 0);
+    saiPr += extra;
+    const resultado = (m.entRe + entPr) - (m.saiRe + saiPr);
+    saldo += resultado;
+    linhas.push({...m, entPrEfetiva: entPr, saiPrEfetiva: saiPr, extra, resultado, saldo, passado});
+  });
+  return linhas;
+}
+
+function limitar(linhas) {
+  const h = parseInt(document.getElementById("horizonte").value, 10);
+  if (h >= 99) return linhas;
+  return linhas.filter((l, i) => i <= idxAtual + h);
+}
+
+function renderTabela(linhas) {
+  const corpo = document.querySelector("#tabelaCaixa tbody");
+  corpo.innerHTML = linhas.map(l => {
+    const cls = l.mes === DADOS.mesAtual ? ' class="mes-atual"' : "";
+    const sc = l.saldo < 0 ? "neg" : "pos";
+    const rc = l.resultado < 0 ? "neg" : "pos";
+    return `<tr${cls}><td>${l.rotulo}</td>` +
+      `<td class="num">${l.entRe ? fmt(l.entRe) : "—"}</td>` +
+      `<td class="num">${l.saiRe ? fmt(l.saiRe) : "—"}</td>` +
+      `<td class="num">${l.entPrEfetiva ? fmt(l.entPrEfetiva) : "—"}</td>` +
+      `<td class="num">${l.saiPrEfetiva ? fmt(l.saiPrEfetiva) : "—"}</td>` +
+      `<td class="num forte ${rc}">${fmt(l.resultado)}</td>` +
+      `<td class="num forte ${sc}">${fmt(l.saldo)}</td></tr>`;
+  }).join("");
+}
+
+function renderGrafico(linhas) {
+  const svg = document.getElementById("grafico");
+  const L = 44, R = 34, T = 12, B = 26;
+  const larg = svg.clientWidth || 900, alt = 220;
+  const saldos = linhas.map(l => l.saldo);
+  const max = Math.max(...saldos, 0), min = Math.min(...saldos, 0);
+  const span = (max - min) || 1;
+  const x = i => L + (linhas.length === 1 ? 0 : i * (larg - L - R) / (linhas.length - 1));
+  const y = v => T + (max - v) / span * (alt - T - B);
+  const barraW = Math.max(4, Math.min(28, (larg - L - R) / (linhas.length * 1.6)));
+  let out = "";
+  out += `<line x1="${L}" y1="${y(0)}" x2="${larg - R}" y2="${y(0)}" stroke="#DCE3EA"/>`;
+  linhas.forEach((l, i) => {
+    const topo = Math.min(y(l.saldo), y(0)), altura = Math.abs(y(l.saldo) - y(0));
+    const cor = l.saldo < 0 ? "#C7382E" : (l.passado || l.mes === DADOS.mesAtual ? "#2F6DF0" : "#BED4FD");
+    out += `<rect x="${x(i) - barraW / 2}" y="${topo}" width="${barraW}" height="${Math.max(1, altura)}" rx="2" fill="${cor}"><title>${l.rotulo}: ${fmt(l.saldo)}</title></rect>`;
+    if (linhas.length <= 18 || i % 2 === 0) {
+      const anchor = i === linhas.length - 1 ? "end" : (i === 0 ? "start" : "middle");
+      out += `<text x="${x(i)}" y="${alt - 8}" text-anchor="${anchor}" font-size="11" font-family="IBM Plex Mono, monospace" fill="#6B7A8B">${l.rotulo}</text>`;
+    }
+  });
+  out += `<text x="4" y="${y(max) + 4}" font-size="11" font-family="IBM Plex Mono, monospace" fill="#8E9CAB">${Math.round(max / 1000)}k</text>`;
+  out += `<text x="4" y="${y(min) + 4}" font-size="11" font-family="IBM Plex Mono, monospace" fill="#8E9CAB">${Math.round(min / 1000)}k</text>`;
+  svg.setAttribute("viewBox", `0 0 ${larg} ${alt}`);
+  svg.innerHTML = out;
+}
+
+function atualizar() {
+  const linhas = limitar(projetar());
+  renderTabela(linhas);
+  renderGrafico(linhas);
+  const aviso = document.getElementById("simAviso");
+  if (extras.length) {
+    const total = extras.reduce((s, e) => s + e.valor, 0);
+    aviso.hidden = false;
+    aviso.textContent = `Simulação ativa: ${fmt(total)} em ${extras.length} parcela(s) a partir de ` +
+      `${extras[0].mes}. Só afeta esta tela — nada é gravado no Notion.`;
+  } else {
+    aviso.hidden = true;
+  }
+}
+
+document.querySelectorAll(".aba").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".aba").forEach(o => o.setAttribute("aria-selected", String(o === b)));
+  document.querySelectorAll(".painel").forEach(p => {
+    p.hidden = p.id !== "painel-" + b.dataset.painel;
+  });
+  if (b.dataset.painel === "caixa") atualizar();
+}));
+
+const filtroMes = document.getElementById("filtroMes");
+if (filtroMes) {
+  filtroMes.addEventListener("change", () => {
+    const v = filtroMes.value;
+    document.querySelectorAll("#tabelaLancamentos tbody tr").forEach(tr => {
+      tr.style.display = (v === "todos" || tr.dataset.mes === v) ? "" : "none";
+    });
+  });
+  filtroMes.dispatchEvent(new Event("change"));
+}
+
+const simInicio = document.getElementById("simInicio");
+DADOS.meses.forEach((m, i) => {
+  if (i < idxAtual) return;
+  const o = document.createElement("option");
+  o.value = m.mes; o.textContent = m.rotulo;
+  simInicio.appendChild(o);
+});
+
+document.getElementById("simAplicar").addEventListener("click", () => {
+  const valor = parseFloat(document.getElementById("simValor").value || "0");
+  const parcelas = Math.max(1, parseInt(document.getElementById("simParcelas").value || "1", 10));
+  const inicio = simInicio.value;
+  if (!valor) { extras = []; atualizar(); return; }
+  const i0 = DADOS.meses.findIndex(m => m.mes === inicio);
+  extras = [];
+  for (let k = 0; k < parcelas && i0 + k < DADOS.meses.length; k++) {
+    extras.push({mes: DADOS.meses[i0 + k].mes, valor: valor});
+  }
+  atualizar();
+});
+document.getElementById("simLimpar").addEventListener("click", () => {
+  document.getElementById("simValor").value = "";
+  document.getElementById("simParcelas").value = "1";
+  extras = [];
+  atualizar();
+});
+["cenario", "horizonte"].forEach(id =>
+  document.getElementById(id).addEventListener("change", atualizar));
+window.addEventListener("resize", () => atualizar());
+atualizar();
+</script>
+</body>
+</html>

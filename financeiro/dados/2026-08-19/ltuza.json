@@ -1,0 +1,1745 @@
+{
+  "centro": "LTUZA",
+  "titulo": "LTUZA",
+  "capturado_em": "2026-08-19",
+  "competencia": "2026-08",
+  "fontes": {
+    "pagina": "https://app.notion.com/p/39d13256386080f3b805e9c3b3f02bd5",
+    "contas_a_receber": "https://app.notion.com/p/38513256386082458b3781672ae6935b",
+    "contas_a_pagar": "https://app.notion.com/p/34813256386082c2892a8174a3a3158c"
+  },
+  "saldo_inicial": {
+    "referencia": "2026-03",
+    "rotulo": "Saldo inicial",
+    "valor": 2704.02
+  },
+  "observacoes": [
+    "Contas a pagar lançadas até ago/2027; contas a receber contratadas até mar/2027.",
+    "A projeção vai até mai/2027: jun–ago/2027 já têm R$ 8.204,46 de contas a pagar lançadas que ficaram fora deste horizonte.",
+    "A partir de mar/2027 não há receita contratada suficiente para cobrir os custos já lançados."
+  ],
+  "agregado_receber": [
+    {
+      "mes": "2026-05",
+      "status": "Recebido",
+      "qtd": 1,
+      "total": 5000
+    },
+    {
+      "mes": "2026-06",
+      "status": "Recebido",
+      "qtd": 1,
+      "total": 4000
+    },
+    {
+      "mes": "2026-07",
+      "status": "Recebido",
+      "qtd": 1,
+      "total": 2500
+    },
+    {
+      "mes": "2026-08",
+      "status": "Recebido",
+      "qtd": 2,
+      "total": 5000
+    },
+    {
+      "mes": "2026-08",
+      "status": "A Receber",
+      "qtd": 2,
+      "total": 6000
+    },
+    {
+      "mes": "2026-09",
+      "status": "A Receber",
+      "qtd": 1,
+      "total": 5000
+    },
+    {
+      "mes": "2026-10",
+      "status": "A Receber",
+      "qtd": 1,
+      "total": 5000
+    },
+    {
+      "mes": "2026-11",
+      "status": "A Receber",
+      "qtd": 1,
+      "total": 5000
+    },
+    {
+      "mes": "2026-12",
+      "status": "A Receber",
+      "qtd": 1,
+      "total": 5000
+    },
+    {
+      "mes": "2027-01",
+      "status": "A Receber",
+      "qtd": 1,
+      "total": 5000
+    },
+    {
+      "mes": "2027-02",
+      "status": "A Receber",
+      "qtd": 1,
+      "total": 5000
+    },
+    {
+      "mes": "2027-03",
+      "status": "A Receber",
+      "qtd": 2,
+      "total": 1500
+    }
+  ],
+  "agregado_pagar": [
+    {
+      "mes": "2026-04",
+      "status": "Pago",
+      "qtd": 1,
+      "total": 1462.42
+    },
+    {
+      "mes": "2026-05",
+      "status": "Pago",
+      "qtd": 4,
+      "total": 1644.91
+    },
+    {
+      "mes": "2026-06",
+      "status": "Pago",
+      "qtd": 6,
+      "total": 1639.78
+    },
+    {
+      "mes": "2026-07",
+      "status": "Pago",
+      "qtd": 9,
+      "total": 1954.45
+    },
+    {
+      "mes": "2026-08",
+      "status": "Pago",
+      "qtd": 12,
+      "total": 5693.35
+    },
+    {
+      "mes": "2026-08",
+      "status": "A Pagar",
+      "qtd": 2,
+      "total": 3413.11
+    },
+    {
+      "mes": "2026-09",
+      "status": "A Pagar",
+      "qtd": 13,
+      "total": 6341.36
+    },
+    {
+      "mes": "2026-10",
+      "status": "A Pagar",
+      "qtd": 12,
+      "total": 5941.36
+    },
+    {
+      "mes": "2026-11",
+      "status": "A Pagar",
+      "qtd": 12,
+      "total": 5941.36
+    },
+    {
+      "mes": "2026-12",
+      "status": "A Pagar",
+      "qtd": 13,
+      "total": 6595.47
+    },
+    {
+      "mes": "2027-01",
+      "status": "A Pagar",
+      "qtd": 12,
+      "total": 5941.36
+    },
+    {
+      "mes": "2027-02",
+      "status": "A Pagar",
+      "qtd": 12,
+      "total": 5941.36
+    },
+    {
+      "mes": "2027-03",
+      "status": "A Pagar",
+      "qtd": 12,
+      "total": 5941.36
+    },
+    {
+      "mes": "2027-04",
+      "status": "A Pagar",
+      "qtd": 11,
+      "total": 4478.94
+    },
+    {
+      "mes": "2027-05",
+      "status": "A Pagar",
+      "qtd": 12,
+      "total": 4518.93
+    },
+    {
+      "mes": "2027-06",
+      "status": "A Pagar",
+      "qtd": 10,
+      "total": 3824.83
+    },
+    {
+      "mes": "2027-07",
+      "status": "A Pagar",
+      "qtd": 10,
+      "total": 3824.83
+    },
+    {
+      "mes": "2027-08",
+      "status": "A Pagar",
+      "qtd": 1,
+      "total": 554.8
+    }
+  ],
+  "receber": [
+    {
+      "vencimento": "2026-05-15",
+      "descricao": "Parcela 1 de 10 - Projeto",
+      "cliente": "Defreitas",
+      "valor": 5000.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-06-15",
+      "descricao": "Parcela 2 de 10 - Projeto",
+      "cliente": "Defreitas",
+      "valor": 4000.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-07-24",
+      "descricao": "Parcela 3 de 10 - Projeto",
+      "cliente": "Defreitas",
+      "valor": 2500.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-08-03",
+      "descricao": "Avaliação Aquisição Lojas Carvalho",
+      "cliente": "Eldo Carvalho",
+      "valor": 4000.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-08-11",
+      "descricao": "Parcela 3 de 10 - Projeto (1)",
+      "cliente": "Defreitas",
+      "valor": 1000.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-08-14",
+      "descricao": "Parcela 3 de 10 - Projeto (2)",
+      "cliente": "Defreitas",
+      "valor": 1000.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-08-24",
+      "descricao": "Parcela 4 de 10 - Projeto",
+      "cliente": "Defreitas",
+      "valor": 5000.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-09-25",
+      "descricao": "Parcela 5 de 10 - Projeto",
+      "cliente": "Defreitas",
+      "valor": 5000.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-10-26",
+      "descricao": "Parcela 6 de 10 - Projeto",
+      "cliente": "Defreitas",
+      "valor": 5000.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-11-27",
+      "descricao": "Parcela 7 de 10 - Projeto",
+      "cliente": "Defreitas",
+      "valor": 5000.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-12-23",
+      "descricao": "Parcela 8 de 10 - Projeto",
+      "cliente": "Defreitas",
+      "valor": 5000.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-01-26",
+      "descricao": "Parcela 9 de 10 - Projeto",
+      "cliente": "Defreitas",
+      "valor": 5000.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-02-26",
+      "descricao": "Parcela 10 de 10 - Projeto",
+      "cliente": "Defreitas",
+      "valor": 5000.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-03-22",
+      "descricao": "Parcela 3 de 10 - Projeto (3)",
+      "cliente": "Defreitas",
+      "valor": 500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-03-22",
+      "descricao": "Parcela 2 de 10 - Projeto (1)",
+      "cliente": "Defreitas",
+      "valor": 1000.0,
+      "status": "A Receber"
+    }
+  ],
+  "pagar": [
+    {
+      "vencimento": "2026-04-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "1 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "Pago",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2026-05-11",
+      "descricao": "Godaddy - Domínio",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 39.99,
+      "status": "Pago",
+      "observacao": "Cartão 7782 - Anual"
+    },
+    {
+      "vencimento": "2026-05-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-05-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "2 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "Pago",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2026-05-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 12.5,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-06-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-06-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 60.68,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-06-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "3 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "Pago",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2026-06-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-06-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 2.12,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-06-11",
+      "descricao": "Taxas administrativas",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 0.71,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-07-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "4 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "Pago",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2026-07-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-07-11",
+      "descricao": "Taxas administrativas",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 8.99,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-07-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-07-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 65.96,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-07-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 5.18,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-07-11",
+      "descricao": "Anuidade Cartão",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 20.0,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-07-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-07-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 148.05,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-08-03",
+      "descricao": "Pagamento Heitor",
+      "centro_custo": "Pagamento Pessoal",
+      "parcela": "Entrega Eldo",
+      "tipo": "Variável",
+      "valor": 1800.0,
+      "status": "Pago",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-08-03",
+      "descricao": "Pagamento Harley",
+      "centro_custo": "Pagamento Pessoal",
+      "parcela": "Entrega Eldo",
+      "tipo": "Variável",
+      "valor": 1800.0,
+      "status": "Pago",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-08-03",
+      "descricao": "Combustível",
+      "centro_custo": "Custos Operação",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 100.0,
+      "status": "Pago",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-08-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 121.6,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-08-11",
+      "descricao": "Anuidade Cartão",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 20.0,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-08-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-08-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 112.31,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-08-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 5.18,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-08-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-08-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "Pago",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-08-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "5 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "Pago",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2026-08-11",
+      "descricao": "Scribd",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 27.99,
+      "status": "Pago",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-08-15",
+      "descricao": "Contabilidade - Nova União",
+      "centro_custo": "Contabilidade",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 654.11,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-08-16",
+      "descricao": "Sign & Drive - VW",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "1 de 12",
+      "tipo": "Fixo",
+      "valor": 2759.0,
+      "status": "A Pagar",
+      "observacao": "Boleto"
+    },
+    {
+      "vencimento": "2026-09-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 148.05,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-09-11",
+      "descricao": "Anuidade Cartão",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 20.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-09-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-09-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 65.96,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-09-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-09-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "6 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "A Pagar",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2026-09-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 5.18,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-09-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-09-11",
+      "descricao": "Scribd",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 27.99,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-09-11",
+      "descricao": "Zapmóveis (Canal Pro)",
+      "centro_custo": "Vendas",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 554.8,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-09-15",
+      "descricao": "Contabilidade - Nova União",
+      "centro_custo": "Contabilidade",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 654.11,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-09-16",
+      "descricao": "Sign & Drive - VW",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "2 de 12",
+      "tipo": "Fixo",
+      "valor": 2759.0,
+      "status": "A Pagar",
+      "observacao": "Boleto"
+    },
+    {
+      "vencimento": "2026-09-18",
+      "descricao": "Imposto",
+      "centro_custo": "Impostos",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 400.0,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-10-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-10-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 65.96,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-10-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 148.05,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-10-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 5.18,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-10-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-10-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "7 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "A Pagar",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2026-10-11",
+      "descricao": "Anuidade Cartão",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 20.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-10-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-10-11",
+      "descricao": "Scribd",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 27.99,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-10-11",
+      "descricao": "Zapmóveis (Canal Pro)",
+      "centro_custo": "Vendas",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 554.8,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-10-15",
+      "descricao": "Contabilidade - Nova União",
+      "centro_custo": "Contabilidade",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 654.11,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-10-16",
+      "descricao": "Sign & Drive - VW",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "3 de 12",
+      "tipo": "Fixo",
+      "valor": 2759.0,
+      "status": "A Pagar",
+      "observacao": "Boleto"
+    },
+    {
+      "vencimento": "2026-11-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 65.96,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-11-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-11-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 148.05,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-11-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "8 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "A Pagar",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2026-11-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 5.18,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-11-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-11-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-11-11",
+      "descricao": "Anuidade Cartão",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 20.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-11-11",
+      "descricao": "Scribd",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 27.99,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-11-11",
+      "descricao": "Zapmóveis (Canal Pro)",
+      "centro_custo": "Vendas",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 554.8,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-11-15",
+      "descricao": "Contabilidade - Nova União",
+      "centro_custo": "Contabilidade",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 654.11,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-11-16",
+      "descricao": "Sign & Drive - VW",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "4 de 12",
+      "tipo": "Fixo",
+      "valor": 2759.0,
+      "status": "A Pagar",
+      "observacao": "Boleto"
+    },
+    {
+      "vencimento": "2026-12-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "9 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "A Pagar",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2026-12-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-12-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-12-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-12-11",
+      "descricao": "Anuidade Cartão",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 20.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-12-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 65.96,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-12-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 148.05,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-12-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 5.18,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2026-12-11",
+      "descricao": "Scribd",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 27.99,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-12-11",
+      "descricao": "Zapmóveis (Canal Pro)",
+      "centro_custo": "Vendas",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 554.8,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-12-15",
+      "descricao": "Contabilidade - Nova União",
+      "centro_custo": "Contabilidade",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 654.11,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2026-12-15",
+      "descricao": "Contabilidade - Nova União",
+      "centro_custo": "Contabilidade",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 654.11,
+      "status": "A Pagar",
+      "observacao": "Taxa 13º"
+    },
+    {
+      "vencimento": "2026-12-16",
+      "descricao": "Sign & Drive - VW",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "5 de 12",
+      "tipo": "Fixo",
+      "valor": 2759.0,
+      "status": "A Pagar",
+      "observacao": "Boleto"
+    },
+    {
+      "vencimento": "2027-01-11",
+      "descricao": "Anuidade Cartão",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 20.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-01-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 5.18,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-01-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 148.05,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-01-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-01-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-01-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "10 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "A Pagar",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2027-01-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-01-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 65.96,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-01-11",
+      "descricao": "Scribd",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 27.99,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-01-11",
+      "descricao": "Zapmóveis (Canal Pro)",
+      "centro_custo": "Vendas",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 554.8,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-01-15",
+      "descricao": "Contabilidade - Nova União",
+      "centro_custo": "Contabilidade",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 654.11,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-01-16",
+      "descricao": "Sign & Drive - VW",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "6 de 12",
+      "tipo": "Fixo",
+      "valor": 2759.0,
+      "status": "A Pagar",
+      "observacao": "Boleto"
+    },
+    {
+      "vencimento": "2027-02-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-02-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "11 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "A Pagar",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2027-02-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-02-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-02-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 65.96,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-02-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 148.05,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-02-11",
+      "descricao": "Anuidade Cartão",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 20.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-02-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 5.18,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-02-11",
+      "descricao": "Scribd",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 27.99,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-02-11",
+      "descricao": "Zapmóveis (Canal Pro)",
+      "centro_custo": "Vendas",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 554.8,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-02-15",
+      "descricao": "Contabilidade - Nova União",
+      "centro_custo": "Contabilidade",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 654.11,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-02-16",
+      "descricao": "Sign & Drive - VW",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "7 de 12",
+      "tipo": "Fixo",
+      "valor": 2759.0,
+      "status": "A Pagar",
+      "observacao": "Boleto"
+    },
+    {
+      "vencimento": "2027-03-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-03-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 65.96,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-03-11",
+      "descricao": "Anuidade Cartão",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 20.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-03-11",
+      "descricao": "DJI - AIR 3S",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "12 de 12",
+      "tipo": "Parcelamento",
+      "valor": 1462.42,
+      "status": "A Pagar",
+      "observacao": "Cartão 4505 - Black"
+    },
+    {
+      "vencimento": "2027-03-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-03-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 148.05,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-03-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 5.18,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-03-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-03-11",
+      "descricao": "Scribd",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 27.99,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-03-11",
+      "descricao": "Zapmóveis (Canal Pro)",
+      "centro_custo": "Vendas",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 554.8,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-03-15",
+      "descricao": "Contabilidade - Nova União",
+      "centro_custo": "Contabilidade",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 654.11,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-03-16",
+      "descricao": "Sign & Drive - VW",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "8 de 12",
+      "tipo": "Fixo",
+      "valor": 2759.0,
+      "status": "A Pagar",
+      "observacao": "Boleto"
+    },
+    {
+      "vencimento": "2027-04-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 5.18,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-04-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-04-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 148.05,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-04-11",
+      "descricao": "Anuidade Cartão",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 20.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-04-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-04-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-04-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 65.96,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-04-11",
+      "descricao": "Scribd",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 27.99,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-04-11",
+      "descricao": "Zapmóveis (Canal Pro)",
+      "centro_custo": "Vendas",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 554.8,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-04-15",
+      "descricao": "Contabilidade - Nova União",
+      "centro_custo": "Contabilidade",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 654.11,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-04-16",
+      "descricao": "Sign & Drive - VW",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "9 de 12",
+      "tipo": "Fixo",
+      "valor": 2759.0,
+      "status": "A Pagar",
+      "observacao": "Boleto"
+    },
+    {
+      "vencimento": "2027-05-11",
+      "descricao": "Antropic Claude",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 110.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-05-11",
+      "descricao": "Google Workspace",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 65.96,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-05-11",
+      "descricao": "Anuidade Cartão",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 20.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-05-11",
+      "descricao": "IOF cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 5.18,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-05-11",
+      "descricao": "Notion",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 148.05,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-05-11",
+      "descricao": "IOF Cartão",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 3.85,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-05-11",
+      "descricao": "Sisdea",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 130.0,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782"
+    },
+    {
+      "vencimento": "2027-05-11",
+      "descricao": "Godaddy - Domínio",
+      "centro_custo": "Taxas e anuidades",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 39.99,
+      "status": "A Pagar",
+      "observacao": "Cartão 7782 - Anual"
+    },
+    {
+      "vencimento": "2027-05-11",
+      "descricao": "Scribd",
+      "centro_custo": "Ferramentas adm",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 27.99,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-05-11",
+      "descricao": "Zapmóveis (Canal Pro)",
+      "centro_custo": "Vendas",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 554.8,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-05-15",
+      "descricao": "Contabilidade - Nova União",
+      "centro_custo": "Contabilidade",
+      "parcela": null,
+      "tipo": "Fixo",
+      "valor": 654.11,
+      "status": "A Pagar",
+      "observacao": null
+    },
+    {
+      "vencimento": "2027-05-16",
+      "descricao": "Sign & Drive - VW",
+      "centro_custo": "Ferramentas Téc.",
+      "parcela": "10 de 12",
+      "tipo": "Fixo",
+      "valor": 2759.0,
+      "status": "A Pagar",
+      "observacao": "Boleto"
+    }
+  ],
+  "detalhe_ate": "2027-05"
+}

@@ -1,0 +1,1321 @@
+{
+  "centro": "Edgar Pereira",
+  "titulo": "Edgar Pereira",
+  "capturado_em": "2026-08-19",
+  "competencia": "2026-08",
+  "fontes": {
+    "pagina": "https://app.notion.com/p/380132563860801893ebd62655a7f84a",
+    "contas_a_receber": "https://app.notion.com/p/21d03f29410b4b378772de48857b5e56",
+    "contas_a_pagar": "https://app.notion.com/p/8f170df8b2f04c8898611ddd73f097e4"
+  },
+  "saldo_inicial": {
+    "referencia": "2026-05",
+    "rotulo": "Saldo Mai/26",
+    "valor": 2398.88
+  },
+  "observacoes": [
+    "1 registro sem data e sem valor em Contas a Receber foi ignorado.",
+    "Não há contas a pagar lançadas a partir de jan/2027 — a projeção de saldo desses meses considera apenas entradas."
+  ],
+  "agregado_receber": [
+    {
+      "mes": "2026-06",
+      "status": "Recebido",
+      "qtd": 9,
+      "total": 8100
+    },
+    {
+      "mes": "2026-07",
+      "status": "Recebido",
+      "qtd": 7,
+      "total": 5750
+    },
+    {
+      "mes": "2026-08",
+      "status": "Recebido",
+      "qtd": 5,
+      "total": 4540
+    },
+    {
+      "mes": "2026-08",
+      "status": "A Receber",
+      "qtd": 5,
+      "total": 5050
+    },
+    {
+      "mes": "2026-09",
+      "status": "A Receber",
+      "qtd": 7,
+      "total": 6750
+    },
+    {
+      "mes": "2026-10",
+      "status": "A Receber",
+      "qtd": 7,
+      "total": 6750
+    },
+    {
+      "mes": "2026-11",
+      "status": "A Receber",
+      "qtd": 7,
+      "total": 6750
+    },
+    {
+      "mes": "2026-12",
+      "status": "A Receber",
+      "qtd": 6,
+      "total": 6050
+    },
+    {
+      "mes": "2027-01",
+      "status": "A Receber",
+      "qtd": 5,
+      "total": 5400
+    },
+    {
+      "mes": "2027-02",
+      "status": "A Receber",
+      "qtd": 2,
+      "total": 1600
+    },
+    {
+      "mes": "2027-03",
+      "status": "A Receber",
+      "qtd": 2,
+      "total": 1600
+    },
+    {
+      "mes": "2027-04",
+      "status": "A Receber",
+      "qtd": 2,
+      "total": 1600
+    },
+    {
+      "mes": "2027-05",
+      "status": "A Receber",
+      "qtd": 2,
+      "total": 1600
+    }
+  ],
+  "agregado_pagar": [
+    {
+      "mes": "2026-06",
+      "status": "Pago",
+      "qtd": 19,
+      "total": 7734.46
+    },
+    {
+      "mes": "2026-07",
+      "status": "Pago",
+      "qtd": 16,
+      "total": 7749.42
+    },
+    {
+      "mes": "2026-08",
+      "status": "Pago",
+      "qtd": 7,
+      "total": 4769.88
+    },
+    {
+      "mes": "2026-08",
+      "status": "A Pagar",
+      "qtd": 2,
+      "total": 170.5
+    },
+    {
+      "mes": "2026-09",
+      "status": "A Pagar",
+      "qtd": 8,
+      "total": 4876.33
+    },
+    {
+      "mes": "2026-10",
+      "status": "A Pagar",
+      "qtd": 7,
+      "total": 4774.49
+    },
+    {
+      "mes": "2026-11",
+      "status": "A Pagar",
+      "qtd": 7,
+      "total": 4774.49
+    },
+    {
+      "mes": "2026-12",
+      "status": "A Pagar",
+      "qtd": 5,
+      "total": 4555.67
+    }
+  ],
+  "receber": [
+    {
+      "vencimento": "2026-06-03",
+      "descricao": "Aluguel Jun/2026 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-06-08",
+      "descricao": "Aluguel Jun/2026 — Natalia",
+      "inquilino": "Natalia",
+      "contrato": "101",
+      "valor": 700.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-06-08",
+      "descricao": "Aluguel Jun/2026 — Amadeu",
+      "inquilino": "Amadeu",
+      "contrato": "003",
+      "valor": 650.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-06-15",
+      "descricao": "Aluguel Parcelamento 3 de 4 - Thalles",
+      "inquilino": "Thalles",
+      "contrato": null,
+      "valor": 800.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-06-18",
+      "descricao": "Aluguel Jun/2026 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-06-23",
+      "descricao": "Aluguel Jun/2026 — Rick",
+      "inquilino": "Rick",
+      "contrato": "103",
+      "valor": 800.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-06-25",
+      "descricao": "Aluguel Jun/2026 — Lipa/Natália",
+      "inquilino": "Lipa/Natália",
+      "contrato": "118",
+      "valor": 1500.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-06-25",
+      "descricao": "Aluguel Jun/2026 — Alessandra",
+      "inquilino": "Alessandra",
+      "contrato": "118A",
+      "valor": 1500.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-06-25",
+      "descricao": "Aluguel Jun/2026 — Hermes",
+      "inquilino": "Hermes",
+      "contrato": "002",
+      "valor": 550.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-07-10",
+      "descricao": "Aluguel Jul/2026 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-07-10",
+      "descricao": "Aluguel Jul/2026 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-07-15",
+      "descricao": "Aluguel Jul/2026 — Rick",
+      "inquilino": "Rick",
+      "contrato": "103",
+      "valor": 750.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-07-15",
+      "descricao": "Aluguel Jul/2026 — Amadeu",
+      "inquilino": "Amadeu",
+      "contrato": "003",
+      "valor": 650.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-07-15",
+      "descricao": "Aluguel Jul/2026 — Natalia",
+      "inquilino": "Natalia",
+      "contrato": "101",
+      "valor": 700.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-07-15",
+      "descricao": "Aluguel Jul/2026 — Hermes",
+      "inquilino": "Hermes",
+      "contrato": "002",
+      "valor": 550.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-07-27",
+      "descricao": "Aluguel Jul/2026 — Lipa/Natália",
+      "inquilino": "Lipa/Natália",
+      "contrato": "118",
+      "valor": 1500.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-08-03",
+      "descricao": "Aluguel Jul/2026 — Alessandra",
+      "inquilino": "Alessandra",
+      "contrato": "118A",
+      "valor": 1500.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-08-03",
+      "descricao": "Aluguel Parcelamento 4 de 4 - Thalles",
+      "inquilino": "Thalles",
+      "contrato": null,
+      "valor": 790.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-08-10",
+      "descricao": "Aluguel Ago/2026 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-08-10",
+      "descricao": "Aluguel Ago/2026 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-08-15",
+      "descricao": "Aluguel Ago/2026 — Rick",
+      "inquilino": "Rick",
+      "contrato": "103",
+      "valor": 800.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-08-15",
+      "descricao": "Aluguel Ago/2026 — Hermes",
+      "inquilino": "Hermes",
+      "contrato": "002",
+      "valor": 550.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-08-15",
+      "descricao": "Aluguel Ago/2026 — Natalia",
+      "inquilino": "Natalia",
+      "contrato": "101",
+      "valor": 700.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-08-15",
+      "descricao": "Aluguel Ago/2026 — Amadeu",
+      "inquilino": "Amadeu",
+      "contrato": "003",
+      "valor": 650.0,
+      "status": "Recebido"
+    },
+    {
+      "vencimento": "2026-08-25",
+      "descricao": "Aluguel Ago/2026 — Alessandra",
+      "inquilino": "Alessandra",
+      "contrato": "118A",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-08-25",
+      "descricao": "Aluguel Ago/2026 — Lipa/Natália",
+      "inquilino": "Lipa/Natália",
+      "contrato": "118",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-09-10",
+      "descricao": "Aluguel Set/2026 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-09-10",
+      "descricao": "Aluguel Set/2026 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-09-15",
+      "descricao": "Aluguel Set/2026 — Amadeu",
+      "inquilino": "Amadeu",
+      "contrato": "003",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-09-15",
+      "descricao": "Aluguel Set/2026 — Natalia",
+      "inquilino": "Natalia",
+      "contrato": "101",
+      "valor": 700.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-09-15",
+      "descricao": "Aluguel Set/2026 — Rick",
+      "inquilino": "Rick",
+      "contrato": "103",
+      "valor": 800.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-09-25",
+      "descricao": "Aluguel Set/2026 — Lipa/Natália",
+      "inquilino": "Lipa/Natália",
+      "contrato": "118",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-09-25",
+      "descricao": "Aluguel Set/2026 — Alessandra",
+      "inquilino": "Alessandra",
+      "contrato": "118A",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-10-10",
+      "descricao": "Aluguel Out/2026 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-10-10",
+      "descricao": "Aluguel Out/2026 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-10-15",
+      "descricao": "Aluguel Out/2026 — Amadeu",
+      "inquilino": "Amadeu",
+      "contrato": "003",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-10-15",
+      "descricao": "Aluguel Out/2026 — Natalia",
+      "inquilino": "Natalia",
+      "contrato": "101",
+      "valor": 700.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-10-15",
+      "descricao": "Aluguel Out/2026 — Rick",
+      "inquilino": "Rick",
+      "contrato": "103",
+      "valor": 800.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-10-25",
+      "descricao": "Aluguel Out/2026 — Lipa/Natália",
+      "inquilino": "Lipa/Natália",
+      "contrato": "118",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-10-25",
+      "descricao": "Aluguel Out/2026 — Alessandra",
+      "inquilino": "Alessandra",
+      "contrato": "118A",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-11-10",
+      "descricao": "Aluguel Nov/2026 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-11-10",
+      "descricao": "Aluguel Nov/2026 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-11-15",
+      "descricao": "Aluguel Nov/2026 — Natalia",
+      "inquilino": "Natalia",
+      "contrato": "101",
+      "valor": 700.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-11-15",
+      "descricao": "Aluguel Nov/2026 — Amadeu",
+      "inquilino": "Amadeu",
+      "contrato": "003",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-11-15",
+      "descricao": "Aluguel Nov/2026 — Rick",
+      "inquilino": "Rick",
+      "contrato": "103",
+      "valor": 800.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-11-25",
+      "descricao": "Aluguel Nov/2026 — Lipa/Natália",
+      "inquilino": "Lipa/Natália",
+      "contrato": "118",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-11-25",
+      "descricao": "Aluguel Nov/2026 — Alessandra",
+      "inquilino": "Alessandra",
+      "contrato": "118A",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-12-10",
+      "descricao": "Aluguel Dez/2026 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-12-10",
+      "descricao": "Aluguel Dez/2026 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-12-15",
+      "descricao": "Aluguel Dez/2026 — Amadeu",
+      "inquilino": "Amadeu",
+      "contrato": "003",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-12-15",
+      "descricao": "Aluguel Dez/2026 — Rick",
+      "inquilino": "Rick",
+      "contrato": "103",
+      "valor": 800.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-12-25",
+      "descricao": "Aluguel Dez/2026 — Alessandra",
+      "inquilino": "Alessandra",
+      "contrato": "118A",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2026-12-25",
+      "descricao": "Aluguel Dez/2026 — Lipa/Natália",
+      "inquilino": "Lipa/Natália",
+      "contrato": "118",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-01-10",
+      "descricao": "Aluguel Jan/2027 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-01-10",
+      "descricao": "Aluguel Jan/2027 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-01-15",
+      "descricao": "Aluguel Jan/2027 — Rick",
+      "inquilino": "Rick",
+      "contrato": "103",
+      "valor": 800.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-01-25",
+      "descricao": "Aluguel Jan/2027 — Lipa/Natália",
+      "inquilino": "Lipa/Natália",
+      "contrato": "118",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-01-25",
+      "descricao": "Aluguel Jan/2027 — Alessandra",
+      "inquilino": "Alessandra",
+      "contrato": "118A",
+      "valor": 1500.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-02-10",
+      "descricao": "Aluguel Fev/2027 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-02-10",
+      "descricao": "Aluguel Fev/2027 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-03-10",
+      "descricao": "Aluguel Mar/2027 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-03-10",
+      "descricao": "Aluguel Mar/2027 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-04-10",
+      "descricao": "Aluguel Abr/2027 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-04-10",
+      "descricao": "Aluguel Abr/2027 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-05-10",
+      "descricao": "Aluguel Mai/2027 — João",
+      "inquilino": "João",
+      "contrato": "102",
+      "valor": 950.0,
+      "status": "A Receber"
+    },
+    {
+      "vencimento": "2027-05-10",
+      "descricao": "Aluguel Mai/2027 — Paulo",
+      "inquilino": "Paulo",
+      "contrato": "001",
+      "valor": 650.0,
+      "status": "A Receber"
+    }
+  ],
+  "pagar": [
+    {
+      "vencimento": "2026-06-02",
+      "descricao": "MOBY",
+      "centro_custo": "Moby Gabriel",
+      "parcela": "9 de 24",
+      "tipo": "Parcelamento",
+      "valor": 926.95,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-13",
+      "descricao": "Óleo motor 710",
+      "centro_custo": "Caminhão 710",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 99.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-13",
+      "descricao": "Desengraxante - 710",
+      "centro_custo": "Caminhão 710",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 70.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-13",
+      "descricao": "Cabo de energia bateria motor - 710",
+      "centro_custo": "Caminhão 710",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 220.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-15",
+      "descricao": "Parcela IPTU - 118",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "2 de 7",
+      "tipo": "Parcelamento",
+      "valor": 150.56,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-15",
+      "descricao": "Parcela IPTU - 132",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "2 de 7",
+      "tipo": "Parcelamento",
+      "valor": 68.26,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-15",
+      "descricao": "Contabilidade ARAUCA",
+      "centro_custo": "Arauca",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 161.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-16",
+      "descricao": "Desengraxante",
+      "centro_custo": "Caminhão 710",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 60.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-16",
+      "descricao": "Mão de obra bomba combustível",
+      "centro_custo": "Caminhão 710",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 400.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-16",
+      "descricao": "Taxa de Lixo 118",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "1 de 4",
+      "tipo": "Parcelamento",
+      "valor": 101.84,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-16",
+      "descricao": "Taxa de Lixo 132",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "1 de 3",
+      "tipo": "Parcelamento",
+      "valor": 64.87,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-16",
+      "descricao": "Bomba de óleo do motor 710",
+      "centro_custo": "Caminhão 710",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 350.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-18",
+      "descricao": "HAVAL",
+      "centro_custo": "Haval",
+      "parcela": "30 de 36",
+      "tipo": "Parcelamento",
+      "valor": 3297.22,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-18",
+      "descricao": "Grelha Castelatto",
+      "centro_custo": "Casa",
+      "parcela": "9 de 10",
+      "tipo": "Parcelamento",
+      "valor": 313.43,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-19",
+      "descricao": "Mini Caçamba Coutinho",
+      "centro_custo": "Edgar Pereira",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 100.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-19",
+      "descricao": "Faxina Jun/26 - 2 por mês",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "70 a faxina",
+      "tipo": "Fixo",
+      "valor": 140.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-22",
+      "descricao": "Transferência 1300",
+      "centro_custo": "Diversos",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 1010.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-24",
+      "descricao": "Manunteção Elétrica",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "Leo",
+      "tipo": "Variável",
+      "valor": 131.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-06-29",
+      "descricao": "CEMIG Edgar ir",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 70.33,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-02",
+      "descricao": "MOBY",
+      "centro_custo": "Moby Gabriel",
+      "parcela": "10 de 24",
+      "tipo": "Parcelamento",
+      "valor": 926.95,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-09",
+      "descricao": "Pix Jairo",
+      "centro_custo": "Diversos",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 80.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-09",
+      "descricao": "Boleto Assas",
+      "centro_custo": "Casa",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 1472.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-10",
+      "descricao": "Soldas no portão - DIDI",
+      "centro_custo": "Galpão Esplanada",
+      "parcela": "Casinha Panamá 158",
+      "tipo": "Variável",
+      "valor": 100.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-15",
+      "descricao": "Parcela IPTU - 132",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "3 de 7",
+      "tipo": "Parcelamento",
+      "valor": 68.26,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-15",
+      "descricao": "Contabilidade ARAUCA",
+      "centro_custo": "Arauca",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 163.43,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-15",
+      "descricao": "Parcela IPTU - 118",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "3 de 7",
+      "tipo": "Parcelamento",
+      "valor": 150.56,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-16",
+      "descricao": "Taxa de Lixo 118",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "2 de 4",
+      "tipo": "Parcelamento",
+      "valor": 101.84,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-16",
+      "descricao": "Taxa de Lixo 132",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "2 de 3",
+      "tipo": "Parcelamento",
+      "valor": 64.87,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-17",
+      "descricao": "Vistoria Rocket",
+      "centro_custo": "Diversos",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 133.17,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-17",
+      "descricao": "Dinheiro Paulinho",
+      "centro_custo": "Diversos",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 600.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-18",
+      "descricao": "HAVAL",
+      "centro_custo": "Haval",
+      "parcela": "31 de 36",
+      "tipo": "Parcelamento",
+      "valor": 3297.22,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-18",
+      "descricao": "Grelha Castelatto",
+      "centro_custo": "Casa",
+      "parcela": "10 de 10",
+      "tipo": "Parcelamento",
+      "valor": 313.43,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-18",
+      "descricao": "CEMIG Edgar",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 37.69,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-19",
+      "descricao": "Faxina Jul/26 - 2 por mês",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "70 a faxina",
+      "tipo": "Fixo",
+      "valor": 140.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-07-21",
+      "descricao": "Transferência Harley",
+      "centro_custo": "Diversos",
+      "parcela": null,
+      "tipo": "Variável",
+      "valor": 100.0,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-08-02",
+      "descricao": "MOBY",
+      "centro_custo": "Moby Gabriel",
+      "parcela": "11 de 24",
+      "tipo": "Parcelamento",
+      "valor": 926.95,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-08-15",
+      "descricao": "Contabilidade ARAUCA",
+      "centro_custo": "Arauca",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 160.18,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-08-15",
+      "descricao": "Parcela IPTU - 132",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "4 de 7",
+      "tipo": "Parcelamento",
+      "valor": 68.26,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-08-15",
+      "descricao": "Parcela IPTU - 118",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "4 de 7",
+      "tipo": "Parcelamento",
+      "valor": 150.56,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-08-16",
+      "descricao": "Taxa de Lixo 118",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "3 de 4",
+      "tipo": "Parcelamento",
+      "valor": 101.84,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-08-16",
+      "descricao": "Taxa de Lixo 132",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "3 de 3",
+      "tipo": "Parcelamento",
+      "valor": 64.87,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-08-18",
+      "descricao": "CEMIG Edgar",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 30.5,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-08-18",
+      "descricao": "HAVAL",
+      "centro_custo": "Haval",
+      "parcela": "32 de 36",
+      "tipo": "Parcelamento",
+      "valor": 3297.22,
+      "status": "Pago"
+    },
+    {
+      "vencimento": "2026-08-19",
+      "descricao": "Faxina Ago/26 - 2 por mês",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "70 a faxina",
+      "tipo": "Fixo",
+      "valor": 140.0,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-09-02",
+      "descricao": "MOBY",
+      "centro_custo": "Moby Gabriel",
+      "parcela": "12 de 24",
+      "tipo": "Parcelamento",
+      "valor": 926.95,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-09-15",
+      "descricao": "Parcela IPTU - 118",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "5 de 7",
+      "tipo": "Parcelamento",
+      "valor": 150.56,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-09-15",
+      "descricao": "Parcela IPTU - 132",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "5 de 7",
+      "tipo": "Parcelamento",
+      "valor": 68.26,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-09-15",
+      "descricao": "Contabilidade ARAUCA",
+      "centro_custo": "Arauca",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 161.0,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-09-16",
+      "descricao": "Taxa de Lixo 118",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "4 de 4",
+      "tipo": "Parcelamento",
+      "valor": 101.84,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-09-18",
+      "descricao": "HAVAL",
+      "centro_custo": "Haval",
+      "parcela": "33 de 36",
+      "tipo": "Parcelamento",
+      "valor": 3297.22,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-09-18",
+      "descricao": "CEMIG Edgar",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 30.5,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-09-19",
+      "descricao": "Faxina Set/26 - 2 por mês",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "70 a faxina",
+      "tipo": "Fixo",
+      "valor": 140.0,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-10-02",
+      "descricao": "MOBY",
+      "centro_custo": "Moby Gabriel",
+      "parcela": "13 de 24",
+      "tipo": "Parcelamento",
+      "valor": 926.95,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-10-15",
+      "descricao": "Parcela IPTU - 132",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "6 de 7",
+      "tipo": "Parcelamento",
+      "valor": 68.26,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-10-15",
+      "descricao": "Contabilidade ARAUCA",
+      "centro_custo": "Arauca",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 161.0,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-10-15",
+      "descricao": "Parcela IPTU - 118",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "6 de 7",
+      "tipo": "Parcelamento",
+      "valor": 150.56,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-10-18",
+      "descricao": "HAVAL",
+      "centro_custo": "Haval",
+      "parcela": "34 de 36",
+      "tipo": "Parcelamento",
+      "valor": 3297.22,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-10-18",
+      "descricao": "CEMIG Edgar",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 30.5,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-10-19",
+      "descricao": "Faxina Out/26 - 2 por mês",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "70 a faxina",
+      "tipo": "Fixo",
+      "valor": 140.0,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-11-02",
+      "descricao": "MOBY",
+      "centro_custo": "Moby Gabriel",
+      "parcela": "14 de 24",
+      "tipo": "Parcelamento",
+      "valor": 926.95,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-11-15",
+      "descricao": "Parcela IPTU - 132",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "7 de 7",
+      "tipo": "Parcelamento",
+      "valor": 68.26,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-11-15",
+      "descricao": "Parcela IPTU - 118",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "7 de 7",
+      "tipo": "Parcelamento",
+      "valor": 150.56,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-11-15",
+      "descricao": "Contabilidade ARAUCA",
+      "centro_custo": "Arauca",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 161.0,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-11-18",
+      "descricao": "HAVAL",
+      "centro_custo": "Haval",
+      "parcela": "35 de 36",
+      "tipo": "Parcelamento",
+      "valor": 3297.22,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-11-18",
+      "descricao": "CEMIG Edgar",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 30.5,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-11-19",
+      "descricao": "Faxina Nov/26 - 2 por mês",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "70 a faxina",
+      "tipo": "Fixo",
+      "valor": 140.0,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-12-02",
+      "descricao": "MOBY",
+      "centro_custo": "Moby Gabriel",
+      "parcela": "15 de 24",
+      "tipo": "Parcelamento",
+      "valor": 926.95,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-12-15",
+      "descricao": "Contabilidade ARAUCA",
+      "centro_custo": "Arauca",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 161.0,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-12-18",
+      "descricao": "HAVAL",
+      "centro_custo": "Haval",
+      "parcela": "36 de 36",
+      "tipo": "Parcelamento",
+      "valor": 3297.22,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-12-18",
+      "descricao": "CEMIG Edgar",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "Mensal",
+      "tipo": "Fixo",
+      "valor": 30.5,
+      "status": "A Pagar"
+    },
+    {
+      "vencimento": "2026-12-19",
+      "descricao": "Faxina Dez/26 - 2 por mês",
+      "centro_custo": "Edgar Pereira",
+      "parcela": "70 a faxina",
+      "tipo": "Fixo",
+      "valor": 140.0,
+      "status": "A Pagar"
+    }
+  ]
+}
