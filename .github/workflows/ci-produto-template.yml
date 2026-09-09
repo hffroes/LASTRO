@@ -1,0 +1,97 @@
+name: CI - Produto Template
+
+# Dispara quando há push ou PR em qualquer branch que mexa com este produto
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'products/produto-template/**'
+      - 'shared/**'
+      - '.github/workflows/ci-produto-template.yml'
+  pull_request:
+    branches: [ develop ]
+    paths:
+      - 'products/produto-template/**'
+      - 'shared/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      # 1. Checkout do código
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2. Setup Node.js
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # 3. Instalar dependências
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Rodar linter
+      - name: Lint
+        run: npm run lint --workspace=products/produto-template
+        continue-on-error: true
+
+      # 5. Rodar testes
+      - name: Test
+        run: npm test --workspace=produtos/produto-template
+
+      # 6. Build
+      - name: Build
+        run: npm run build --workspace=products/produto-template
+
+      # 7. Coverage report
+      - name: Code coverage
+        run: npm run coverage --workspace=products/produto-template
+        continue-on-error: true
+
+      # 8. Upload coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          flags: produto-template
+          fail_ci_if_error: false
+
+  # Job para verificar se não quebrou outras coisas
+  impact-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check if shared/ changed
+        id: shared
+        run: |
+          if git diff origin/develop HEAD --quiet -- shared/; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Alert if shared changed
+        if: steps.shared.outputs.changed == 'true'
+        run: echo "⚠️ Atenção: Código compartilhado foi modificado. Executar testes em TODOS os produtos."
+
+  # Status final
+  all-checks:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [test, impact-check]
+
+    steps:
+      - name: Check all checks
+        if: needs.test.result == 'failure'
+        run: exit 1

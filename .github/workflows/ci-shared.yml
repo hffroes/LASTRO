@@ -1,0 +1,57 @@
+name: CI - Shared Code
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'shared/**'
+      - '.github/workflows/ci-shared.yml'
+  pull_request:
+    branches: [ develop ]
+    paths:
+      - 'shared/**'
+
+jobs:
+  test-shared:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint shared/
+        run: npm run lint --workspace=shared
+        continue-on-error: true
+
+      - name: Test shared/
+        run: npm test --workspace=shared
+
+      - name: Build shared/
+        run: npm run build --workspace=shared
+
+  # ⚠️ ALERTA: Shared afeta todos os produtos!
+  alert-impact:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Post alert comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ **ALERTA:** Mudanças em `shared/` afetam TODOS os produtos!\n\n✅ Certifique-se de testar impacto em:\n- [ ] produto-1\n- [ ] produto-2\n- [ ] produto-3\n\n💡 Considere revisar com cuidado extra.'
+            })
