@@ -56,11 +56,14 @@ Fornecer uma ferramenta web de análise econômica rápida para responder objeti
   - Lojas comerciais
   - Uso misto
   - Padrão: Baixo, Normal, Alto
-- ✅ Detalhes construtivos:
-  - Número de pavimentos
-  - Quantidade de unidades por pavimento
-  - Tamanho das unidades (m²)
-- ✅ Preço de venda esperado por m² (com baseline de mercado para validação)
+- ✅ Detalhes construtivos (variáveis conforme tipologia):
+  - Detalhes específicos por tipologia serão definidos por hardcoding na fase de desenvolvimento
+  - Exemplo: Multifamiliar/Uso Misto mostram número de pavimentos, unidades por pavimento, tamanho de unidades
+  - Crucial: incluir TODAS as variáveis pertinentes para classificação correta na tabela CUB Sinduscon-MG
+- ✅ Preço de venda esperado:
+  - Usuário entra com o **valor total de venda da unidade** (R$)
+  - App calcula e mostra automaticamente o **preço por m²** conforme preenchimento
+  - Comparação com baseline de mercado (FipeZap) para alertar sobre possíveis superestimativas
 
 #### 2.3 Cálculo Automatizado
 - ✅ Conversão de área do terreno em área útil de construção (via coeficiente de aproveitamento pré-determinado)
@@ -96,6 +99,19 @@ R$ X.XXX.XXX
 
 Preço máximo recomendado para o cenário:
 R$ X.XXX.XXX
+
+Composição de custos (Simplificada):
+┌─────────────────────────────────┬──────────┬──────────────┐
+│ Componente                      │ Valor R$ │ % do VGV     │
+├─────────────────────────────────┼──────────┼──────────────┤
+│ VGV Total                       │ X.XXX.XX │ 100%         │
+│ - Custo Terreno                 │ X.XXX.XX │ X%           │
+│ - Custo Construção              │ X.XXX.XX │ X%           │
+│ - Lucro Incorporador            │ X.XXX.XX │ X%           │
+│ - Outros Custos                 │ X.XXX.XX │ X%           │
+├─────────────────────────────────┼──────────┼──────────────┤
+│ Sobra/Deficit                   │ X.XXX.XX │ X%           │
+└─────────────────────────────────┴──────────┴──────────────┘
 
 Principal risco / Oportunidade:
 [Identificação do fator limitador ou acelerador]
@@ -160,40 +176,65 @@ Recomendação:
 
 ### 3.1 Tipologias Suportadas (MVP)
 
-| Tipologia | Padrão | Terreno (% VGV) | Lucro (% VGV) | CUB Ajuste |
-|-----------|--------|-----------------|---------------|-----------| 
-| Unifamiliar | Baixo | 10% | 18% | -5% |
-| Unifamiliar | Normal | 9% | 22% | 0% |
-| Unifamiliar | Alto | 8% | 25% | +5% |
-| Loteamento | Baixo | 12% | 15% | -8% |
-| Loteamento | Normal | 10% | 20% | 0% |
-| Loteamento | Alto | 8% | 25% | +5% |
-| Multifamiliar | Baixo | 9% | 20% | -3% |
-| Multifamiliar | Normal | 8% | 23% | 0% |
-| Multifamiliar | Alto | 7% | 27% | +8% |
-| Galpão | Baixo | 15% | 18% | -10% |
-| Galpão | Normal | 12% | 22% | 0% |
-| Galpão | Alto | 10% | 25% | +3% |
-| Comercial | Baixo | 12% | 20% | -5% |
-| Comercial | Normal | 10% | 24% | 0% |
-| Comercial | Alto | 8% | 28% | +5% |
-| Uso Misto | Normal | 9% | 22% | 0% |
+| Tipologia | Padrão | Terreno (% VGV) | Lucro (% VGV) |
+|-----------|--------|-----------------|---------------|
+| Unifamiliar | Baixo | 8% | 18% |
+| Unifamiliar | Normal | 9% | 22% |
+| Unifamiliar | Alto | 10% | 25% |
+| Loteamento | Baixo | 8% | 15% |
+| Loteamento | Normal | 9% | 20% |
+| Loteamento | Alto | 10% | 25% |
+| Multifamiliar | Baixo | 8% | 20% |
+| Multifamiliar | Normal | 9% | 23% |
+| Multifamiliar | Alto | 10% | 27% |
+| Galpão | Baixo | 8% | 18% |
+| Galpão | Normal | 9% | 22% |
+| Galpão | Alto | 10% | 25% |
+| Comercial | Baixo | 8% | 20% |
+| Comercial | Normal | 9% | 24% |
+| Comercial | Alto | 10% | 28% |
+| Uso Misto | Normal | 9% | 22% |
 
 *Nota: Esses valores serão refinados e validados durante o desenvolvimento com base em estudos de mercado.*
+
+**Classificação CUB Sinduscon-MG:**
+
+O CUB (Custo Unitário Básico) é baseado nos projetos-padrão da ABNT NBR 12.721:2006 e divulgados pela Sinduscon-MG. A classificação correta é crítica pois determina qual valor de CUB será aplicado no cálculo.
+
+**Tipologias Padrão Suportadas (MVP) e Mapeamento com CUB:**
+
+| Tipologia Lastro | CUB Sinduscon-MG | Configuração |
+|------------------|------------------|--------------|
+| Unifamiliar Baixo | R1-B | 1 pav., 2 dorm., área ~59m² |
+| Unifamiliar Normal | R1-N | 1 pav., 3 dorm. + suíte, área ~106m² |
+| Unifamiliar Alto | R1-A | 1 pav., 4 dorm. + suíte closet, área ~225m² |
+| Multifamiliar Baixo | R8-B | 8 pav., 4 apto/pav., 2 dorm/apto, área ~2.802m² |
+| Multifamiliar Normal | R8-N ou R16-N | 8-16 pav., 4 apto/pav., 3 dorm. + suíte/apto |
+| Multifamiliar Alto | R8-A ou R16-A | 8-16 pav., 2 apto/pav., 4 dorm. + suíte closet/apto |
+| Comercial (Salas) Normal | CSL-8-N | Garagem + 8 pav., 8 salas/pav. |
+| Comercial (Salas) Alto | CSL-8-A | Garagem + 8 pav., 8 salas/pav. (acabamento alto) |
+| Comercial (Andares Livres) Normal | CAL-8-N | Garagem + 8 pav. andar corrido |
+| Comercial (Andares Livres) Alto | CAL-8-A | Garagem + 8 pav. andar corrido (acabamento alto) |
+| Galpão | GI | 1 pav., galpão industrial, área ~1.000m² |
+
+*Nota: O mapeamento exato dependerá do projeto específico. Galpões e Lojas Comerciais serão mapeados para as respectivas tipologias CUB. Loteamentos usarão referência de unifamiliar conforme padrão dominante.*
+
+**Cálculo da Área Equivalente:**
+O CUB utiliza "área equivalente" (ponderada) para representar custos relativos diferentes. O app deve consultar a tabela Sinduscon-MG para obter a área equivalente correspondente à tipologia classificada e usar esse valor no cálculo final de custo de construção.
 
 ### 3.2 Ajustes Aplicados ao CUB
 
 - **Topografia**:
-  - Plana: 0%
-  - Regular: +2%
-  - Irregular: +5%
-  - Acidentada: +10%
+  - Plana: +2%
+  - Regular: +4%
+  - Irregular: +8%
+  - Acidentada: +12%
 
 - **Formato do lote**:
   - Regular: 0%
   - Irregular: +3%
 
-*Estes ajustes impactam o custo de construção final.*
+*Estes ajustes impactam o custo de construção final e são aplicados sobre a base CUB definida pela Sinduscon-MG.*
 
 ### 3.3 Coeficientes de Aproveitamento (IA)
 
@@ -202,9 +243,19 @@ Será definido durante desenvolvimento conforme normas de zoneamento de Minas Ge
 ### 3.4 Dados Externos
 
 - **FipeZap**: Preços de mercado por m² (segmentado por tipologia e região)
-- **CUB**: Custo unitário básico atualizado mensalmente
+  - Fonte de validação para alertar sobre preços de venda superestimados
+  - Atualizado mensalmente
+  
+- **CUB Sinduscon-MG**: Custo unitário básico por projeto-padrão
+  - Atualizado mensalmente por Sinduscon-MG
+  - Base: ABNT NBR 12.721:2006
+  - Consultado conforme tipologia classificada no formulário
+  - Aplicado com ajustes de topografia e formato do lote
 
-Ambos serão integrados com atualização rotineira. Sistema deve alertar se preço de venda informado desviar significativamente da baseline.
+**Integração e Atualização:**
+- Ambas as bases devem ser atualizadas rotineiramente (frequência TBD)
+- Sistema deve alertar o usuário se os dados estiverem desatualizados (ex: últimas 30 dias)
+- Fallback: manter últimas N versões dos dados em cache local
 
 ### 3.5 Região de Cobertura (MVP)
 
@@ -218,17 +269,32 @@ Ambos serão integrados com atualização rotineira. Sistema deve alertar se pre
 ### 4.1 Fórmula Geral de Viabilidade
 
 ```
-Viabilidade = VGV - Custo Terreno - Custo Construção - Lucro Incorporador - Outros Custos >= 0
+Resultado Líquido = VGV - Custo Terreno - Custo Construção - Lucro Incorporador - Outros Custos
+Viável se: Resultado Líquido >= 0
 ```
 
 Onde:
-- **VGV** = m² Construído × Preço de Venda/m²
-- **Custo Terreno** = (Valor Pedido pelo Terreno) ou (% do VGV × VGV) — usar o maior
-- **Custo Construção** = CUB/m² (ajustado) × m² Construído
-- **Lucro Incorporador** = % do VGV × VGV
+- **VGV** = Número de Unidades × Preço de Venda da Unidade
+- **Custo Terreno** = Valor Pedido pelo Terreno
+- **Custo Construção** = CUB/m² (ajustado por tipologia, topografia, formato) × m² Construído
+- **Lucro Incorporador** = % do VGV × VGV (conforme tipologia/padrão)
 - **Outros Custos** = Impostos, corretagem (hardcoded)
 
-### 4.2 LASTRO SCORE (0-100)
+### 4.2 Análise de Normalidade dos Percentuais
+
+**Além da viabilidade numérica, o app analisa se os percentuais de cada componente estão dentro da normalidade:**
+
+- **Custo Terreno / VGV**: Deve estar entre a faixa mínima/máxima definida para a tipologia (ex: 8-10% para Multifamiliar Normal)
+- **Custo Construção / VGV**: Esperado entre 40-60% do VGV (varia conforme tipologia)
+- **Lucro Incorporador / VGV**: Deve estar dentro da faixa definida para a tipologia (ex: 23% para Multifamiliar Normal)
+- **Outros Custos / VGV**: Hardcoded, esperado 3-5% do VGV
+
+**Alertas de Normalidade:**
+- Se Terreno% > limite superior da faixa: "Preço do terreno acima do esperado para este cenário"
+- Se Lucro% < limite inferior da faixa: "Margem de lucro abaixo do esperado para este mercado"
+- Se Construção% > 65%: "Custos de construção elevados para esta tipologia"
+
+### 4.3 LASTRO SCORE (0-100)
 
 Score baseado em:
 - Margem de viabilidade (40 pontos)
@@ -238,7 +304,7 @@ Score baseado em:
 
 *Metodologia detalhada a ser definida na fase de desenvolvimento.*
 
-### 4.3 Recomendação Final
+### 4.4 Recomendação Final
 
 - 🟢 **COMPRAR**: Viável, score > 70, todos os percentuais OK
 - 🟡 **COMPRAR COM RESSALVAS**: Viável mas score 50-70 ou algum percentual fora do padrão
