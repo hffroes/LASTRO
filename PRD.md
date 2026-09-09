@@ -224,17 +224,42 @@ O CUB utiliza "área equivalente" (ponderada) para representar custos relativos 
 
 ### 3.2 Ajustes Aplicados ao CUB
 
-- **Topografia**:
-  - Plana: +2%
-  - Regular: +4%
-  - Irregular: +8%
-  - Acidentada: +12%
+**A. Ajustes por Tipologia/Padrão (Majoração CUB base):**
 
-- **Formato do lote**:
-  - Regular: 0%
-  - Irregular: +3%
+| Tipologia | Padrão | Ajuste CUB |
+|-----------|--------|-----------|
+| R1 (Unifamiliar) | Baixo | +10% |
+| R1 (Unifamiliar) | Normal | +15% |
+| R1 (Unifamiliar) | Alto | +25% |
+| R8 (Multifamiliar até 8 pav.) | Baixo | +10% |
+| R8/R16 (Multifamiliar) | Normal | +15% |
+| R8/R16 (Multifamiliar) | Alto | +25% |
+| CSL-8 (Comercial Salas 8 pav.) | Normal | +15% |
+| CSL-8 (Comercial Salas 8 pav.) | Alto | +20% |
+| CSL-16 (Comercial Salas 16 pav.) | Normal | +20% |
+| CSL-16 (Comercial Salas 16 pav.) | Alto | +25% |
+| CAL-8 (Comercial Andares Livres 8 pav.) | Normal | +15% |
+| CAL-8 (Comercial Andares Livres 8 pav.) | Alto | +20% |
 
-*Estes ajustes impactam o custo de construção final e são aplicados sobre a base CUB definida pela Sinduscon-MG.*
+**B. Ajustes por Topografia (aplicados sobre CUB + Ajuste Tipologia):**
+
+- **Plana**: +2%
+- **Regular**: +4%
+- **Irregular**: +8%
+- **Acidentada**: +12%
+
+**C. Ajustes por Formato do Lote (aplicados sobre CUB + Ajustes anteriores):**
+
+- **Regular**: 0%
+- **Irregular**: +3%
+
+**Cálculo Final do CUB Ajustado:**
+```
+CUB Ajustado = CUB Base × (1 + Ajuste Tipologia%) × (1 + Ajuste Topografia%) × (1 + Ajuste Formato%)
+Custo Construção = CUB Ajustado × m² Construído
+```
+
+*Estes ajustes compõem o custo de construção final e refletem variações de complexidade técnica conforme tipologia, condições de terreno e geometria.*
 
 ### 3.3 Coeficientes de Aproveitamento (IA)
 
