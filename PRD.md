@@ -363,12 +363,34 @@ Score baseado em:
 
 ## 6. Requisitos Técnicos
 
-### 6.1 Stack Recomendado
-- **Frontend**: React, TypeScript, Responsive Design
-- **Backend**: Node.js/Express ou similar, API RESTful
-- **Database**: PostgreSQL ou MongoDB
-- **Auth**: JWT ou similar
-- **Integração Externa**: APIs FipeZap, CUB
+### 6.1 Stack (React Full-Stack)
+
+**Frontend:**
+- React 18+ com TypeScript
+- Vite como build tool
+- Responsive design (CSS Modules ou Tailwind)
+- Estrutura: `/src/components`, `/src/pages`, `/src/hooks`, `/src/types`
+
+**Backend:**
+- Node.js com Express
+- RESTful API (`/api/v1/*`)
+- Estrutura: `/server/routes`, `/server/middleware`, `/server/models`, `/server/controllers`
+
+**Database:**
+- PostgreSQL (Replit Database integrado)
+- ORM: Prisma ou TypeORM (TBD)
+
+**Auth:**
+- JWT (access + refresh tokens)
+- Bcrypt para hash de senhas
+
+**Integração Externa:**
+- APIs FipeZap (GET, sem chave específica)
+- APIs CUB Sinduscon-MG (GET, sem chave específica)
+
+**Ambiente de Desenvolvimento:**
+- Replit.dev (IDE integrado)
+- Ambiente variáveis via .env
 
 ### 6.2 Performance
 - Cálculo de resultado em < 500ms
