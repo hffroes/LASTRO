@@ -224,22 +224,24 @@ O CUB utiliza "área equivalente" (ponderada) para representar custos relativos 
 
 ### 3.2 Ajustes Aplicados ao CUB
 
-**A. Ajustes por Tipologia/Padrão (Majoração CUB base):**
+**A. Ajustes por Tipologia/Padrão (Complexidades Específicas de Projeto):**
 
-| Tipologia | Padrão | Ajuste CUB |
-|-----------|--------|-----------|
-| R1 (Unifamiliar) | Baixo | +10% |
-| R1 (Unifamiliar) | Normal | +15% |
-| R1 (Unifamiliar) | Alto | +25% |
-| R8 (Multifamiliar até 8 pav.) | Baixo | +10% |
-| R8/R16 (Multifamiliar) | Normal | +15% |
-| R8/R16 (Multifamiliar) | Alto | +25% |
-| CSL-8 (Comercial Salas 8 pav.) | Normal | +15% |
-| CSL-8 (Comercial Salas 8 pav.) | Alto | +20% |
-| CSL-16 (Comercial Salas 16 pav.) | Normal | +20% |
-| CSL-16 (Comercial Salas 16 pav.) | Alto | +25% |
-| CAL-8 (Comercial Andares Livres 8 pav.) | Normal | +15% |
-| CAL-8 (Comercial Andares Livres 8 pav.) | Alto | +20% |
+Estes ajustes refletem custos adicionais inerentes à tipologia, tais como: elevadores, equipamentos e instalações especiais, urbanização, paisagismo, áreas de lazer, projetos estruturais diferenciados, sistemas de segurança, infraestrutura condominial, estacionamentos, e outros itens não contemplados no CUB base da ABNT NBR 12.721.
+
+| Tipologia | Padrão | Ajuste CUB | Justificativa |
+|-----------|--------|-----------|---|
+| R1 (Unifamiliar) | Baixo | +10% | Mínimo de especialidades (projeto básico) |
+| R1 (Unifamiliar) | Normal | +15% | Projeto padrão com especificações médias |
+| R1 (Unifamiliar) | Alto | +25% | Projeto complexo com acabamentos e instalações premium |
+| R8 (Multifamiliar até 8 pav.) | Baixo | +10% | Estrutura simples, sem elevador ou com 1 apenas |
+| R8/R16 (Multifamiliar) | Normal | +15% | Elevadores, áreas comuns, infraestrutura condominial padrão |
+| R8/R16 (Multifamiliar) | Alto | +25% | Múltiplos elevadores, áreas de lazer, sistemas especiais |
+| CSL-8 (Comercial Salas 8 pav.) | Normal | +15% | Elevadores, divisórias, infraestrutura comercial |
+| CSL-8 (Comercial Salas 8 pav.) | Alto | +20% | Acabamentos premium, sistemas de segurança avançados |
+| CSL-16 (Comercial Salas 16 pav.) | Normal | +20% | Múltiplos elevadores, áreas comuns maiores, sistemas redundantes |
+| CSL-16 (Comercial Salas 16 pav.) | Alto | +25% | Máxima complexidade técnica e acabamento |
+| CAL-8 (Comercial Andares Livres 8 pav.) | Normal | +15% | Estrutura aberta, flexibilidade, sistemas modulares |
+| CAL-8 (Comercial Andares Livres 8 pav.) | Alto | +20% | Sistemas de ar condicionado especial, acabamentos premium |
 
 **B. Ajustes por Topografia (aplicados sobre CUB + Ajuste Tipologia):**
 
