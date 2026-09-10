@@ -116,8 +116,8 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 - Replit tem suporte Prisma nativo? → Testar em Fase 1
 - PostgreSQL em Replit já vem pré-criado? → Confirmar variável `DATABASE_URL`
 
-**Modelo Sugerido:** Haiku 4.5  
-*Razão:* Setup boilerplate, decisões já mapeadas, pouca criatividade
+**Modelo Sugerido:** Sonnet 5  
+*Razão:* Setup boilerplate, decisões já mapeadas
 
 ---
 
@@ -182,8 +182,8 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 - Dados de "IA" (Índice de Aproveitamento) do PRD§3.3 diz "será definido durante desenvolvimento" → Usar placeholder/TODO
 - Precisamos de tabela separada para cada padrão (Baixo/Normal/Alto) por tipologia ou enum? → Recomendar estrutura normalizada em tabela única
 
-**Modelo Sugerido:** Haiku 4.5  
-*Razão:* Estrutura de dados, nenhuma lógica criativa, transcription do PRD em SQL/JSON
+**Modelo Sugerido:** Sonnet 5  
+*Razão:* Estrutura de dados, validação de schema
 
 ---
 
@@ -222,8 +222,8 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 - Percentuais em convenção: 0.10 ou 10%? → Padronizar (recomendação: 0.10 = decimal)
 - Arredondamentos: usar `Math.round()` ou biblioteca? → Recomendar `decimal.js` se precisão crítica
 
-**Modelo Sugerido:** Opus 5  
-*Razão:* Lógica econômica complexa, múltiplos edge cases, fórmulas que precisam ser revisadas para correção, capacidade de lidar com toda a complexidade de uma vez
+**Modelo Sugerido:** Sonnet 5  
+*Razão:* Lógica econômica complexa, múltiplos edge cases, fórmulas que precisam ser revisadas para correção
 
 ---
 
@@ -373,8 +373,8 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 - PRD§4.3 "Metodologia LASTRO Score a ser definida" → Usar placeholder (ex: 50 pontos viabilidade + 30 normalidade + 20 risco)?
 - Como estruturar alertas? → Recomendar array de {tipo, mensagem, severidade}
 
-**Modelo Sugerido:** Opus 5  
-*Razão:* Integração complexa (frontend+backend), ajustes em tempo real com re-cálculo, UX responsiva, múltiplas camadas de lógica
+**Modelo Sugerido:** Sonnet 5  
+*Razão:* Integração complexa (frontend+backend), ajustes em tempo real com re-cálculo, UX responsiva
 
 ---
 
@@ -439,8 +439,8 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 **Riscos/Consultas:**
 - Nenhuma análise visível a usuário não autenticado? → Sim, apenas via /share/:id
 
-**Modelo Sugerido:** Haiku 4.5  
-*Razão:* UI simples, integração direta com endpoints, sem lógica de negócio
+**Modelo Sugerido:** Sonnet 5  
+*Razão:* UI com integração de endpoints, validação de acesso
 
 ---
 
@@ -472,7 +472,7 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 - CUB Sinduscon-MG tem endpoint REST? Formato? → **NECESSÁRIO PESQUISAR ANTES**
 - Permissões CORS? Rate limits? Autenticação? → **INVESTIGAR**
 
-**Modelo Sugerido:** Opus 5  
+**Modelo Sugerido:** Sonnet 5  
 *Razão:* Integração com APIs externas, tratamento de erros de rede, cache strategy, fallback logic
 
 ---
@@ -506,8 +506,8 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 **Riscos/Consultas:**
 - Conteúdo de onboarding aprovado? → Usar texto do PRD§1 como base
 
-**Modelo Sugerido:** Haiku 4.5  
-*Razão:* UI polish, copy simples, sem lógica complexa
+**Modelo Sugerido:** Sonnet 5  
+*Razão:* UI polish, onboarding flow, responsividade mobile
 
 ---
 
@@ -537,27 +537,27 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 - Headless Chrome em Replit? → Verificar permissões
 - Qual é o ambiente staging? → Recomendar Replit Preview URLs ou branch staging
 
-**Modelo Sugerido:** Sonnet 5  
-*Razão:* Testes automatizados, CI/CD pipeline, deployment strategy
+**Modelo Sugerido:** Opus 5  
+*Razão:* Testes E2E complexos, validação end-to-end, CI/CD pipeline, garantia de qualidade final
 
 ---
 
 ## Cronograma Sugerido
 
 ```
-FASE 0: Setup                    1 dia   → Haiku
+FASE 0: Setup                    1 dia   → Sonnet
 FASE 1: Auth Backend             2 dias  → Sonnet
-FASE 2: Dados Base              2 dias  → Haiku
-FASE 3: Motor Cálculo           3 dias  → Opus ⭐ (complexidade peak)
+FASE 2: Dados Base              2 dias  → Sonnet
+FASE 3: Motor Cálculo           3 dias  → Sonnet ⭐ (complexidade peak)
 FASE 4: CRUD Análises           2 dias  → Sonnet
 FASE 5: Frontend Auth           3 dias  → Sonnet
 FASE 6: Formulário              2 dias  → Sonnet
-FASE 7: Resultado Interativo    3 dias  → Opus
+FASE 7: Resultado Interativo    3 dias  → Sonnet
 FASE 8: Export Backend          2 dias  → Sonnet
-FASE 9: Export Frontend         1 dia   → Haiku
-FASE 10: APIs Externas          3 dias  → Opus (investigação + integração)
-FASE 11: UX Refinement          2 dias  → Haiku
-FASE 12: Testes E2E/Deploy      2 dias  → Sonnet
+FASE 9: Export Frontend         1 dia   → Sonnet
+FASE 10: APIs Externas          3 dias  → Sonnet (investigação + integração)
+FASE 11: UX Refinement          2 dias  → Sonnet
+FASE 12: Testes E2E/Deploy      2 dias  → Opus (testes e validação final)
 ─────────────────────────────────────────────────
 TOTAL:                          ~31 dias (6-7 semanas com 1 dev)
 ```

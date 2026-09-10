@@ -2,19 +2,19 @@
 
 | Fase | O Que Será Feito | Modelo | Tempo | Complexidade | Dependências |
 |------|-----------------|--------|-------|--------------|--------------|
-| **0** | Setup: Vite, Express, Prisma, Tailwind, TypeScript config, .env template | Haiku | 1 dia | Baixa | Nenhuma |
+| **0** | Setup: Vite, Express, Prisma, Tailwind, TypeScript config, .env template | Sonnet | 1 dia | Baixa | Nenhuma |
 | **1** | Backend Auth: User model, JWT (sign/verify), bcrypt, endpoints signup/login/refresh, middleware | Sonnet | 2 dias | Média | Fase 0 |
-| **2** | Dados Base: Tipologias, percentuais, ajustes CUB, coeficientes IA, mock FipeZap/CUB, seed DB | Haiku | 2 dias | Baixa | Fase 0 |
-| **3** | Motor Cálculo: Funções puras (VGV, custos, viabilidade, LASTRO Score), testes unitários | Opus | 3 dias | **Alta** | Fases 1, 2 |
+| **2** | Dados Base: Tipologias, percentuais, ajustes CUB, coeficientes IA, mock FipeZap/CUB, seed DB | Sonnet | 2 dias | Baixa | Fase 0 |
+| **3** | Motor Cálculo: Funções puras (VGV, custos, viabilidade, LASTRO Score), testes unitários | Sonnet | 3 dias | **Alta** | Fases 1, 2 |
 | **4** | CRUD Análises: Analysis model, endpoints create/list/get/delete, validar limite 3, teste autorização | Sonnet | 2 dias | Média | Fases 1, 3 |
 | **5** | Frontend Auth: React setup, Vite, login/signup pages, AuthContext, ProtectedRoute, token storage | Sonnet | 3 dias | Média | Fase 1 |
 | **6** | Formulário Multi-step: Terreno, tipologia, detalhes projeto, dados venda, validação Zod, bind params API | Sonnet | 2 dias | Média | Fases 2, 5 |
-| **7** | Resultado Interativo: Score card, cost table, alerts, real-time ajustes (preço/lucro/terreno), UI responsiva | Opus | 3 dias | **Alta** | Fases 3, 4, 6 |
+| **7** | Resultado Interativo: Score card, cost table, alerts, real-time ajustes (preço/lucro/terreno), UI responsiva | Sonnet | 3 dias | **Alta** | Fases 3, 4, 6 |
 | **8** | Export Backend: PDF generator (pdfkit/puppeteer), HTML template, endpoints /api/v1/export/* | Sonnet | 2 dias | Média | Fase 4 |
-| **9** | Export Frontend: Download PDF button, share link (copy clipboard), public result page, history actions | Haiku | 1 dia | Baixa | Fases 7, 8 |
-| **10** | APIs Externas: FipeZap integration, CUB Sinduscon fetch, cache (24h), fallback, alerts desatualização | Opus | 3 dias | **Alta** | Fase 4 |
-| **11** | UX Refinement: Onboarding slideshow, tooltips, mobile responsividade, cores/tipografia, help modals | Haiku | 2 dias | Baixa | Fase 9 |
-| **12** | Testes E2E & Deploy: Playwright happy-path + auth + calculations, GitHub Actions CI/CD, staging validation | Sonnet | 2 dias | Média | Fase 11 |
+| **9** | Export Frontend: Download PDF button, share link (copy clipboard), public result page, history actions | Sonnet | 1 dia | Baixa | Fases 7, 8 |
+| **10** | APIs Externas: FipeZap integration, CUB Sinduscon fetch, cache (24h), fallback, alerts desatualização | Sonnet | 3 dias | **Alta** | Fase 4 |
+| **11** | UX Refinement: Onboarding slideshow, tooltips, mobile responsividade, cores/tipografia, help modals | Sonnet | 2 dias | Baixa | Fase 9 |
+| **12** | Testes E2E & Deploy: Playwright happy-path + auth + calculations, GitHub Actions CI/CD, staging validation | Opus | 2 dias | Média | Fase 11 |
 
 ---
 
@@ -22,9 +22,8 @@
 
 | Modelo | Fases | Total | Razão |
 |--------|-------|-------|-------|
-| **Haiku** | 0, 2, 9, 11 | 6 dias | Setup, dados, UI simples, polish — tarefas claras, pouca criatividade |
-| **Sonnet** | 1, 4, 5, 6, 8, 12 | 14 dias | Auth, CRUD, formulário, export, testes — lógica de negócio, edge cases |
-| **Opus** | 3, 7, 10 | 9 dias | Motor cálculo, resultado complexo, APIs — maior complexidade técnica |
+| **Sonnet** | 0-11 | 29 dias | Todas as fases de desenvolvimento — backend, frontend, integrações, refinamento |
+| **Opus** | 12 | 2 dias | Testes E2E e validação final — garantia de qualidade e cobertura completa |
 
 ---
 

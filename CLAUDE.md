@@ -4,7 +4,8 @@
 LASTRO responde: "Devo adquirir este terreno?" via análise econômica preliminar. React 18+/TypeScript frontend, Node.js/Express backend, PostgreSQL. Desenvolvido no Replit. Público: construtores, incorporadoras, engenheiros, corretores, investidores. Região: Minas Gerais. Princípio: "Complexidade por baixo. Clareza por cima."
 
 ## Fonte de Verdade
-`@PRD.md` é a referência única para produto, escopo (seção 2), dados/parâmetros (seção 3), lógica de cálculo (seção 4), fluxo de usuário (seção 5) e requisitos técnicos (seção 6).
+- `@PRD.md` é a referência única para produto, escopo (seção 2), dados/parâmetros (seção 3), lógica de cálculo (seção 4), fluxo de usuário (seção 5) e requisitos técnicos (seção 6).
+- `@plan.md` é o roadmap executivo: 12 fases, cronograma, dependências, checkpoints, decisões técnicas obrigatórias.
 
 ## Arquitetura em Uma Página
 ```
@@ -72,6 +73,19 @@ Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa, até 
 ## Testes e Validação
 Testes obrigatórios para: fórmulas econômicas/arredondamentos, CUB ajustado, LASTRO Score, limites/alertas normalidade, auth/autorização, limite 3 análises, versionamento premissas, validação API, fallback dados externos.
 
+## Plano de Implementação
+
+Veja `@plan.md` para roadmap executivo em 12 fases. Resumo:
+
+**Modelos por Fase:**
+- **Sonnet**: Fases 0-11 (todas as fases de desenvolvimento e refinamento)
+- **Opus**: Fase 12 (testes E2E e validação final)
+
+**Timeline:** 31 dias (6-7 semanas, 1 dev full-time)  
+**Critical Path:** 17 dias mínimos (fases 0→1→3→5→6→7)
+
+**Checkpoints:** plan.md lista validações obrigatórias antes de cada fase.
+
 ## Como Rodar
 ```bash
 # Replit: Node.js + npm + PostgreSQL integrados
@@ -84,4 +98,5 @@ npm start                     # frontend + backend simultâneos
 ```
 
 ---
-**Status:** Pronto para desenvolvimento | Stack: React 18 + Node/Express + PostgreSQL + Replit | Idioma: português BR
+**Status:** Pronto para desenvolvimento | Stack: React 18 + Node/Express + PostgreSQL + Replit | Idioma: português BR  
+**Referências:** @PRD.md (produto) | @plan.md (roadmap)
