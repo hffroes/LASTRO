@@ -1,7 +1,8 @@
+import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
-// Placeholder — histórico de análises salvas chega nas Fases 6-9
-// (formulário, resultado interativo e exportação/compartilhamento).
+// Placeholder — histórico de análises salvas (listar/abrir/deletar/
+// compartilhar) chega nas Fases 7-9.
 export default function HistoryPage() {
   const { usuario, sair } = useAuth();
 
@@ -24,11 +25,20 @@ export default function HistoryPage() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="rounded-lg bg-white p-8 shadow">
+        <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-900">Suas análises</h2>
-          <p className="mt-2 text-gray-600">
-            Em breve: formulário de nova análise e histórico das últimas 3
-            análises salvas.
+          <Link
+            to="/analise/nova"
+            className="rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
+          >
+            Nova análise
+          </Link>
+        </div>
+
+        <div className="mt-4 rounded-lg bg-white p-8 shadow">
+          <p className="text-gray-600">
+            Em breve: histórico das últimas 3 análises salvas, com opções de
+            abrir, deletar e compartilhar.
           </p>
         </div>
       </main>

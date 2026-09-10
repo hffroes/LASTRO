@@ -17,7 +17,7 @@
 | **3** | Motor Cálculo: VGV, custos, viabilidade, LASTRO Score | ✅ Concluída | 10 set 2026 | 70 testes automatizados passando (41 novos) |
 | **4** | CRUD Análises: Modelo, endpoints, validação | ✅ Concluída | 10 set 2026 | 83 testes automatizados passando (13 novos) |
 | **5** | Frontend Auth: React setup, login/signup, context | ✅ Concluída | 10 set 2026 | Corrigido Tailwind (nunca funcionou desde Fase 0) e `npm run build` (dist/server/ nunca era gerado) |
-| **6** | Formulário Multi-step | - | - | - |
+| **6** | Formulário Multi-step | ✅ Concluída | 10 set 2026 | Step 3 simplificado para só área construída (decisão de produto); bug de "Voltar" perdendo dados corrigido |
 | **7** | Resultado Interativo | - | - | - |
 | **8** | Export Backend: PDF + HTML | - | - | - |
 | **9** | Export Frontend: Download, share | - | - | - |
@@ -480,6 +480,27 @@ Implementação:
 
 **Modelo Sugerido:** Sonnet 5  
 *Razão:* UX dinâmica (mostrar/ocultar campos), validação condicional, integração com API
+
+**Status:** ✅ **CONCLUÍDA** (10 set 2026)
+
+Decisão de produto tomada em consulta ao usuário (o "Riscos/Consultas" acima, sobre os campos variáveis do Step 3): **Step 3 pede só a área construída total**, igual para qualquer tipologia — não pavimentos/apto-por-pavimento/salas. O motor de cálculo (Fases 3-4) já resolve o código CUB só por tipologia+padrão e usa exclusivamente a área construída total; campos extra por tipologia ficariam sem uso real até uma fase futura decidir que o cálculo de CUB precisa variar por eles. `ProjectDetailsStep.tsx` deixou de ser "variável conforme tipologia" e virou um único campo.
+
+Um bug real pego pelo teste automatizado com Playwright, não pela implementação em si: clicar "Voltar" só preservava dados de passos **já completados** — o passo atual (em edição, ainda não submetido via "Próximo") era descartado ao retroceder, violando o entregável "todos os dados persistidos mesmo se clicar voltar". Corrigido fazendo cada step capturar seus valores atuais (`getValues()`, mesmo que parciais/inválidos) e passá-los para `useFormWizard`'s `voltar()` antes de navegar — não só o `avancar()` grava no state compartilhado.
+
+Implementação:
+- `src/types/form.ts` / `src/utils/formValidation.ts`: `AnalysisFormData` e um schema Zod por passo (`TerrenoSchema`, `TipologiaFormSchema`, `DetalhesSchema`, `VendaSchema`), espelhando as regras de `AnalysisInputSchema` (shared/schemas) para os campos aqui coletados.
+- `src/hooks/useFormWizard.ts`: state do passo atual + dados acumulados; `avancar`/`voltar` fazem merge parcial, nunca substituem.
+- `src/hooks/useParameters.ts`: busca `GET /api/v1/parametros/tipologias` (Fase 2) para alimentar os selects de tipologia/padrão do Step 2 e mostrar os percentuais de referência.
+- Cada step é um mini-formulário `react-hook-form` + `zodResolver`, `mode: 'onChange'` — "Próximo" fica `disabled` até `formState.isValid`, conforme pedido no entregável (não é só erro inline pós-submit).
+- Step 1 (`TerrainDataStep`) inclui `valorTerrenoR` (valor pedido pelo terreno) junto com área/formato/topografia — o plano não listava esse campo explicitamente em nenhum step, mas o PRD §2.2 o agrupa com os dados do terreno.
+- Step 2 (`ProjectTypeStep`): o select de padrão só lista os padrões realmente disponíveis para a tipologia escolhida (ex: Uso Misto só tem Normal) e limpa a seleção de padrão quando a tipologia muda de fato (sem apagar um padrão já escolhido ao só navegar entre passos).
+- Step 4 (`SalesDataStep`): calcula e exibe o preço por m² em tempo real (PRD §2.2) a partir do valor da unidade e da área construída/unidades.
+- `AnalysisFormPage.tsx`: ao finalizar, chama `POST /api/v1/analises/calcular` (Fase 4, efêmero — não persiste, não conta para o limite de 3) e mostra um resumo simples do resultado (VGV, resultado líquido, LASTRO Score, recomendação, alertas) — a exibição completa (`ScoreCard`, `CostBreakdown` etc.) é escopo da Fase 7.
+- Nova rota protegida `/analise/nova`; `HistoryPage` ganhou o botão "Nova análise".
+- Validado com Playwright real, não só inspeção de código: fluxo completo dos 4 passos, botão "Próximo" desabilitado até preencher, referência de % terreno/lucro carregada do backend, preço/m² calculado corretamente, navegação "Voltar" preservando dados (incluindo o bug acima, encontrado e corrigido durante o teste), e resultado final batendo exatamente com os números esperados (VGV R$50M, Score 90, COMPRAR — mesmo cenário validado nos testes automatizados da Fase 3).
+- `npx tsc --noEmit` sem erros; 83 testes de backend continuam passando (nenhuma mudança no backend nesta fase).
+
+**Próximo Passo:** Fase 7 (Cálculo e Resultado Interativo) — vai substituir o resumo provisório desta fase por `ResultPage` completa (score colorido, tabela de custos, alertas, ajustes em tempo real).
 
 ---
 
