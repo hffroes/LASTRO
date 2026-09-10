@@ -16,7 +16,7 @@
 | **2** | Dados Base: Tipologias, parâmetros, seed | ✅ Concluída | 10 set 2026 | 29 testes automatizados passando (11 novos) |
 | **3** | Motor Cálculo: VGV, custos, viabilidade, LASTRO Score | ✅ Concluída | 10 set 2026 | 70 testes automatizados passando (41 novos) |
 | **4** | CRUD Análises: Modelo, endpoints, validação | ✅ Concluída | 10 set 2026 | 83 testes automatizados passando (13 novos) |
-| **5** | Frontend Auth: React setup, login/signup, context | - | - | - |
+| **5** | Frontend Auth: React setup, login/signup, context | ✅ Concluída | 10 set 2026 | Corrigido Tailwind (nunca funcionou desde Fase 0) e `npm run build` (dist/server/ nunca era gerado) |
 | **6** | Formulário Multi-step | - | - | - |
 | **7** | Resultado Interativo | - | - | - |
 | **8** | Export Backend: PDF + HTML | - | - | - |
@@ -421,6 +421,26 @@ Implementação:
 
 **Modelo Sugerido:** Sonnet 5  
 *Razão:* Fluxo de autenticação integrado (frontend + backend), edge cases (refresh antes de expirar, logout), segurança
+
+**Status:** ✅ **CONCLUÍDA** (10 set 2026)
+
+Dois bugs de infraestrutura pré-existentes (desde a Fase 0), encontrados só agora porque foi a primeira vez que o app foi de fato aberto em um navegador/build de produção real, em vez de validado só via `curl`:
+
+- **Tailwind nunca funcionou.** `postcss.config.js` não existia e `postcss`/`autoprefixer` nem estavam no `package.json` — as diretivas `@tailwind` em `globals.css` nunca eram processadas, então nenhuma classe Tailwind surtia efeito desde a Fase 0 (confirmado por screenshot: página sem nenhum estilo). Corrigido adicionando `postcss` + `autoprefixer` e criando `postcss.config.js`.
+- **`npm run build && npm start` nunca funcionava.** O script `build` roda só `tsc && vite build` — mas `tsconfig.json` tem `noEmit: true` (necessário para o frontend, transpilado pelo Vite), então `dist/server/index.js` nunca era gerado e `npm start` falhava com `MODULE_NOT_FOUND`. Corrigido com `scripts/build-server.mjs` (esbuild, bundle single-file, `packages: 'external'` para não empacotar Prisma/Express) e `server/app.ts` trocando o cálculo de `publicDir` de `__dirname`-relativo (frágil a onde o bundler final coloca o arquivo) para `process.cwd()`-relativo (estável, já que `npm start`/`npm run dev` sempre rodam da raiz do projeto).
+
+Ambos validados com Playwright real (não só testes automatizados): fluxo completo signup → login → reload mantém sessão → logout → acesso direto a `/history` sem sessão redireciona, tanto em `npm run dev` quanto no build de produção (`npm run build && npm start`), com screenshots confirmando o visual estilizado corretamente nos dois casos.
+
+Implementação:
+- `src/utils/api.ts`: `apiFetch` injeta `Authorization: Bearer`, reenvia automaticamente uma vez com token renovado se a resposta vier 401 (access token expirado, refresh token de 7 dias ainda válido). Access token guardado em memória + `localStorage` (decisão técnica #4); refresh token no cookie httpOnly, nunca tocado pelo JS.
+- `src/contexts/AuthContext.tsx`: restaura sessão no boot (token salvo ou refresh via cookie + `GET /auth/me`), agenda renovação proativa ~60s antes do access token expirar (decodifica só o `exp` do JWT, sem verificar assinatura — a verificação de verdade é sempre no backend).
+- `src/pages/SignupPage.tsx`: cria a conta e redireciona para `/login` com um aviso de sucesso — não autentica direto, conforme o fluxo do entregável desta fase (evita misturar "criar conta" com "iniciar sessão").
+- `src/pages/LoginPage.tsx`, `src/components/ProtectedRoute.tsx`, `src/App.tsx`: roteamento via `react-router-dom` (`/login`, `/signup`, `/history` protegida), com validação de formulário via `react-hook-form` + `zodResolver` reaproveitando `LoginRequestSchema`/`SignupRequestSchema` (`/shared/schemas`, já existentes desde a Fase 0).
+- Correção incidental: `@hookform/resolvers` estava no `package.json` desde a Fase 0, mas o `react-hook-form` do qual ele depende nunca foi adicionado — mesma categoria de lacuna já corrigida em fases anteriores (jsonwebtoken, jsdom).
+- `src/pages/HistoryPage.tsx`: placeholder com header + logout — conteúdo real (formulário, histórico) chega nas Fases 6-9.
+- `vite.config.ts` e `src/styles/globals.css`: já corretos desde a Fase 0, nenhuma mudança necessária.
+
+**Próximo Passo:** Fase 6 (Formulário de Entrada)
 
 ---
 

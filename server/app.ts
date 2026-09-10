@@ -1,14 +1,10 @@
 import express from 'express';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth';
 import parametrosRoutes from './routes/parametros';
 import dadosRoutes from './routes/dados';
 import analisesRoutes from './routes/analises';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export function createApp() {
   const app = express();
@@ -29,8 +25,11 @@ export function createApp() {
   // Placeholder routes (will be populated in subsequent phases)
   // - export routes (Phase 8)
 
-  // Serve static files from Vite build (production)
-  const publicDir = path.join(__dirname, '../dist/public');
+  // Serve static files from Vite build (production). Relativo a
+  // process.cwd() (npm start sempre roda da raiz do projeto) em vez de
+  // __dirname — independente de onde o bundler final coloca o arquivo
+  // compilado (ver scripts/build-server.mjs).
+  const publicDir = path.join(process.cwd(), 'dist/public');
   app.use(express.static(publicDir));
 
   // Fallback to index.html for SPA routing (production)
