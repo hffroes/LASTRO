@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  analyses  Analysis[]
+}
+
+model Analysis {
+  id                    String     @id @default(cuid())
+  userId                String
+  user                  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Input data snapshot
+  areaTerreno           Float
+  formatoLote           String     // regular, irregular
+  topografia            String     // plana, regular, irregular, acidentada
+  valorTerrenoR         Float
+  tipologia             String     // Unifamiliar, Multifamiliar, etc
+  padrao                String     // Baixo, Normal, Alto
+  unidades              Int
+  precoVendaUnitario    Float
+
+  // Additional details (JSON to support variable fields per tipology)
+  detalhesProto         Json?
+  parametrosSnapshot    Json       // snapshot of parameters used at calculation time
+
+  // Output data
+  resultado             Json       // AnalysisResult structure
+
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model ExternalDataCache {
+  id        String   @id @default(cuid())
+  source    String   // fipezap, cub
+  region    String   // MG, etc
+  data      Json
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([source, region])
+  @@index([source])
+}
