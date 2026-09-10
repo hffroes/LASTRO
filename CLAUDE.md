@@ -4,8 +4,7 @@
 LASTRO responde: "Devo adquirir este terreno?" via análise econômica preliminar. React 18+/TypeScript frontend, Node.js/Express backend, PostgreSQL. Desenvolvido no Replit. Público: construtores, incorporadoras, engenheiros, corretores, investidores. Região: Minas Gerais. Princípio: "Complexidade por baixo. Clareza por cima."
 
 ## Fonte de Verdade
-- `@PRD.md` é a referência única para produto, escopo (seção 2), dados/parâmetros (seção 3), lógica de cálculo (seção 4), fluxo de usuário (seção 5) e requisitos técnicos (seção 6).
-- `@plan.md` é o roadmap executivo: 12 fases, cronograma, dependências, checkpoints, decisões técnicas obrigatórias.
+`@PRD.md` é a referência única para produto, escopo (seção 2), dados/parâmetros (seção 3), lógica de cálculo (seção 4), fluxo de usuário (seção 5) e requisitos técnicos (seção 6).
 
 ## Arquitetura em Uma Página
 ```
@@ -14,20 +13,11 @@ React (TypeScript)                 Express API             PostgreSQL
 ├── /src/pages                 ├── /server/controllers  ├── analyses
 ├── /src/hooks                 ├── /server/middleware   ├── external_data
 ├── /src/types                 ├── /server/models       └── parameters
-└── Motor de cálculo (utils)   ├── /server/services/adapters (FipeZap/CUB)
-                                └── Domínio (economia)
-
-/shared/schemas — validação Zod compartilhada front+back
+└── Motor de cálculo (utils)   └── Domínio (economia)
 
 Fluxo: Interface React → fetch() → API /api/v1/* → Cálculo → PostgreSQL
 → Resultado + Histórico + Exportação (PDF/HTML)
 ```
-
-**Serving:** monólito single-port — um processo Express serve `/api/v1/*` e os arquivos estáticos do build Vite. Replit expõe uma única porta pública; same-origin elimina CORS em produção. Dev: Vite (5173) com proxy `/api` → Express (3000).
-
-**Stack técnico decidido** (ver `@plan.md` para justificativas): Prisma (ORM) · Tailwind (CSS) · Zod (validação) · pdfkit (PDF) · Vitest (testes) · cache in-memory + snapshot Postgres, sem Redis · Replit Deployments nativo (sem Docker/CI de build).
-
-**Dados externos (FipeZap/CUB):** consumidos via Adapter Pattern (`MarketDataAdapter`/`CubDataAdapter`). Padrão é `StaticAdapter` (JSON versionado em `/server/data`); `HttpAdapter` só entra após confirmação real de API pública (regra #6/#7).
 
 ## Escopo do MVP
 Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa, até 3 análises salvas/usuário, exportação PDF e HTML, JWT auth, alertas genéricos técnico/regulatórios. Fase 2+ fica fora.
@@ -72,40 +62,26 @@ Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa, até 
 - Zero segredos/tokens/credenciais no código ou frontend
 
 ## Segurança e Persistência
-- JWT: access token 15min (JSON) + refresh token 7 dias (httpOnly cookie)
+- JWT: access + refresh tokens
 - Senhas: bcrypt
-- Variáveis de ambiente: `.env` (estrutura definida em `@plan.md`, seção Decisões Técnicas)
+- Variáveis de ambiente: `.env` (TBD: criação/estrutura)
 - HTTPS obrigatório
 - Sem dados privados públicos
-- ORM: **Prisma** (decisão final)
-- Rate limiting: `express-rate-limit` (memory store) em rotas de auth e análises
+- ORM (Prisma ou TypeORM): TBD
 
 ## Testes e Validação
 Testes obrigatórios para: fórmulas econômicas/arredondamentos, CUB ajustado, LASTRO Score, limites/alertas normalidade, auth/autorização, limite 3 análises, versionamento premissas, validação API, fallback dados externos.
 
-## Plano de Implementação
-
-Veja `@plan.md` para roadmap executivo em 12 fases. Resumo:
-
-**Modelos por Fase:**
-- **Sonnet**: Fases 0-11 (todas as fases de desenvolvimento e refinamento)
-- **Opus**: Fase 12 (testes E2E e validação final)
-
-**Timeline:** 31 dias (6-7 semanas, 1 dev full-time)  
-**Critical Path:** 17 dias mínimos (fases 0→1→3→5→6→7)
-
-**Checkpoints:** plan.md lista validações obrigatórias antes de cada fase.
-
 ## Como Rodar
 ```bash
-# Replit: Node.js + npm + PostgreSQL (addon Neon) integrados
+# Replit: Node.js + npm + PostgreSQL integrados
 npm install                    # deps
-cp .env.example .env          # DATABASE_URL, JWT_SECRET, JWT_REFRESH_SECRET
-npx prisma migrate dev        # schema via Prisma
-npm run dev                   # dev: Vite (5173, proxy /api) + Express (3000) simultâneos
-npm run build && npm start    # prod: Express único serve API + estáticos, mesma porta
+cp .env.example .env          # vars (DB, JWT secret TBD)
+npx prisma migrate dev        # schema (ou TypeORM TBD)
+npm start                     # frontend + backend simultâneos
+# Frontend: http://localhost:5173 (Vite)
+# Backend: http://localhost:3000/api/v1
 ```
 
 ---
-**Status:** Pronto para desenvolvimento | Stack: React 18 + Node/Express + PostgreSQL + Replit | Idioma: português BR  
-**Referências:** @PRD.md (produto) | @plan.md (roadmap)
+**Status:** Pronto para desenvolvimento | Stack: React 18 + Node/Express + PostgreSQL + Replit | Idioma: português BR
