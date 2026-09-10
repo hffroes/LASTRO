@@ -1,9 +1,29 @@
 # LASTRO MVP — Plano de Implementação em Fases
 
-**Status:** Pronto para Desenvolvimento  
+**Status:** Em Desenvolvimento  
 **Data:** Setembro 2026  
 **Stack:** React 18 + Node.js/Express + PostgreSQL + Replit  
 **Referência:** @PRD.md (Seções 2-6)
+
+---
+
+## Progresso de Execução
+
+| Fase | Descrição | Status | Data | Observações |
+|------|-----------|--------|------|-------------|
+| **0** | Setup: Vite+Express single-port, Prisma, Tailwind, `/shared/schemas`, .env | ✅ Concluída | 10 set 2026 | npm install e testes ainda pendentes |
+| **1** | Backend Auth: JWT, bcrypt, rate limiting | ⏳ Próxima | - | - |
+| **2** | Dados Base: Tipologias, parâmetros, seed | - | - | - |
+| **3** | Motor Cálculo: VGV, custos, viabilidade, LASTRO Score | - | - | - |
+| **4** | CRUD Análises: Modelo, endpoints, validação | - | - | - |
+| **5** | Frontend Auth: React setup, login/signup, context | - | - | - |
+| **6** | Formulário Multi-step | - | - | - |
+| **7** | Resultado Interativo | - | - | - |
+| **8** | Export Backend: PDF + HTML | - | - | - |
+| **9** | Export Frontend: Download, share | - | - | - |
+| **10** | Adapter APIs Externas: FipeZap/CUB | - | - | - |
+| **11** | UX Refinement: Onboarding, mobile, UI | - | - | - |
+| **12** | Testes E2E & Deploy | - | - | - |
 
 ---
 
@@ -131,6 +151,19 @@ CUB_ADAPTER=static         # static | http
 
 **Modelo Sugerido:** Sonnet 5  
 *Razão:* Setup boilerplate, decisões já mapeadas
+
+**Status:** ✅ **CONCLUÍDA** (10 set 2026)
+- Estrutura de pastas criada
+- Dependências definidas em package.json
+- Configurações de build/dev preparadas (Vite, TypeScript, ESLint, Prettier, Vitest, Playwright)
+- Prisma schema criado com models User, Analysis, ExternalDataCache
+- /shared/schemas estruturada com Zod schemas (auth, analysis, parameters)
+- Express app com /api/v1/health endpoint
+- README.md com instruções completas
+- .env.example pronto para configuração
+- Commit: 6df3f91
+
+**Próximo Passo:** `npm install` e validar `npm run dev` (health check deve responder ✓)
 
 ---
 
