@@ -3,6 +3,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth';
+import parametrosRoutes from './routes/parametros';
+import dadosRoutes from './routes/dados';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,9 +21,10 @@ export function createApp() {
   });
 
   app.use('/api/v1/auth', authRoutes);
+  app.use('/api/v1/parametros', parametrosRoutes);
+  app.use('/api/v1/dados', dadosRoutes);
 
   // Placeholder routes (will be populated in subsequent phases)
-  // - parameters routes (Phase 2)
   // - analysis routes (Phase 4)
   // - export routes (Phase 8)
 

@@ -13,7 +13,7 @@
 |------|-----------|--------|------|-------------|
 | **0** | Setup: Vite+Express single-port, Prisma, Tailwind, `/shared/schemas`, .env | ✅ Concluída | 10 set 2026 | npm install e testes validados na Fase 1 |
 | **1** | Backend Auth: JWT, bcrypt, rate limiting | ✅ Concluída | 10 set 2026 | 18 testes automatizados passando |
-| **2** | Dados Base: Tipologias, parâmetros, seed | - | - | - |
+| **2** | Dados Base: Tipologias, parâmetros, seed | ✅ Concluída | 10 set 2026 | 29 testes automatizados passando (11 novos) |
 | **3** | Motor Cálculo: VGV, custos, viabilidade, LASTRO Score | - | - | - |
 | **4** | CRUD Análises: Modelo, endpoints, validação | - | - | - |
 | **5** | Frontend Auth: React setup, login/signup, context | - | - | - |
@@ -247,6 +247,24 @@ CUB_ADAPTER=static         # static | http
 
 **Modelo Sugerido:** Sonnet 5  
 *Razão:* Estrutura de dados, validação de schema
+
+**Status:** ✅ **CONCLUÍDA** (10 set 2026)
+- `prisma/schema.prisma`: modelos `Tipologia` (percentuais + referência CUB por tipologia/padrão, `@@unique([tipologia, padrao])`), `AjusteCub` (topografia/formato, genérico e independente de tipologia) e `Parametro` (chave/valor JSON para dados TBD centralizados, regra CLAUDE.md #9)
+- `server/utils/parameterConstants.ts`: as 16 combinações tipologia/padrão do PRD §3.1, com `cubCodigo`/`ajusteTipologiaCub` **nulos** (não inventados) onde o PRD não define o valor — Galpão (sem ajuste de complexidade), Comercial Baixo, Uso Misto e o subtipo comercial (Salas vs Andares Livres, ambos com ajuste idêntico em Normal/Alto); cada nulo documentado em `notaCub`
+- `prisma/seed.ts`: popula `Tipologia`, `AjusteCub` (topografia + formato, PRD §3.2-B/C) e o placeholder `coeficientes_ia` em `Parametro`, via upsert idempotente
+- **Rotas em português** (`/api/v1/parametros/*`, `/api/v1/dados/*`) em vez da grafia híbrida do plano original (`/parameters/tipologies`, `/data/market-prices`) — alinhado à convenção do projeto (interface e nomes de domínio em português BR):
+  - `GET /api/v1/parametros/tipologias`
+  - `GET /api/v1/parametros/ajustes-cub`
+  - `GET /api/v1/parametros/coeficientes-ia` (placeholder PRD §3.3 — "não definido", nenhum coeficiente real inventado)
+  - `GET /api/v1/dados/precos-mercado?tipologia=...&regiao=MG`
+- `server/services/adapters/`: `MarketDataAdapter`/`CubDataAdapter` (interfaces) + `StaticAdapter` (lê `server/data/*.json`) + factory por variável de ambiente (`FIPEZAP_ADAPTER`/`CUB_ADAPTER`), conforme decisão técnica #6 — implementado já na Fase 2 como a própria Fase 10 do plano pressupõe. `HttpAdapter` continua não implementado; a factory falha com erro claro em vez de inventar endpoint (regra CLAUDE.md #6/#7)
+- `server/data/fipezap-static.json` e `server/data/cub-static.json`: dados **mock**, com `"mock": true` e `"fonte"` explicitando que são fictícios até integração real (Fase 10) — nunca apresentados como dado real de mercado/CUB
+- `shared/schemas/parameters.schemas.ts`: `CubAdjustmentSchema.ajusteTipologia` corrigido para `nullable()` (refletindo os casos não definidos pelo PRD); adicionados `CoeficienteIaResponseSchema` e `PrecoMercadoQuery/ResponseSchema`
+- Bug corrigido nas rotas (Fase 1 incluída): Express 4 não encaminha rejeições de Promise ao middleware de erro — adicionado `server/utils/asyncHandler.ts` e aplicado em todas as rotas async (`auth`, `parametros`, `dados`), evitando requisições travadas em caso de exceção
+- 11 novos testes automatizados (`__tests__/parametros.test.ts`, `__tests__/dados.test.ts`), validando os dados contra os schemas Zod compartilhados — 29 testes no total, todos passando
+- `npx tsc --noEmit` sem erros; validado manualmente via `curl` end-to-end (seed → tipologias → ajustes-cub → coeficientes-ia → preços-mercado, incluindo 400/404/500)
+
+**Próximo Passo:** Fase 3 (Motor de Cálculo)
 
 ---
 

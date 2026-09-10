@@ -8,6 +8,7 @@ import {
   signup,
 } from '../controllers/authController';
 import { authenticateToken } from '../middleware/auth';
+import { asyncHandler } from '../utils/asyncHandler';
 
 const router = Router();
 
@@ -22,10 +23,10 @@ const authRateLimiter = rateLimit({
 
 router.use(authRateLimiter);
 
-router.post('/signup', signup);
-router.post('/login', login);
-router.post('/refresh', refresh);
+router.post('/signup', asyncHandler(signup));
+router.post('/login', asyncHandler(login));
+router.post('/refresh', asyncHandler(refresh));
 router.post('/logout', logout);
-router.get('/me', authenticateToken, me);
+router.get('/me', authenticateToken, asyncHandler(me));
 
 export default router;

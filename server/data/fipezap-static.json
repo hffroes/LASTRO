@@ -1,0 +1,13 @@
+{
+  "mock": true,
+  "fonte": "DADOS FICTÍCIOS para desenvolvimento — FipeZap real ainda não integrado. Ver plan.md Fase 10 / PRD §3.4. Não usar para decisão real de aquisição.",
+  "atualizadoEm": "2026-09-01",
+  "precos": [
+    { "tipologia": "Unifamiliar", "regiao": "MG", "precoM2": 3500 },
+    { "tipologia": "Loteamento", "regiao": "MG", "precoM2": 800 },
+    { "tipologia": "Multifamiliar", "regiao": "MG", "precoM2": 4200 },
+    { "tipologia": "Galpão", "regiao": "MG", "precoM2": 1800 },
+    { "tipologia": "Comercial", "regiao": "MG", "precoM2": 5000 },
+    { "tipologia": "Uso Misto", "regiao": "MG", "precoM2": 4500 }
+  ]
+}
