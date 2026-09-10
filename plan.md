@@ -11,8 +11,8 @@
 
 | Fase | Descrição | Status | Data | Observações |
 |------|-----------|--------|------|-------------|
-| **0** | Setup: Vite+Express single-port, Prisma, Tailwind, `/shared/schemas`, .env | ✅ Concluída | 10 set 2026 | npm install e testes ainda pendentes |
-| **1** | Backend Auth: JWT, bcrypt, rate limiting | ⏳ Próxima | - | - |
+| **0** | Setup: Vite+Express single-port, Prisma, Tailwind, `/shared/schemas`, .env | ✅ Concluída | 10 set 2026 | npm install e testes validados na Fase 1 |
+| **1** | Backend Auth: JWT, bcrypt, rate limiting | ✅ Concluída | 10 set 2026 | 18 testes automatizados passando |
 | **2** | Dados Base: Tipologias, parâmetros, seed | - | - | - |
 | **3** | Motor Cálculo: VGV, custos, viabilidade, LASTRO Score | - | - | - |
 | **4** | CRUD Análises: Modelo, endpoints, validação | - | - | - |
@@ -163,7 +163,7 @@ CUB_ADAPTER=static         # static | http
 - .env.example pronto para configuração
 - Commit: 6df3f91
 
-**Próximo Passo:** `npm install` e validar `npm run dev` (health check deve responder ✓)
+**Próximo Passo:** ~~`npm install` e validar `npm run dev`~~ — validado na Fase 1 (ver abaixo). Corrigido `jsonwebtoken` para `^9.0.2` (versão `^9.1.2` do package.json original não existe no npm) e adicionado `jsdom` como devDependency (exigido pelo `vitest.config.ts`, ausente do package.json original).
 
 ---
 
@@ -197,6 +197,23 @@ CUB_ADAPTER=static         # static | http
 
 **Modelo Sugerido:** Sonnet 5  
 *Razão:* Lógica de segurança (JWT, bcrypt), decisões de edge cases (token rotation, error messages), padrão completo
+
+**Status:** ✅ **CONCLUÍDA** (10 set 2026)
+- `server/lib/prisma.ts`: instância única do `PrismaClient` compartilhada pela app
+- `server/utils/jwt.ts`: sign/verify de access (15min) e refresh (7d) tokens
+- `server/models/User.ts`: `createUser` (hash bcrypt), `findUserByEmail`, `findUserById`, `verifyPassword`, `toPublicUser`
+- `server/middleware/auth.ts`: `authenticateToken` valida `Authorization: Bearer` e popula `req.auth`
+- `server/controllers/authController.ts` + `server/routes/auth.ts`: `POST /signup`, `POST /login`, `POST /refresh` (usa cookie httpOnly, sem credenciais no corpo), `POST /logout`, `GET /me` (protegida)
+- Refresh token: cookie httpOnly `SameSite=Strict`, `Secure` em produção — access token retornado no corpo JSON, conforme decisão técnica #4
+- Rate limiting (`express-rate-limit`, memory store) aplicado a todas as rotas de auth, desativado em `NODE_ENV=test`
+- `server/app.ts`: fábrica da app Express extraída de `server/index.ts` para permitir testes com `supertest` sem abrir porta/conectar ao banco
+- `prisma/migrations/20260910174809_init`: primeira migração aplicada e validada localmente (Postgres 16) — pasta ignorada pelo `.gitignore` do projeto, não versionada
+- 18 testes automatizados (`__tests__/auth.test.ts`, Vitest + Supertest): signup, login, refresh, `/me`, logout, rate limiting, hashing de senha, rejeição de tokens trocados/inválidos — todos passando
+- `npx tsc --noEmit` sem erros; validado manualmente via `curl` end-to-end (signup → me → login → refresh → logout)
+- Correções incidentais no `package.json` da Fase 0: `jsonwebtoken` `^9.1.2`→`^9.0.2` (versão inexistente), `jsdom` adicionado (exigido pelo `vitest.config.ts` mas ausente)
+- Pendência conhecida (fora do escopo desta fase): `.eslintrc.cjs` não usa parser TypeScript — `npm run lint` falha em qualquer arquivo `.ts`/`.tsx` do repositório, incluindo os já existentes antes desta fase
+
+**Próximo Passo:** Fase 2 (Dados Base e Parâmetros)
 
 ---
 
