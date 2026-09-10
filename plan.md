@@ -14,7 +14,7 @@
 | **0** | Setup: Vite+Express single-port, Prisma, Tailwind, `/shared/schemas`, .env | ✅ Concluída | 10 set 2026 | npm install e testes validados na Fase 1 |
 | **1** | Backend Auth: JWT, bcrypt, rate limiting | ✅ Concluída | 10 set 2026 | 18 testes automatizados passando |
 | **2** | Dados Base: Tipologias, parâmetros, seed | ✅ Concluída | 10 set 2026 | 29 testes automatizados passando (11 novos) |
-| **3** | Motor Cálculo: VGV, custos, viabilidade, LASTRO Score | - | - | - |
+| **3** | Motor Cálculo: VGV, custos, viabilidade, LASTRO Score | ✅ Concluída | 10 set 2026 | 70 testes automatizados passando (41 novos) |
 | **4** | CRUD Análises: Modelo, endpoints, validação | - | - | - |
 | **5** | Frontend Auth: React setup, login/signup, context | - | - | - |
 | **6** | Formulário Multi-step | - | - | - |
@@ -305,6 +305,27 @@ CUB_ADAPTER=static         # static | http
 
 **Modelo Sugerido:** Sonnet 5  
 *Razão:* Lógica econômica complexa, múltiplos edge cases, fórmulas que precisam ser revisadas para correção
+
+**Status:** ✅ **CONCLUÍDA** (10 set 2026)
+
+Decisões de produto tomadas em consulta ao usuário (os "Riscos/Consultas" acima e a metodologia do LASTRO Score, que o PRD §4.3 deixa explicitamente em aberto):
+
+- **Outros Custos (corretagem + impostos):** 9,5% do VGV, como dois componentes — `CORRETAGEM_PERCENTUAL_VGV = 0,05` + `IMPOSTOS_PERCENTUAL_VGV = 0,045`. Acima da faixa "esperado 3-5%" citada no texto do PRD §4.2 para o valor combinado, mas o PRD só define regra de *alerta* de normalidade para Terreno/Lucro/Construção — nenhum alerta é gerado para Outros Custos.
+- **LASTRO Score — bucket Viabilidade (40pts):** margem líquida (Resultado Líquido/VGV) 0% ou menos = 0pts, 10%+ = 40pts, interpolação linear entre os dois.
+- **LASTRO Score — bucket Conformidade (30pts):** 10pts para cada uma das 3 checagens de normalidade do PRD §4.2 (terreno, lucro, construção) que passar — deriva mecanicamente das mesmas checagens usadas nos alertas, sem critério novo inventado.
+- **LASTRO Score — bucket Risco técnico (20pts):** nota máxima fixa. O MVP não faz validação técnica real (PRD §2.4/§10.4: alertas genéricos, não conclusivos; validação de fato é produto futuro "Lastro Engineering", PRD §8) — não penaliza o score por uma checagem que o MVP não realiza.
+- **LASTRO Score — bucket Potencial de mercado (10pts):** tolerância de ±10% de sobrepreço vs. o preço de mercado mock (Fase 2, `/api/v1/dados/precos-mercado`), com interpolação linear até zero; sem dado de mercado disponível, nota máxima (não penaliza pela ausência do dado).
+
+Implementação:
+- `server/types/analysis.ts`: `CalculatorInput` — parâmetros já resolvidos (percentuais, CUB, área construída) que a Fase 4 vai montar a partir dos dados de `/api/v1/parametros` e do formulário; motor não acessa banco.
+- `server/utils/calculator.ts`: todas as 10 funções do plano, mais `calcScoreViabilidade`, `calcScoreConformidade`, `calcScoreRiscoTecnico`, `calcScorePotencialMercado` (as 4 sub-notas do LASTRO Score) e `calcularAnalise` (orquestrador único, monta o `AnalysisResult` compartilhado). `calcCustoTerreno` segue a fórmula real do PRD §4.1 (valor pedido, não percentual × VGV) em vez da assinatura placeholder do plano original.
+- Arredondamento de centavos (`Math.round(valor*100)/100`) aplicado em todo valor monetário retornado — sem nova dependência (`decimal.js` não foi necessário).
+- Percentuais em decimal (0.10 = 10%), conforme já usado nas Fases 1-2.
+- `ajusteTipologiaCub` nulo (Fase 2: Galpão, Comercial Baixo, Uso Misto) é resolvido para `0` pela camada de persistência (Fase 4) antes de chamar o motor — a função pura em si não lida com `null`.
+- 41 novos testes automatizados (`__tests__/calculator.test.ts`), incluindo o exemplo do plano (VGV = 1000×R$500k = R$500M) e um teste de integração ponta a ponta validado contra `AnalysisResultSchema` — 70 testes no total, todos passando.
+- `npx tsc --noEmit` sem erros.
+
+**Próximo Passo:** Fase 4 (CRUD de Análises) — vai conectar este motor puro aos dados de `/api/v1/parametros` (Fase 2) e persistir o resultado.
 
 ---
 
