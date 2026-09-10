@@ -18,68 +18,80 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 
 ---
 
-## Decisões Técnicas Obrigatórias (Antes de Qualquer Código)
+## Decisões Técnicas — RESOLVIDAS
 
-### **1. ORM: Prisma vs. TypeORM**
-- **Recomendação:** Prisma
-  - Suporte nativo Replit PostgreSQL
-  - Schema declarativo mais legível
-  - Migrations automáticas seguras
-  - Type-safety excelente com TypeScript
-- **Alternativa:** TypeORM (mais verbose, mais controle)
-- **Impacto:** Afeta toda persistência (Phase 1+)
-- **Decisão necessária:** Sim, antes de Phase 1
+Todas as decisões abaixo foram fechadas priorizando **arquitetura simples**, **integração nativa com Replit** e **facilidade de integração com APIs externas**. Nenhuma delas é mais um bloqueador de fase.
 
-### **2. CSS: Tailwind vs. CSS Modules**
-- **Recomendação:** Tailwind
-  - Prototipagem rápida (crítico em MVP)
-  - Consistência de espaçamento/cores
-  - Bundle menor do que CSS Modules
-  - Melhor suporte a dark mode (futuro)
-- **Alternativa:** CSS Modules (mais encapsulação)
-- **Impacto:** Afeta todos componentes React (Phase 5+)
-- **Decisão necessária:** Sim, antes de Phase 5
+### **0. Arquitetura de Serving: Monólito Single-Port** ⭐ (decisão nova, resolve risco de CORS/portas)
+- **Decisão:** Express serve `/api/v1/*` **e** os arquivos estáticos do build de produção do Vite (`dist/`), tudo na mesma porta/processo.
+- **Dev:** Vite dev server roda separado (5173) com proxy `/api` → Express (3000).
+- **Prod:** Um único processo Express, uma única porta (`process.env.PORT`, como o Replit exige).
+- **Motivo:** Replit expõe publicamente **uma única porta**. Rodar frontend e backend como serviços separados exigiria CORS, múltiplos domínios/portas e configuração extra que Replit não facilita. Same-origin elimina isso por completo e simplifica Fase 12 (deploy).
+- **Impacto:** Elimina a necessidade de `VITE_API_URL` em produção; simplifica CORS (só necessário em dev).
 
-### **3. Estrutura .env e Variáveis**
-- **Necessário definir:**
-  - `DATABASE_URL` (Replit Postgres)
-  - `JWT_SECRET` (geração segura, min 32 chars)
-  - `JWT_REFRESH_SECRET` (diferente do access)
-  - `NODE_ENV` (development/production)
-  - `VITE_API_URL` (frontend → backend)
-  - `FIPEZAP_API_BASE` (TBD: existe API pública?)
-  - `CUB_DATA_SOURCE` (TBD: endpoint ou arquivo?)
-- **Arquivo template:** `.env.example` com instruções
-- **Decisão necessária:** Sim, antes de Phase 1
+### **1. ORM: Prisma** ✅
+- Suporte nativo ao Postgres do Replit (integração Neon, `DATABASE_URL` auto-injetada ao ativar o addon de banco no painel)
+- Schema declarativo, migrations seguras, type-safety com TypeScript
+- **Decisão final.** Sem revisão futura sem consulta (regra CLAUDE.md #2).
 
-### **4. Autenticação: Estratégia de Refresh Tokens**
-- **Recomendação:**
-  - Access token: 15 min (JTI claim para revoke)
-  - Refresh token: 7 dias (httpOnly cookie)
-  - Endpoint POST `/auth/refresh` sem credenciais (usa cookie)
-- **Impacto:** Auth flow (Phase 1, Phase 5)
-- **Decisão necessária:** Sim, antes de Phase 1
+### **2. CSS: Tailwind** ✅
+- Zero configuração de build extra além do plugin Vite oficial
+- Prototipagem rápida, consistente com "Clareza por cima"
+- **Decisão final.**
 
-### **5. Validação: Zod vs. Joi vs. Manutenção**
-- **Recomendação:** Zod
-  - TypeScript-first
-  - Composable schemas
-  - Mensagens de erro customizáveis
-  - Leve (<20KB)
-- **Impacto:** Backend validation (Phase 1+)
-- **Decisão necessária:** Sim, antes de Phase 1
+### **3. Estrutura .env e Variáveis** ✅
+```bash
+DATABASE_URL=              # auto-injetada pelo addon Postgres do Replit
+JWT_SECRET=                # min 32 chars, gerado via `openssl rand -base64 32`
+JWT_REFRESH_SECRET=        # diferente do access, mesma geração
+NODE_ENV=development       # development | production
+PORT=3000                  # Replit sobrescreve automaticamente em prod
+# Sem VITE_API_URL: same-origin em produção (ver decisão 0)
+FIPEZAP_ADAPTER=static     # static | http — trocável sem mudar código (ver decisão 6)
+CUB_ADAPTER=static         # static | http
+```
+- Arquivo `.env.example` documentado em Fase 0.
 
-### **6. PDF/HTML Export: Biblioteca**
-- **Recomendação:**
-  - PDF: `pdfkit` ou `puppeteer` (renderiza HTML→PDF)
-  - HTML: Geração de string + CSS inline
-- **TBD:** Avaliar disponibilidade em Replit
-- **Decisão necessária:** Sim, antes de Phase 8
+### **4. Autenticação: JWT Access + Refresh** ✅
+- Access token: 15 min, retornado no corpo JSON (não precisa de cookie — same-origin simplifica)
+- Refresh token: 7 dias, httpOnly cookie (`SameSite=Strict`, `Secure` em prod)
+- Endpoint `POST /auth/refresh` sem credenciais no corpo (usa o cookie)
+- **Decisão final**, implementada em Fase 1.
 
-### **7. Testes: Jest vs. Vitest**
-- **Recomendação:** Vitest (mais rápido, Vite-native)
-- **Escopo mínimo:** Motor de cálculo + Auth + API validation
-- **Decisão necessária:** Sim, antes de Phase 3
+### **5. Validação: Zod + Schemas Compartilhados** ✅
+- Zod para validação frontend e backend
+- **Novo:** pasta `/shared/schemas` com os schemas Zod usados por ambos os lados — elimina duplicação de regras de negócio (regra CLAUDE.md "Regras negócio centralizadas")
+- **Decisão final.**
+
+### **6. Integração APIs Externas: Adapter Pattern** ✅ (resolve o maior risco do plano)
+- **Problema:** Não há confirmação de que FipeZap e Sinduscon-MG expõem APIs públicas (CLAUDE.md regra #6/#7 proíbe inventar endpoints).
+- **Decisão:** Service layer com interface fixa (`MarketDataAdapter`, `CubDataAdapter`) e duas implementações:
+  - `StaticAdapter` (padrão): lê de `/server/data/*.json`, versionado manualmente no repo até confirmação de fonte real
+  - `HttpAdapter`: usado somente após confirmação real de endpoint (Fase 10), trocável via variável de ambiente (`FIPEZAP_ADAPTER=http`)
+- **Motivo:** Isola o risco de indisponibilidade de API em uma única camada — o resto da aplicação (motor de cálculo, formulário, resultado) nunca sabe qual adapter está ativo. Nenhuma fase downstream fica bloqueada esperando confirmação de API.
+- **Cache:** in-memory (`Map`) por processo + snapshot em tabela `ExternalDataCache` no Postgres como fallback entre reinícios
+- **Atualização:** *lazy refresh* — verificado na própria request (se `>30 dias`, tenta atualizar antes de responder; se falhar, responde com snapshot + alerta de desatualização). **Não usa cron job**: o free tier do Replit hiberna processos inativos, então jobs agendados não disparam de forma confiável.
+
+### **7. PDF/HTML Export: pdfkit** ✅
+- **Decisão:** `pdfkit` (não `puppeteer`)
+- **Motivo:** Puppeteer requer Chromium headless — pesado e historicamente instável em containers com recursos limitados como o Replit. `pdfkit` é puro Node, sem processo filho, sem binário externo.
+- HTML export: template string com CSS inline, sem biblioteca.
+
+### **8. Testes: Vitest** ✅
+- Runner único para frontend e backend (nativo Vite)
+- Escopo mínimo conforme CLAUDE.md: motor de cálculo, CUB ajustado, LASTRO Score, alertas de normalidade, auth, limite 3 análises, fallback de dados externos
+
+### **9. Cache e Logger: Sem Infra Extra** ✅
+- Cache: in-memory (`Map`) — sem Redis (adicionaria uma dependência de infra que o Replit não oferece nativamente)
+- Logger: `console.log` estruturado em JSON — sem `winston` (overengineering para o escopo do MVP)
+
+### **10. Rate Limiting** ✅
+- `express-rate-limit` com memory store (sem Redis), aplicado nas rotas de auth (Fase 1) e análises (Fase 4)
+
+### **11. Deploy: Replit Deployments Nativo** ✅
+- **Decisão:** usar o deploy nativo do Replit (build + publish integrados), não Docker nem GitHub Actions customizado
+- **Motivo:** o ambiente já é Replit; reimplementar CI/CD com Docker adiciona complexidade sem benefício para um MVP de 1 dev
+- Testes automatizados (Vitest + Playwright) continuam rodando localmente/no Replit antes de cada deploy; GitHub Actions fica reservado para lint+test em push, sem etapa de build de imagem
 
 ---
 
@@ -95,26 +107,27 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 - `tsconfig.json` (strict mode)
 - `.gitignore` (segurança)
 - `README.md` (instruções dev)
-- Pastas: `/server`, `/src`, `/prisma`
+- `server/index.ts` (Express: monta `/api/v1`, serve `dist/` em prod)
+- `vite.config.ts` (proxy `/api` → localhost:3000 em dev)
+- Pastas: `/server`, `/src`, `/prisma`, `/shared/schemas`
 
 **Entregável Testável:**
 - `npm install` sem erros
-- `npm run dev` lança Vite + Express simultâneos
-- Endpoints `/api/v1/health` responde `{ ok: true }`
+- `npm run dev` lança Vite (5173, com proxy) + Express (3000) simultâneos
+- Endpoint `/api/v1/health` responde `{ ok: true }`
+- `npm run build && npm start` serve frontend + API na mesma porta (valida arquitetura single-port)
 
-**Decisões Resolvidas:**
-- ✅ ORM escolhido (Prisma)
-- ✅ CSS escolhido (Tailwind)
-- ✅ Validação escolhida (Zod)
-- ✅ Testes escolhidos (Vitest)
-- ✅ `.env` estruturado
+**Decisões Resolvidas (ver seção "Decisões Técnicas — RESOLVIDAS"):**
+- ✅ Arquitetura single-port (Express serve API + estáticos)
+- ✅ ORM (Prisma), CSS (Tailwind), Validação (Zod), Testes (Vitest)
+- ✅ `.env` estruturado, `/shared/schemas` criada
 
 **Complexidade:** Baixa (1 dia)  
 **Arquivos Tocados:** ~15 novos
 
 **Riscos/Consultas:**
-- Replit tem suporte Prisma nativo? → Testar em Fase 1
-- PostgreSQL em Replit já vem pré-criado? → Confirmar variável `DATABASE_URL`
+- Confirmar que o addon Postgres do Replit injeta `DATABASE_URL` automaticamente ao ativar no painel
+- Validar que `npx prisma migrate dev` funciona sem passo manual extra
 
 **Modelo Sugerido:** Sonnet 5  
 *Razão:* Setup boilerplate, decisões já mapeadas
@@ -165,8 +178,8 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 - `server/routes/parameters.ts` (GET endpoints)
 - `server/controllers/parametersController.ts`
 - `server/utils/parameterConstants.ts` (tabela PRD com tipologias)
-- `server/data/mock-fipezap.json` (hardcoded até integração)
-- `server/data/mock-cub.json` (hardcoded até integração)
+- `server/data/fipezap-static.json` (fonte do `StaticAdapter`, ver Fase 10)
+- `server/data/cub-static.json` (fonte do `StaticAdapter`, ver Fase 10)
 
 **Entregável Testável:**
 - GET `/api/v1/parameters/tipologies` → lista de Unifamiliar/Multifamiliar/etc com % terreno e lucro
@@ -385,7 +398,7 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 **Arquivos Criados/Modificados:**
 - `server/routes/export.ts` (POST /export/pdf, /export/html/:id)
 - `server/controllers/exportController.ts`
-- `server/utils/pdfGenerator.ts` (usando pdfkit ou puppeteer)
+- `server/utils/pdfGenerator.ts` (pdfkit — decisão final, ver seção de decisões técnicas)
 - `server/utils/htmlGenerator.ts` (template com CSS inline)
 - `server/templates/export-template.html` (template compartilhável)
 - `__tests__/export.test.ts`
@@ -404,8 +417,7 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 **Arquivos Tocados:** ~5 novos
 
 **Riscos/Consultas:**
-- `pdfkit` vs `puppeteer`? Testar ambos em Replit
-- Arquivo temporário ou em-memory para PDF? → Recomendar stream em-memory
+- PDF gerado em stream em-memory (sem arquivo temporário em disco — mais simples e evita limpeza de arquivos órfãos)
 
 **Modelo Sugerido:** Sonnet 5  
 *Razão:* Geração de documentos, CSS/HTML estruturali, teste de binários
@@ -444,36 +456,31 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 
 ---
 
-### **FASE 10: Integração Dados Externos (FipeZap e CUB)**
+### **FASE 10: Integração Dados Externos (FipeZap e CUB) via Adapter**
 
-**Descrição:** Substituir mocks por integração real com APIs de FipeZap e Sinduscon-MG (CUB). Cache e fallback.
+**Descrição:** Implementar o Adapter Pattern definido nas decisões técnicas. Desde a Fase 2, a aplicação já consome dados através da interface `MarketDataAdapter`/`CubDataAdapter` com o `StaticAdapter` (JSON versionado). Esta fase **investiga** se APIs reais existem e, se confirmadas, adiciona o `HttpAdapter` — sem tocar em nenhum consumidor downstream.
 
 **Arquivos Criados/Modificados:**
-- `server/services/fipezapService.ts` (fetch dados FipeZap)
-- `server/services/cubService.ts` (fetch dados Sinduscon-MG)
-- `server/utils/cache.ts` (cache em memory ou Redis-like)
-- `prisma/schema.prisma` (adicionar tabela ExternalDataCache)
-- `server/jobs/updateExternalData.ts` (cron job, atualizar dados mensais)
-- `server/routes/externalData.ts` (GET status de atualização)
+- `server/services/adapters/MarketDataAdapter.ts` (interface)
+- `server/services/adapters/CubDataAdapter.ts` (interface)
+- `server/services/adapters/StaticAdapter.ts` (implementação já existente desde Fase 2, referenciada aqui)
+- `server/services/adapters/HttpAdapter.ts` (implementação nova, **somente se API confirmada**)
+- `server/utils/cache.ts` (Map in-memory + leitura/escrita do snapshot Postgres)
+- `prisma/schema.prisma` (tabela `ExternalDataCache`)
+- `server/routes/externalData.ts` (GET status de atualização/idade do cache)
 
 **Entregável Testável:**
-- GET `/api/v1/data/fipezap?region=MG&tipologia=Multifamiliar` → dados reais FipeZap
-- GET `/api/v1/data/cub` → dados reais Sinduscon-MG
-- Dados cached por 24h (TBD: frequência)
-- Alerta se dados > 30 dias desatualizados
-- Fallback para último snapshot se API indisponível
-- Teste: desligar internet → fallback funciona
+- GET `/api/v1/data/fipezap?region=MG&tipologia=Multifamiliar` → dados via adapter ativo (`FIPEZAP_ADAPTER` env)
+- GET `/api/v1/data/cub` → idem para CUB
+- Lazy refresh: se snapshot > 30 dias, tenta atualizar na própria request; falha → responde com snapshot + `alertaDesatualizado: true`
+- Trocar `FIPEZAP_ADAPTER=static` → `http` via `.env` sem alterar código de consumidores
+- Teste: adapter HTTP indisponível → fallback automático para último snapshot em cache
 
-**Complexidade:** Média-Alta (3-4 dias)  
-**Arquivos Tocados:** ~8 novos
+**Complexidade:** Média (2-3 dias — reduzida pelo adapter isolar o risco)  
+**Arquivos Tocados:** ~7 novos
 
 **Riscos/Consultas:**
-- FipeZap tem API pública? Qual a documentação? → **NECESSÁRIO PESQUISAR ANTES**
-- CUB Sinduscon-MG tem endpoint REST? Formato? → **NECESSÁRIO PESQUISAR ANTES**
-- Permissões CORS? Rate limits? Autenticação? → **INVESTIGAR**
-
-**Modelo Sugerido:** Sonnet 5  
-*Razão:* Integração com APIs externas, tratamento de erros de rede, cache strategy, fallback logic
+- **Investigação primeiro:** FipeZap e Sinduscon-MG têm API pública REST? Documentação, rate limits, CORS? Se **não houver**, `StaticAdapter` permanece como fonte definitiva no MVP e a fase se conclui só com atualização manual periódica do JSON — sem bloquear nenhuma outra fase (regra CLAUDE.md #6/#7: nunca inventar endpoint)
 
 ---
 
@@ -519,23 +526,21 @@ Plano dividido em **12 fases**. Cada fase entrega algo testável e visível, pro
 - `e2e/happy-path.spec.ts` (novo usuário → análise → resultado → export)
 - `e2e/auth.spec.ts` (login, logout, refresh token)
 - `e2e/calculations.spec.ts` (cenários de cálculo VGV/custos)
-- `.github/workflows/ci.yml` (lint, test, build, deploy)
-- `Dockerfile` (opcional, se não usar Replit deploy direto)
+- `.github/workflows/ci.yml` (lint + test em cada push — **sem** build de imagem/deploy)
 - `README.md` (instruções de dev/prod)
 
 **Entregável Testável:**
 - `npm run test:e2e` executa suite completa
 - Todas as linhas de fluxo happy-path cobertas
-- CI passa em cada push
-- Deploy automático em staging funciona
-- App em staging acessível e operacional
+- CI (lint + test) passa em cada push
+- Deploy via Replit Deployments (build + publish nativos, sem Docker) funciona
+- App publicado acessível e operacional
 
 **Complexidade:** Média (2-3 dias)  
-**Arquivos Tocados:** ~8 novos
+**Arquivos Tocados:** ~7 novos
 
 **Riscos/Consultas:**
-- Headless Chrome em Replit? → Verificar permissões
-- Qual é o ambiente staging? → Recomendar Replit Preview URLs ou branch staging
+- Headless Chrome (Playwright) roda no ambiente de execução do Replit? → Verificar permissões antes de escrever os testes E2E
 
 **Modelo Sugerido:** Opus 5  
 *Razão:* Testes E2E complexos, validação end-to-end, CI/CD pipeline, garantia de qualidade final
@@ -599,9 +604,10 @@ FASE 12 (Testes) [Após Fase 11]
 ## Checkpoints de Validação (Após Cada Fase)
 
 ### Antes de Fase 1
-- [ ] Decisões técnicas documentadas e aprovadas
+- [x] Decisões técnicas resolvidas (ver "Decisões Técnicas — RESOLVIDAS")
 - [ ] `.env.example` pronto
-- [ ] Repo estruturado com pastas corretas
+- [ ] Repo estruturado com pastas corretas, incluindo `/shared/schemas`
+- [ ] `DATABASE_URL` confirmada auto-injetada pelo Replit
 
 ### Antes de Fase 3
 - [ ] Auth completa e testada
@@ -617,7 +623,8 @@ FASE 12 (Testes) [Após Fase 11]
 
 ### Antes de Fase 10
 - [ ] Export PDF e HTML funcionais
-- [ ] **[CRÍTICO]** Pesquisar disponibilidade APIs FipeZap/CUB
+- [ ] `StaticAdapter` já em uso desde Fase 2 (não é bloqueador — apenas decide se `HttpAdapter` entra ou não)
+- [ ] Pesquisar disponibilidade real de APIs FipeZap/CUB (define se `HttpAdapter` é implementado nesta fase)
 
 ### Antes de Fase 12
 - [ ] UX responsiva em mobile/desktop
@@ -627,30 +634,26 @@ FASE 12 (Testes) [Após Fase 11]
 
 ## Pontos de Consulta Obrigatórios (Bloqueadores Potenciais)
 
-### **1. APIs Externas (CRÍTICO — antes Fase 10)**
+As decisões de **arquitetura técnica** (ORM, CSS, validação, export, cache, deploy) estão todas resolvidas — ver "Decisões Técnicas — RESOLVIDAS". Os pontos abaixo são de **conteúdo de produto/dados**, que continuam exigindo definição ou confirmação:
+
+### **1. APIs Externas Reais (antes de ativar `HttpAdapter` na Fase 10)**
 - FipeZap: Existe API pública REST? Documentação? Rate limits? CORS?
 - CUB Sinduscon-MG: Existe endpoint? Formato? Autenticação?
-- **Impacto:** Se não houver, usar dados estáticos ou web scraping (risco maior)
+- **Impacto:** Mitigado pelo Adapter Pattern (decisão 6) — se não houver API, `StaticAdapter` com JSON versionado permanece a fonte de dados no MVP, sem bloquear nenhuma fase
 
-### **2. Replit PostgreSQL (antes Fase 1)**
-- Variável `DATABASE_URL` já vem pré-criada em Replit?
-- Suporta `npx prisma migrate` sem problemas?
-- **Impacto:** Se não, ajustar tipo ORM ou usar diferentes conexões dev/prod
+### **2. Replit PostgreSQL (validar em Fase 0/1)**
+- Confirmar que `DATABASE_URL` é auto-injetada ao ativar o addon Postgres no painel Replit
+- Confirmar que `npx prisma migrate dev` funciona sem passo manual extra
 
-### **3. PDF/HTML Export (antes Fase 8)**
-- `pdfkit` disponível em Replit sem problemas?
-- Alternativa `puppeteer` é viável (requer Chromium)?
-- **Impacto:** Se não, considerar serverless (ex: AWS Lambda) ou biblioteca alternativa
-
-### **4. Metodologia LASTRO Score (antes Fase 3)**
+### **3. Metodologia LASTRO Score (antes Fase 3)**
 - PRD§4.3 diz "a ser definida durante desenvolvimento"
 - Necessário definir pesos antes de code? (40% viabilidade, 30% normalidade, 20% risco, 10% mercado?)
-- **Impacto:** Sem definição, código é placeholder
+- **Impacto:** Sem definição, código é placeholder — requer aprovação (regra CLAUDE.md: "LASTRO Score... sem mudanças sem aprovação")
 
-### **5. Detalhes de Projeto por Tipologia (antes Fase 6)**
+### **4. Detalhes de Projeto por Tipologia (antes Fase 6)**
 - PRD§2.2 diz "detalhes serão definidos por hardcoding"
 - Qual é a lista completa de campos para Multifamiliar/Comercial/etc?
-- **Impacto:** UI será incomplete se campos não especificados
+- **Impacto:** UI será incompleta se campos não especificados
 
 ---
 
@@ -658,29 +661,20 @@ FASE 12 (Testes) [Após Fase 11]
 
 | Risco | Probabilidade | Impacto | Mitigação |
 |-------|--------------|--------|-----------|
-| APIs externas indisponíveis | Média | Alto | Pesquisar cedo (Fase 10), manter mock como fallback |
-| Performance cálculo com ajustes reais-time > 500ms | Baixa | Médio | Usar Web Worker se necessário, cache de resultados |
-| Replit limitações (DB, storage, CPU) | Média | Alto | Testar escalabilidade em Fase 1, migrar se necessário |
-| Segurança JWT (token expiração, refresh) | Baixa | Alto | Review código Fase 1 com security expert |
+| APIs externas (FipeZap/CUB) indisponíveis | Média | Baixo | Mitigado por design: Adapter Pattern isola o risco, `StaticAdapter` é fonte válida no MVP |
+| Performance cálculo com ajustes reais-time > 500ms | Baixa | Médio | Motor de cálculo é síncrono e local (mesmo processo, same-origin); cache de resultado por sessão se necessário |
+| Replit limitações (DB, storage, CPU) | Média | Alto | Validar `DATABASE_URL` e migrations já em Fase 0/1 |
+| Segurança JWT (token expiração, refresh) | Baixa | Alto | Review código Fase 1 com foco em rotação de refresh token |
 | Compatibilidade navegadores antigos | Baixa | Baixo | Testar Chrome/Firefox/Safari atualizados |
 
 ---
 
-## Decisões Técnicas Pendentes (Roadmap)
-
-Estas decisões podem esperar até Fase executada, mas precisam ser **resolvidas antes de code**:
-
-1. **ORM** → Prisma ✅ (recomendado)
-2. **CSS** → Tailwind ✅ (recomendado)
-3. **Validação** → Zod ✅ (recomendado)
-4. **PDF Generator** → pdfkit vs puppeteer (testar Fase 0)
-5. **Cache** → in-memory vs Redis (recomendado: in-memory v1, Redis futuro)
-6. **Logger** → console vs winston (recomendado: console v1)
-7. **API Rate Limiting** → express-rate-limit (adicionar Fase 1)
-
----
-
 ## Notas Arquiteturais
+
+### Serving Single-Port (Replit-first)
+- Um processo Express: serve `/api/v1/*` e o build estático do Vite (`dist/`)
+- Dev: Vite (5173) com proxy `/api` → Express (3000); Prod: uma porta só (`process.env.PORT`)
+- Elimina CORS em produção e a necessidade de `VITE_API_URL`
 
 ### Motor de Cálculo
 - **Fns puras e testáveis** em `server/utils/calculator.ts`
@@ -688,29 +682,35 @@ Estas decisões podem esperar até Fase executada, mas precisam ser **resolvidas
 - Todos inputs/outputs são números (evita erros de tipo)
 - Testes cobrindo fórmulas + arredondamentos
 
+### Dados Externos: Adapter Pattern
+- `MarketDataAdapter`/`CubDataAdapter` (interface) com `StaticAdapter` (JSON versionado, padrão) e `HttpAdapter` (opcional, só após confirmação de API real)
+- Trocável via `.env` (`FIPEZAP_ADAPTER`, `CUB_ADAPTER`), sem alterar consumidores
+- Cache in-memory + snapshot Postgres, refresh lazy sob demanda (sem cron — Replit free tier hiberna)
+
 ### Separação Frontend/Backend
 - Frontend nunca calcula valores monetários (sempre confia no backend)
-- Validações espelhadas (frontend UX, backend security)
+- Validações espelhadas via schemas Zod compartilhados em `/shared/schemas` (frontend UX, backend security — fonte única)
 - API v1 versioned (`/api/v1/*`) para futuras mudanças
 
 ### Segurança
-- JWT com refresh tokens
+- JWT com refresh tokens (access 15min JSON, refresh 7d httpOnly cookie)
 - Senhas bcrypt
-- CORS apenas para origin Replit
+- CORS necessário apenas em dev (same-origin em produção)
 - Validação entrada com Zod em todos endpoints
-- Proteção contra limit 3 análises por usuário (validado backend)
+- Rate limiting via `express-rate-limit` em rotas de auth e análises
+- Proteção contra limite 3 análises por usuário (validado backend)
 
 ---
 
 ## Como Usar Este Plano
 
-1. **Antes de escrever qualquer código:** Resolver todas decisões técnicas (Seção "Decisões Obrigatórias")
+1. **Decisões técnicas:** já resolvidas (Seção "Decisões Técnicas — RESOLVIDAS") — não requerem mais consulta antes de codificar
 2. **Executar fases sequencialmente** conforme dependências (diagrama Critical Path)
 3. **Após cada fase:** Validar checkpoint antes de próxima
-4. **Bloqueado em ponto de consulta?** → Escalhar imediatamente, não avançar
+4. **Bloqueado em ponto de consulta de produto/dados** (Score, detalhes de tipologia, APIs reais)? → Escalar imediatamente, não avançar
 5. **Mudança de escopo?** → Atualizar plano, não ignorar
 
 ---
 
 **Status:** Pronto para Desenvolvimento  
-**Próximo Passo:** Resolver decisões técnicas obrigatórias + iniciar Fase 0
+**Próximo Passo:** Iniciar Fase 0 (decisões técnicas já resolvidas)
