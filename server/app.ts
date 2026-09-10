@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth';
 import parametrosRoutes from './routes/parametros';
 import dadosRoutes from './routes/dados';
+import analisesRoutes from './routes/analises';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,9 +24,9 @@ export function createApp() {
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/parametros', parametrosRoutes);
   app.use('/api/v1/dados', dadosRoutes);
+  app.use('/api/v1/analises', analisesRoutes);
 
   // Placeholder routes (will be populated in subsequent phases)
-  // - analysis routes (Phase 4)
   // - export routes (Phase 8)
 
   // Serve static files from Vite build (production)

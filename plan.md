@@ -15,7 +15,7 @@
 | **1** | Backend Auth: JWT, bcrypt, rate limiting | ✅ Concluída | 10 set 2026 | 18 testes automatizados passando |
 | **2** | Dados Base: Tipologias, parâmetros, seed | ✅ Concluída | 10 set 2026 | 29 testes automatizados passando (11 novos) |
 | **3** | Motor Cálculo: VGV, custos, viabilidade, LASTRO Score | ✅ Concluída | 10 set 2026 | 70 testes automatizados passando (41 novos) |
-| **4** | CRUD Análises: Modelo, endpoints, validação | - | - | - |
+| **4** | CRUD Análises: Modelo, endpoints, validação | ✅ Concluída | 10 set 2026 | 83 testes automatizados passando (13 novos) |
 | **5** | Frontend Auth: React setup, login/signup, context | - | - | - |
 | **6** | Formulário Multi-step | - | - | - |
 | **7** | Resultado Interativo | - | - | - |
@@ -359,6 +359,29 @@ Implementação:
 
 **Modelo Sugerido:** Sonnet 5  
 *Razão:* Lógica de autorização (usuários isolados), validações de negócio (limite 3), snapshot de dados
+
+**Status:** ✅ **CONCLUÍDA** (10 set 2026)
+
+Decisão de arquitetura que estende o plano original: **dois endpoints de escrita** em vez de um único `POST /analyses`, para respeitar o fluxo de usuário do PRD §5.3 e §2.6 ("usuário ajusta premissas e vê o resultado atualizar" antes de decidir salvar) — persistir a cada recálculo interativo consumiria o limite de 3 análises indevidamente:
+- `POST /api/v1/analises/calcular` — cálculo **efêmero**, não persiste, não conta para o limite. Usado pelos ajustes em tempo real (Fase 7).
+- `POST /api/v1/analises` — persiste (recalculando no backend, nunca confiando em resultado do cliente), valida o limite de 3.
+
+Também **em português** (`/api/v1/analises`, não `/analyses`), seguindo a mesma convenção de nomes de rota já adotada na Fase 2. Reaproveita `authenticateToken` da Fase 1 em vez de criar `server/middleware/authRequired.ts` duplicado.
+
+Implementação:
+- `prisma/schema.prisma`: `Analysis` ganha `areaConstruida` (Float, necessário ao motor de cálculo da Fase 3) e `percentualLucro` (Float?, ajuste opcional do usuário — PRD §2.6). `parametrosSnapshot` já existia desde a Fase 0, resolvendo a consulta #1 sem migração adicional.
+- `server/services/analiseResolver.ts`: camada que resolve tipologia/CUB/ajustes/preço de mercado (Fase 2) em números concretos e chama `calcularAnalise` (Fase 3) — usada pelos dois endpoints, sem duplicar lógica.
+  - Tipologia/padrão sem `cubCodigo` mapeado (Comercial Baixo, Uso Misto) → **422**, recusa em vez de inventar custo de construção (regra CLAUDE.md #8).
+  - Tipologia com `cubCodigo` mas sem `ajusteTipologiaCub` definido (Galpão) → calcula normalmente, mas adiciona um alerta `ajuste_cub_nao_definido` ao resultado avisando que o custo pode estar subestimado.
+- `server/models/Analysis.ts`: `countAnalisesByUser`, `listAnalisesByUser` (ordenado por `createdAt desc`), `findAnaliseById`, `createAnalise`, `deleteAnalise`.
+- `server/controllers/analisesController.ts` + `server/routes/analises.ts`: `calcular`, `criar` (valida limite de 3 antes de chamar o resolver), `listar`, `obter`, `deletar` — todas atrás de `authenticateToken` + rate limiting (memory store, decisão técnica #10, limite mais generoso que auth pois `/calcular` é chamado a cada ajuste).
+- Isolamento entre usuários: `obter`/`deletar` retornam **404** (não 403) tanto para análise inexistente quanto para análise de outro usuário — não revela a existência de dados de terceiros.
+- `shared/schemas/analysis.schemas.ts`: `AnalysisInputSchema` ganha `areaConstruida` (obrigatório — motor de cálculo não deriva de IA, ainda não definido) e `percentualLucro` (opcional); novo `SavedAnalysisSchema` para o formato de resposta persistida.
+- Timestamp: UTC no banco (`createdAt` do Prisma), serializado via `toISOString()` — conversão para horário de Brasília fica para o frontend (Fase 5+), conforme a recomendação já registrada aqui.
+- 13 novos testes automatizados (`__tests__/analises.test.ts`): cálculo efêmero vs. persistência, rejeição de tipologia inválida/sem CUB mapeado, alerta de ajuste CUB ausente, limite de 3 análises, ajuste de lucro do usuário, isolamento entre usuários (404 cruzado) — 83 testes no total, todos passando.
+- `npx tsc --noEmit` sem erros; validado manualmente via `curl` end-to-end (calcular → criar → listar → obter → deletar → 404 pós-delete → 401 sem auth).
+
+**Próximo Passo:** Fase 5 (Frontend — Setup e Autenticação)
 
 ---
 

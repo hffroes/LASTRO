@@ -26,6 +26,7 @@ model Analysis {
 
   // Input data snapshot
   areaTerreno           Float
+  areaConstruida        Float      // m² construído usado no cálculo (PRD §2.3 — sugestão via IA, ajustável manualmente)
   formatoLote           String     // regular, irregular
   topografia            String     // plana, regular, irregular, acidentada
   valorTerrenoR         Float
@@ -33,6 +34,7 @@ model Analysis {
   padrao                String     // Baixo, Normal, Alto
   unidades              Int
   precoVendaUnitario    Float
+  percentualLucro       Float?     // ajuste do usuário (PRD §2.6); nulo = usa o padrão da tipologia
 
   // Additional details (JSON to support variable fields per tipology)
   detalhesProto         Json?

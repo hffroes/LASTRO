@@ -22,6 +22,10 @@ export function listAjustesCub(): Promise<AjusteCub[]> {
   });
 }
 
+export function findAjusteCub(categoria: string, chave: string): Promise<AjusteCub | null> {
+  return prisma.ajusteCub.findUnique({ where: { categoria_chave: { categoria, chave } } });
+}
+
 export function findParametro(chave: string): Promise<Parametro | null> {
   return prisma.parametro.findUnique({ where: { chave } });
 }
