@@ -27,6 +27,9 @@ Fornecer uma ferramenta web de análise econômica rápida para responder objeti
 ### Princípio Arquitetural
 > "Complexidade por baixo. Clareza por cima."
 
+### Diretrizes de Design e Branding
+Todos os elementos visuais, incluindo design de interface, fontes, tipografia, cores, logos, ícones e outros componentes gráficos, **devem seguir rigorosamente os parâmetros estabelecidos no Design System da LASTRO**. Garantir consistência visual e de marca em toda a experiência do usuário é essencial para credibilidade e reconhecimento.
+
 ---
 
 ## 2. Escopo do MVP
