@@ -2,7 +2,7 @@
 ## LASTRO - Land Analysis & Acquisition Viability Tool
 **Versão:** 1.0 MVP  
 **Data:** Setembro 2026  
-**Status:** Inicial
+**Status:** Mergeado
 
 ---
 
@@ -488,7 +488,7 @@ Score baseado em:
 
 **Preparado por:** Equipe LASTRO  
 **Data de Criação:** Setembro 2026  
-**Status:** Pronto para Desenvolvimento
+**Status:** Mergeado e em Desenvolvimento
 
 ---
 
