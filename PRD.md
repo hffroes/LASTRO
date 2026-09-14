@@ -1,8 +1,9 @@
 # Product Requirements Document (PRD)
 ## LASTRO - Land Analysis & Acquisition Viability Tool
-**Versão:** 1.0 MVP  
+**Versão:** 1.1 MVP  
 **Data:** Setembro 2026  
-**Status:** Inicial
+**Status:** Inicial  
+**Nota de revisão:** Seções 2–4, 6 e 8 revisadas com base nas planilhas de Escopo MVP, IDs, Tabela CUB (Sinduscon-MG Ago/2026) e Base de Tipologias fornecidas pelo produto.
 
 ---
 
