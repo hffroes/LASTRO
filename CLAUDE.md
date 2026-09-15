@@ -1,24 +1,24 @@
 # CLAUDE.md — LASTRO MVP
 
 ## Visão Geral
-LASTRO responde: "Devo adquirir este terreno?" via análise econômica preliminar. React 18+/TypeScript frontend, Node.js/Express backend, PostgreSQL. Desenvolvido no Replit. Público: construtores, incorporadoras, engenheiros, corretores, investidores. Região: Minas Gerais. Princípio: "Complexidade por baixo. Clareza por cima."
+LASTRO responde: "Devo adquirir este terreno?" e "construir isso neste terreno vai dar dinheiro?" via análise econômica preliminar. React 18+/TypeScript frontend, Node.js/Express backend, PostgreSQL. Desenvolvido no Replit. Público: construtores, incorporadoras, engenheiros, corretores, investidores. Região: Minas Gerais. Princípio: "Complexidade por baixo. Clareza por cima."
 
 ## Fonte de Verdade
-`@PRD.md` (v1.1) é a referência única para produto, escopo (seção 2), dados/parâmetros (seção 3), lógica de cálculo (seção 4), fluxo de usuário (seção 5) e requisitos técnicos (seção 6).
+`@PRD.md` (v1.2) é a referência única para produto, escopo (seção 2), dados/parâmetros (seção 3), lógica de cálculo (seção 4), fluxo de usuário (seção 5) e requisitos técnicos (seção 6).
 
 ## Arquitetura em Uma Página
 ```
 React (TypeScript)                 Express API             PostgreSQL
-├── /src/components            ├── /server/routes       ├── users
-├── /src/pages                 ├── /server/controllers  ├── analyses
-├── /src/hooks                 ├── /server/middleware   ├── external_data
-├── /src/types                 ├── /server/models       └── parameters
-└── Motor de cálculo (utils)   └── Domínio (economia)
+├── /src/components            ├── /server/routes       ├── accesses
+├── /src/pages                 ├── /server/controllers  ├── access_events
+├── /src/hooks                 ├── /server/middleware   ├── analyses (interno)
+├── /src/types                 ├── /server/models       ├── external_data
+└── Motor de cálculo (utils)   └── Domínio (economia)   └── parameters
 Fluxo: React → fetch() → API /api/v1/* → Cálculo → PostgreSQL → Resultado + Histórico + Exportação (PDF/HTML)
 ```
 
 ## Escopo do MVP
-Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa com toggle Terrenista/Incorporador, até 3 análises salvas/usuário, exportação PDF e HTML, JWT auth, alertas orientativos. Fora do MVP: Loteamento, "comprar a terra para investir", conjuntos de edificações e demais itens Fase 2+.
+Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa com toggle Terrenista/Incorporador, exportação PDF e HTML, dark mode, alertas orientativos. **Sem autenticação e sem persistência para o usuário**: acesso por link pós-compra (Kiwify → Resend), uma análise por acesso, conservada só via exportação. Fora do MVP: login/histórico/múltiplas análises, base de preços de mercado, Loteamento, "comprar a terra para investir", conjuntos de edificações e demais itens Fase 2+.
 
 ## Regras Críticas de Domínio
 - "IA" = Índice/Coeficiente Aproveitamento urbanístico, nunca IA artificial
@@ -30,13 +30,14 @@ Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa com to
 - Área terreno ≠ área utilizada ≠ área construída ≠ área comercializável: obra incide na construída, VGV na comercializável
 - Terreno% e Lucro% do VGV variam pelo Padrão (Baixo/Normal/Alto), nunca pela tipologia
 - Classificação CUB: tipo + tipologia + faixa de pavimentos → projeto; padrão é coluna separada (não existem códigos tipo `R8-B`)
-- Dados externos: CUB Sinduscon-MG e FipeZap **sem API** (importação periódica versionada, com fallback); CEP via API pública sem chave, cuja falha não bloqueia a análise. Nunca embutir valores de CUB/mercado no código
+- Coeficiente de aproveitamento das unidades = **soma** das áreas de todas as unidades do pavimento ÷ área do pavimento (nunca uma unidade isolada), faixa 80–85%
+- Dados externos: CUB Sinduscon-MG **sem API** (importação periódica versionada, com fallback); CEP via API pública sem chave, cuja falha não bloqueia a análise. Sem base de preços de mercado no MVP (FipeZap foi retirada). Nunca embutir valores de CUB no código
 - LASTRO Score, viabilidade, recomendação: sem mudanças sem aprovação
 - Valores monetários: nunca de strings; percentuais em convenção única (0.10 vs 10%)
-- Análise salva preserva snapshot dos parâmetros e da versão de dados usados
+- Resultado exportado e registro interno preservam snapshot dos parâmetros e da versão de dados usados
 - Ajustes do usuário não alteram padrões globais
 - Alertas são orientativos, não conclusivos
-- Limite 3 análises: validado no backend
+- Sem login: acesso por link com token validado no backend (validade + revogação); nunca expor ao usuário os dados internos de análises e uso
 - Resultado simples primeiro; detalhes progressivos
 
 ## Regras de Comportamento
@@ -62,15 +63,15 @@ Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa com to
 - Respostas API em formato consistente; zero segredos/tokens/credenciais no código ou frontend
 
 ## Segurança e Persistência
-JWT (access + refresh), senhas em bcrypt, HTTPS obrigatório, sem dados privados públicos. Variáveis em `.env` e ORM (Prisma ou TypeORM): TBD.
+Sem JWT de usuário e sem bcrypt (não há login). Link de acesso com token de alta entropia, validado no servidor, com validade e revogação; webhook Kiwify com assinatura verificada e tratamento idempotente. HTTPS obrigatório, sem dados privados públicos, segredos só em `.env`. Retenção/LGPD dos dados internos e ORM (Prisma ou TypeORM): TBD.
 
 ## Testes e Validação
-Testes obrigatórios para: fórmulas econômicas/arredondamentos, aditivos e CUB ajustado, resíduo do terreno, LASTRO Score, faixas de alerta (obra 40–65%, despesas gerais 10–15%, unidade/pavimento 80–85%), auth/autorização, limite 3 análises, versionamento de premissas, validação API, fallback de dados externos.
+Testes obrigatórios para: fórmulas econômicas/arredondamentos, aditivos e CUB ajustado, resíduo do terreno, LASTRO Score, faixas de alerta (obra 40–65%, despesas gerais 10–15%, soma das unidades/pavimento 80–85%), validação do link de acesso (válido/expirado/revogado), idempotência do webhook de compra, versionamento de premissas, validação API, fallback de dados externos.
 
 ## Como Rodar
 ```bash
 npm install                   # deps (Replit: Node + npm + PostgreSQL integrados)
-cp .env.example .env          # vars (DB, JWT secret TBD)
+cp .env.example .env          # vars (DB, segredos Kiwify/Resend)
 npx prisma migrate dev        # schema (ou TypeORM TBD)
 npm start                     # front (5173) + back (3000/api/v1)
 ```

@@ -1,16 +1,21 @@
 # Product Requirements Document (PRD)
 ## LASTRO - Land Analysis & Acquisition Viability Tool
-**Versão:** 1.1 MVP  
+**Versão:** 1.2 MVP  
 **Data:** Setembro 2026  
 **Status:** Inicial  
-**Nota de revisão:** Seções 2–4, 6 e 8 revisadas com base nas planilhas de Escopo MVP, IDs, Tabela CUB (Sinduscon-MG Ago/2026) e Base de Tipologias fornecidas pelo produto.
+**Revisão 1.1:** Seções 2–4, 6 e 8 revisadas com base nas planilhas de Escopo MVP, IDs, Tabela CUB (Sinduscon-MG Ago/2026) e Base de Tipologias fornecidas pelo produto.  
+**Revisão 1.2:** MVP sem autenticação e sem persistência para o usuário (acesso por link pós-compra, uma análise por acesso); referência FipeZap retirada do produto; dark mode incluído no escopo.
 
 ---
 
 ## 1. Visão Geral do Produto
 
 ### Objetivo Principal
-Fornecer uma ferramenta web de análise econômica rápida para responder objetivamente: **"Devo ou não adquirir este terreno para fazer x construção?"**
+Fornecer uma ferramenta web de análise econômica rápida para responder objetivamente duas perguntas:
+1. **"Devo ou não adquirir este terreno para fazer x construção?"**
+2. **"Construir isso neste terreno vai dar dinheiro?"**
+
+A primeira olha para o preço do terreno; a segunda olha para o resultado do empreendimento. As duas são lidas pela mesma base de cálculo, mudando apenas a perspectiva (ver 4.1).
 
 ### Público-Alvo
 - Pequenos construtores e incorporadoras
@@ -75,12 +80,12 @@ Fornecer uma ferramenta web de análise econômica rápida para responder objeti
 - ✅ Área da unidade vendida (m²) — unidade vendida é casa, apartamento, sala/loja ou galpão
 - ✅ Preço de venda da unidade (R$)
   - App calcula e mostra automaticamente o **preço por m² vendido** (Preço da unidade ÷ Área da unidade)
-  - Comparação com baseline de mercado (FipeZap) para alertar sobre possíveis superestimativas
+  - O preço por m² é devolvido ao usuário para que ele próprio confronte com o mercado da região (o MVP não consulta base de preços — ver 3.4)
 - ✅ Taxa de ocupação (parâmetro ajustável, default 0,6 — ver 3.3)
 - ✅ Áreas e coeficientes **calculados** e exibidos para o usuário validar junto ao plano diretor:
   - Área utilizada do terreno (m²)
   - Área total construída (m²)
-  - Coeficiente de unidade por metragem de pavimento (%)
+  - Coeficiente da soma da metragem das unidades por metragem de pavimento (%)
   - Coeficiente de aproveitamento (IA) atingido
 
 *Nota: os campos exibidos variam conforme a tipologia escolhida. É crucial incluir TODAS as variáveis pertinentes para a classificação correta na tabela CUB Sinduscon-MG (tipo de projeto + tipologia + faixa de pavimentos + padrão).*
@@ -105,7 +110,7 @@ Fornecer uma ferramenta web de análise econômica rápida para responder objeti
   - **Despesas gerais / VGV fora da faixa 10%–15%**
   - Preço pedido pelo terreno acima do Resultado Terreno calculado
 - ✅ Alerta de eficiência de projeto:
-  - **Coeficiente de unidade por metragem de pavimento fora da faixa 80%–85%** — abaixo indica que as unidades podem ser otimizadas; acima indica unidades grandes demais para a área de aproveitamento (hall, corredores, escadas e elevadores). Não se aplica a projetos residenciais de casas
+  - **Coeficiente da soma da metragem das unidades por metragem de pavimento fora da faixa 80%–85%** — o coeficiente considera a **soma da área de todas as unidades do pavimento**, nunca a área de uma unidade isolada (num prédio de 4 unidades por andar, contabilizam-se as 4). Abaixo da faixa indica que as unidades podem ser otimizadas; acima indica unidades grandes demais para a área de aproveitamento (hall, corredores, escadas e elevadores). Não se aplica a projetos residenciais de casas
 - ✅ Alerta qualitativo de adequação ao mercado:
   - Tipologia, preço por m² e padrão de acabamento escolhidos devem ser coerentes com o perfil socioeconômico do bairro/região (evitar produto luxuoso em região de menor poder aquisitivo e vice-versa)
 - ✅ Sem análise profunda — apenas apontadores para validação futura
@@ -166,32 +171,39 @@ Recomendação:
   - **Incorporador**: o preço pedido pelo terreno é fixado como dado de entrada e o resultado é a **margem de lucro resultante** para o incorporador
   - Ambos partem da mesma base de cálculo (seção 4.1); muda apenas qual variável é fixada e qual é resolvida
 
-#### 2.7 Persistência de Dados
-- ✅ Autenticação obrigatória (login/cadastro)
-- ✅ Backend em servidor para armazenar análises
-- ✅ Até 3 análises podem ser salvas por usuário
-- ✅ Acesso direto ao histórico de análises salvas
+#### 2.7 Acesso e Persistência
+
+**Sem autenticação no MVP.** Não há cadastro, login, senha nem conta de usuário. O acesso é liberado pela compra e mantido por um link pessoal enviado por e-mail.
+
+- ✅ **1º acesso**: o usuário conclui o checkout de compra → com a compra confirmada, ele é levado direto à página inicial do produto **e** recebe por e-mail o link de acesso
+- ✅ **2º acesso e seguintes**: pelo link recebido no e-mail
+- ✅ O link é validado pelo servidor contra um registro mínimo de acessos emitidos na compra (e-mail, token e validade), o que permite expirar e revogar acessos. Nenhum dado de análise do usuário é guardado nesse registro
+- ✅ **Uma análise por acesso, sem persistência para o usuário**: cada acesso é uma análise nova. O usuário não tem histórico, não salva e não retoma análises anteriores — **para conservar um resultado, ele precisa exportá-lo** (ver 2.8)
+- ✅ **Armazenamento interno da LASTRO**: os resultados gerados e os dados de uso (acessos, tempo de permanência no link e afins) são armazenados pela LASTRO para acompanhamento do produto. Esses dados não são devolvidos ao usuário nem compõem histórico na interface (ver 6.3 para tratamento e privacidade)
+
+*Decisão de arquitetura: autenticação, múltiplas análises e histórico foram deliberadamente adiados para simplificar o MVP — ver Roadmap (seção 8).*
 
 #### 2.8 Exportação
 - ✅ Relatório em PDF com resultado completo
 - ✅ Relatório em HTML compartilhável (link para terceiros)
+- ✅ **A exportação é a única forma de o usuário conservar a análise** — sem ela, o resultado se perde ao fim do acesso. A interface deve deixar isso explícito antes que o usuário saia da tela de resultado
+- ✅ O documento exportado carrega o snapshot das premissas e da versão de dados usadas no cálculo (auditoria — ver 10.5)
 
 #### 2.9 Onboarding e UX
-- ✅ Se é primeira vez: onboarding explicando a metodologia
-- ✅ Se já tem análises: acesso direto ao histórico
+- ✅ Onboarding explicando a metodologia no primeiro acesso, com opção de revê-lo
+- ✅ Acesso direto ao formulário de análise nos acessos seguintes
 - ✅ Responsivo para mobile e desktop
-- ✅ Sem dark mode (v1)
+- ✅ **Dark mode** — o design system LASTRO já define a paleta escura (`--lastro-dark-*`)
 
 #### 2.10 Dados de Baseline
-- ✅ Parâmetros centralizados (sem números mágicos no código), versionados e com snapshot na análise salva:
+- ✅ Parâmetros centralizados (sem números mágicos no código), versionados e com snapshot no resultado exportado e no registro interno:
   - Percentuais de terreno e lucro por padrão
   - Tabelas de aditivos (fundação, padrão, topografia, formato)
   - Composição das despesas gerais sobre o VGV
   - Taxa de ocupação default
   - Faixas de normalidade dos KPIs
-- ✅ **Dados de importação periódica (processo manual/admin)** — não há API pública confirmada para nenhuma das duas fontes:
+- ✅ **Dados de importação periódica (processo manual/admin)** — não há API pública confirmada:
   - CUB Sinduscon-MG: custo unitário básico de construção (R$/m²), publicado em boletim mensal em PDF
-  - FipeZap: preços de mercado por m² (disponibilidade e formato a verificar — ver 3.4)
 - ✅ **Integração com API pública externa:**
   - Consulta de CEP (ex.: ViaCEP) para auto-preenchimento de logradouro e bairro
 
@@ -201,9 +213,11 @@ Recomendação:
 - ❌ Loteamento como tipo de projeto (modelo de custo de urbanização não usa CUB e ainda não está definido) → *Roadmap, seção 8*
 - ❌ "Comprar a terra / Terra para investir" (análise de valorização, sem construção) → *Roadmap, seção 8*
 - ❌ Conjuntos de casas, prédios ou galpões (múltiplas edificações em um mesmo terreno)
+- ❌ **Autenticação de usuário** (cadastro, login, senha, conta) → *Roadmap, seção 8*
+- ❌ **Múltiplas análises, histórico e retomada de análise salva** → *Roadmap, seção 8*
+- ❌ **Base de preços de mercado** (a referência FipeZap foi retirada do produto; o usuário confronta o preço por m² com o mercado por conta própria)
 - ❌ Análise técnica profunda (fundações, solo, topografia detalhada) → *Futuro produto da LASTRO*
 - ❌ Mobile app nativo (apenas web responsivo v1)
-- ❌ Dark mode
 - ❌ Integração com plataformas (OLX, imobiliárias)
 - ❌ Marketplace de terrenos
 - ❌ Cálculos de financiamento/empréstimos
@@ -354,13 +368,14 @@ No MVP o IA **não** é um coeficiente pré-determinado que dita a área constru
 Área Comercializável      = Número Total de Unidades × Área da Unidade Vendida
 
 Coeficiente de Aproveitamento (IA) atingido = Área Total Construída ÷ Área Total do Terreno
-Coeficiente de unidade por metragem de pavimento
+Coeficiente da soma da metragem das unidades por metragem de pavimento
     = (Unidades por Pavimento × Área da Unidade) ÷ Área Utilizada do Terreno
+      (o numerador é a SOMA das áreas de todas as unidades do pavimento)
 ```
 
 - O **Custo de Obra** incide sobre a **Área Total Construída** (inclui hall, corredores, escadas e elevadores).
 - O **VGV** incide sobre as **unidades vendidas** (área comercializável), nunca sobre a área construída.
-- O **coeficiente de unidade por metragem de pavimento** deve ficar entre **80% e 85%**; o residual corresponde a hall, corredores, escadas e elevadores. Não se aplica a projetos residenciais de casas.
+- O **coeficiente da soma da metragem das unidades por metragem de pavimento** deve ficar entre **80% e 85%**; o residual corresponde a hall, corredores, escadas e elevadores. O numerador soma **todas** as unidades do pavimento — nunca uma unidade isolada. Não se aplica a projetos residenciais de casas.
 - **Taxa de ocupação, IA e altura máxima admissíveis por zona**: não embutidos no MVP — o app exibe os valores atingidos e alerta o usuário para validá-los na legislação local.
 
 ### 3.4 Dados Externos
@@ -371,19 +386,16 @@ Coeficiente de unidade por metragem de pavimento
   - **Processo no MVP**: importação periódica/manual por administrador, com registro de competência (mês/ano), data de emissão e arquivo de origem
   - Consultado conforme a classificação do formulário (projeto CUB + padrão) e aplicado com os aditivos da seção 3.2
 
-- **FipeZap**: preços de mercado por m² (segmentado por tipologia e região)
-  - Fonte de validação para alertar sobre preços de venda superestimados
-  - **Não há API pública confirmada** — disponibilidade, formato e condições de uso **TBD**, exigem verificação real antes de qualquer automação
-  - **Processo no MVP**: importação periódica/manual por administrador, mesmo tratamento do CUB
-
 - **API pública de CEP** (ex.: ViaCEP): consulta GET, sem chave
   - Uso: auto-preenchimento de logradouro e bairro a partir do CEP informado
   - Falha ou indisponibilidade **não bloqueia** a análise — o usuário preenche manualmente
   - Sujeita à verificação técnica de disponibilidade e termos de uso antes da implementação
 
-**Armazenamento, Versionamento e Fallback (vale para CUB e FipeZap):**
+**Sem base de preços de mercado no MVP:** a referência FipeZap foi retirada do produto. O app calcula e exibe o preço por m² vendido, mas não o confronta com nenhuma base — cabe ao usuário avaliar se o preço é compatível com o mercado da região (ver alerta qualitativo em 2.4).
+
+**Armazenamento, Versionamento e Fallback (CUB):**
 - Cada importação gera uma versão datada; nada é sobrescrito
-- A análise salva preserva o snapshot da versão de dados usada (auditoria de premissas)
+- O resultado exportado e o registro interno preservam o snapshot da versão de dados usada (auditoria de premissas)
 - Sistema alerta o usuário se os dados estiverem desatualizados (critério TBD, ex.: mais de 30 dias)
 - Fallback: manter as últimas N versões disponíveis e continuar operando com a mais recente válida
 
@@ -449,7 +461,7 @@ Ambas as perspectivas usam a mesma base de cálculo; muda apenas qual variável 
 | Custo de Obra / VGV | **40% a 65%** | Todas |
 | Despesas Gerais / VGV | 10% a 15% | Todas |
 | Lucro Incorporador / VGV | 20% a 25% conforme o padrão (Baixo 20%, Normal 22%, Alto 25%) | Todas |
-| Coeficiente de unidade por metragem de pavimento | 80% a 85% | N/A para casas unifamiliares |
+| Coeficiente da soma da metragem das unidades por metragem de pavimento | 80% a 85% | N/A para casas unifamiliares |
 
 **Alertas de Normalidade:**
 - Se Preço Pedido pelo Terreno > Resultado Terreno: "Preço ofertado acima do viável para o projeto hipotético — recomenda-se negociar ou ajustar o projeto"
@@ -457,8 +469,8 @@ Ambas as perspectivas usam a mesma base de cálculo; muda apenas qual variável 
 - Se Custo de Obra / VGV estiver **fora da faixa 40%–65%**: "Custo de implementação muito abaixo/acima do esperado para esta tipologia" (KPI de alerta ao usuário, em ambas as direções)
 - Se Despesas Gerais / VGV estiver fora de 10%–15%: "Despesas gerais fora do intervalo usual"
 - Se Lucro% < limite inferior da faixa: "Margem de lucro abaixo do esperado para este mercado"
-- Se coeficiente de unidade por metragem de pavimento < 80%: "Há espaço para otimizar o tamanho das unidades"
-- Se coeficiente de unidade por metragem de pavimento > 85%: "Unidades grandes demais para a área de aproveitamento — revisar o projeto"
+- Se o coeficiente da soma da metragem das unidades por metragem de pavimento < 80%: "Há espaço para otimizar o tamanho das unidades"
+- Se o coeficiente da soma da metragem das unidades por metragem de pavimento > 85%: "Unidades grandes demais para a área de aproveitamento — revisar o projeto"
 
 *Os alertas são orientativos, não conclusivos, e não bloqueiam a análise.*
 
@@ -474,6 +486,8 @@ Score baseado em:
 
 > **Pendência registrada (revisão 1.1):** os **pesos (40/30/20/10)** e os **limiares de recomendação (4.4)** foram mantidos sem alteração nesta revisão. Apenas os **inputs** que alimentam o score foram realinhados às faixas e percentuais das seções 3 e 4.2. A metodologia de pontuação do LASTRO Score segue **pendente de validação** e só pode ser alterada com aprovação explícita.
 
+> ⚠️ **Pendência aberta pela revisão 1.2:** com a retirada da base FipeZap, o critério **"Potencial de mercado (10 pontos)"** fica **sem fonte de dados**. Definir como pontuá-lo (por critério qualitativo, por outro indicador, ou redistribuindo os 10 pontos) é uma alteração do LASTRO Score e **exige aprovação explícita** — não resolver por conta própria na implementação.
+
 ### 4.4 Recomendação Final
 
 - 🟢 **COMPRAR**: Viável, score > 70, todos os percentuais OK
@@ -484,23 +498,32 @@ Score baseado em:
 
 ## 5. Fluxo de Usuário
 
-### 5.1 Novo Usuário
-1. Acessa app → Redireciona para login/cadastro
-2. Após autenticação → Mostra onboarding da metodologia
-3. Clica "Começar análise" → Abre formulário vazio
+Não há cadastro, login nem histórico. O acesso nasce da compra e se mantém por um link pessoal (ver 2.7).
 
-### 5.2 Usuário Retornando
-1. Acessa app → Login
-2. Mostra histórico de análises salvas (até 3)
-3. Pode abrir uma análise anterior ou criar nova
+### 5.1 Primeiro Acesso (pós-compra)
+1. Usuário conclui o **checkout de compra** (Kiwify)
+2. Compra confirmada → a plataforma notifica a LASTRO, que emite o **link de acesso** (token + validade) para aquele e-mail
+3. Em paralelo:
+   - Usuário é levado direto à **página inicial do produto**, já com acesso liberado
+   - Usuário **recebe o link de acesso por e-mail** (Resend), para voltar depois
+4. Onboarding explicando a metodologia
+5. "Começar análise" → formulário vazio
+
+### 5.2 Acessos Seguintes
+1. Usuário abre o **link recebido por e-mail**
+2. Servidor valida o token contra o registro de acessos (válido / expirado / revogado)
+   - Link inválido ou expirado → tela explicando o motivo e como recuperar o acesso
+3. Acesso liberado → vai direto ao formulário de análise (onboarding fica disponível para consulta, mas não se repete)
 
 ### 5.3 Fluxo de Análise
-1. **Preencher formulário**: Dados do terreno e projeto
-2. **Sistema calcula**: VGV, custos, viabilidade
-3. **Mostra resultado interativo**: Score, decisão, detalhes
-4. **Usuário ajusta**: Pode mudar premissas e ver resultado atualizar
-5. **Salva análise**: Se satisfeito, salva (máx 3)
-6. **Exporta**: PDF para uso pessoal ou HTML para compartilhar
+1. **Preencher formulário**: dados do terreno (Etapa 1) e do produto (Etapa 2)
+2. **Sistema calcula**: VGV, custo de obra, despesas, resíduo do terreno e viabilidade
+3. **Mostra resultado interativo**: Score, decisão, composição de custos, alertas
+4. **Usuário ajusta**: muda premissas na perspectiva Terrenista ou Incorporador e vê o resultado atualizar
+5. **Exporta**: PDF ou HTML — **único meio de conservar a análise**; a interface avisa que o resultado não fica salvo
+6. Nova análise → recomeça do formulário vazio; a análise anterior **não** é recuperável pelo usuário
+
+*Nos bastidores, cada análise gerada e os dados de uso são registrados pela LASTRO (ver 2.7 e 6.3), sem qualquer efeito sobre o que o usuário vê.*
 
 ---
 
@@ -522,14 +545,22 @@ Score baseado em:
 **Database:**
 - PostgreSQL (Replit Database integrado)
 - ORM: Prisma ou TypeORM (TBD)
+- Tabelas do MVP — **não há tabela `users`** (sem autenticação):
+  - `accesses`: acessos emitidos na compra (e-mail, token, validade, estado). Base da validação do link e dos indicadores de uso
+  - `access_events`: eventos de uso (abertura do link, tempo de permanência e afins)
+  - `analyses`: resultados gerados, armazenados pela LASTRO para acompanhamento do produto — **não expostos ao usuário** e sem função de histórico na interface
+  - `external_data`: versões importadas do CUB
+  - `parameters`: premissas e faixas centralizadas e versionadas
 
-**Auth:**
-- JWT (access + refresh tokens)
-- Bcrypt para hash de senhas
+**Acesso (sem autenticação):**
+- Sem cadastro, login, senha ou sessão de usuário — portanto **sem JWT de usuário e sem bcrypt** no MVP
+- Link de acesso com token de alta entropia, validado no servidor contra `accesses`, com expiração e possibilidade de revogação
 
 **Integração Externa:**
+- **Kiwify** (checkout): webhook de compra aprovada dispara a emissão do acesso. Exige validação da assinatura do webhook e tratamento idempotente (reenvios não podem gerar acessos duplicados)
+- **Resend** (e-mail transacional): envio do e-mail com o link de acesso. Falha de envio precisa ser observável e reprocessável — o usuário que pagou não pode ficar sem link
 - **API pública de CEP** (ex.: ViaCEP): GET, sem chave, para auto-preenchimento de logradouro e bairro. Falha na consulta não bloqueia a análise (preenchimento manual como fallback). Disponibilidade e termos de uso a verificar antes da implementação
-- **CUB Sinduscon-MG e FipeZap: sem integração via API.** Não há API pública confirmada para nenhuma das duas fontes (o CUB é publicado em boletim mensal PDF). São tratados como **dados de importação periódica**:
+- **CUB Sinduscon-MG: sem integração via API.** Não há API pública confirmada (o CUB é publicado em boletim mensal PDF). É tratado como **dado de importação periódica**:
   - Rotina administrativa de importação (upload/parse do boletim ou carga de planilha) para a tabela `external_data`
   - Cada carga registra competência, data de emissão e origem; versões anteriores são preservadas
   - Aplicação consome sempre a versão vigente, com fallback para a última versão válida e alerta de dados desatualizados
@@ -543,10 +574,14 @@ Score baseado em:
 - Atualização dinâmica em tempo real com ajustes
 - Exportação PDF em < 3s
 
-### 6.3 Segurança
-- Validação de entrada em formulário
+### 6.3 Segurança e Privacidade
+- Validação de entrada em formulário (frontend e, obrigatoriamente, backend)
 - HTTPS obrigatório
 - Proteção de dados sensíveis (dados de terreno não públicos)
+- **Link de acesso**: token de alta entropia, imprevisível, transmitido só por e-mail e sobre HTTPS. Como o link é o único fator de acesso, ele precisa ter validade definida (TBD) e poder ser revogado. Quem tiver o link tem acesso — o risco de repasse é aceito nesta versão e some quando a autenticação entrar (seção 8)
+- **Webhook de compra**: validar assinatura da Kiwify e tratar reenvios de forma idempotente
+- **Dados armazenados pela LASTRO** (resultados de análise e uso): embora o usuário não tenha conta, o e-mail da compra e os dados do terreno analisado são dados pessoais/de negócio. Definir base legal, política de retenção e anonimização conforme a LGPD antes do lançamento — **TBD, não implementar sem essa definição**
+- Segredos de Kiwify, Resend e banco somente em variáveis de ambiente, nunca no frontend ou no repositório
 
 ### 6.4 Responsividade
 - Desktop (1024px+)
@@ -564,9 +599,9 @@ Score baseado em:
 
 | Requisito | Descrição |
 |-----------|-----------|
-| Autenticação | Login obrigatório, dados salvos por usuário |
-| Armazenamento | Até 3 análises salvas por usuário |
-| Atualização de dados | CUB e FipeZap importados periodicamente por processo administrativo (TBD frequência), com versionamento e fallback |
+| Acesso | Sem autenticação; liberado pela compra e mantido por link pessoal com validade e revogação |
+| Armazenamento | Nenhuma análise salva para o usuário — uma análise por acesso, conservada apenas via exportação. A LASTRO armazena internamente os resultados e os dados de uso |
+| Atualização de dados | CUB importado periodicamente por processo administrativo (TBD frequência), com versionamento e fallback |
 | Idioma | Português (Brasil) v1 |
 | Timezone | Horário de Brasília |
 | Acessibilidade | WCAG 2.1 Level AA (desejável v1) |
@@ -576,21 +611,23 @@ Score baseado em:
 ## 8. Roadmap Futuro (Fase 2+)
 
 ### Curto Prazo (Post-MVP)
-1. **Novo tipo de projeto: Loteamento** — modelo de custo de urbanização a definir (não usa CUB)
-2. **Novo tipo de projeto: "Comprar a terra / Terra para investir"** — análise de valorização, sem construção
-3. Exportação em Excel
-4. Comparativo entre múltiplos ativos
-5. Refinamento de regras e parâmetros conforme feedback de usuários
-6. Validação da metodologia do LASTRO Score (pesos e limiares)
+1. **Autenticação de usuário** (cadastro/login, JWT, senhas em bcrypt) — adiada no MVP para simplificar a arquitetura
+2. **Múltiplas análises, histórico e retomada** — depende da autenticação
+3. **Novo tipo de projeto: Loteamento** — modelo de custo de urbanização a definir (não usa CUB)
+4. **Novo tipo de projeto: "Comprar a terra / Terra para investir"** — análise de valorização, sem construção
+5. Exportação em Excel
+6. Comparativo entre múltiplos ativos
+7. Refinamento de regras e parâmetros conforme feedback de usuários
+8. Validação da metodologia do LASTRO Score (pesos, limiares e o critério de potencial de mercado — ver 4.3)
 
 ### Médio Prazo
 1. Conjuntos de casas, prédios ou galpões (múltiplas edificações em um mesmo terreno)
 2. Uso Misto com mapeamento CUB definido
 3. Análise técnica profunda (novo produto: "Lastro Engineering")
 4. Suporte a mais estados/regiões
-5. Integração com plataformas imobiliárias
-6. Mobile app nativo
-7. Dark mode
+5. Base de preços de mercado para validar o preço de venda (fonte a definir)
+6. Integração com plataformas imobiliárias
+7. Mobile app nativo
 
 ### Longo Prazo
 1. Marketplace de terrenos
@@ -614,8 +651,8 @@ Score baseado em:
 ## 10. Observações e Considerações
 
 ### 10.1 Validação de Dados
-- Sistema deve alertar se preço de venda for superestimado vs. baseline de mercado
-- Não deve impedir entrada, mas avisar o usuário
+- Sem base de preços de mercado no MVP: o app devolve o preço por m² calculado e alerta qualitativamente sobre adequação ao perfil do bairro (2.4), cabendo ao usuário o confronto com o mercado
+- Alertas não devem impedir a entrada de dados, apenas avisar o usuário
 
 ### 10.2 Flexibilidade
 - Premissas devem ser ajustáveis (não hardcoded) para permitir cenários "e se"
@@ -630,7 +667,7 @@ Score baseado em:
 - Responsabilidade do usuário validar depois
 
 ### 10.5 Versioning
-- Guardar histórico de parâmetros usados em cada análise salva
+- O snapshot das premissas e da versão de dados usadas vai no **resultado exportado** (é o que fica com o usuário) e no **registro interno da LASTRO**
 - Permitir auditoria de mudanças de premissas
 
 ---
