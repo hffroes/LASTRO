@@ -536,6 +536,7 @@ Não há cadastro, login nem histórico. O acesso nasce da compra e se mantém p
 - Vite como build tool
 - Responsive design (CSS Modules ou Tailwind)
 - Estrutura: `/src/components`, `/src/pages`, `/src/hooks`, `/src/types`
+- **Design system obrigatório**: toda a parte visual (cor, tipografia, espaçamento, raio, sombra, elevação, ícones, tema claro/escuro) segue os parâmetros definidos em `design-system/` no repositório — tokens em `design-system/tokens/tokens.css`, diretrizes em `design-system/README.md` e o guia visual em `design-system/guide/Lastro Design System.dc.html`. Nenhum componente define cor, fonte, raio ou espaçamento fora desses tokens; ícones restritos ao set Lucide (traço 1.75px, 18px na interface — ver README). Divergência do design system exige justificativa e ajuste do próprio design system, nunca um valor visual avulso no componente
 
 **Backend:**
 - Node.js com Express

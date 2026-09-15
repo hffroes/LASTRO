@@ -38,6 +38,7 @@ Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa com to
 - Ajustes do usuário não alteram padrões globais
 - Alertas são orientativos, não conclusivos
 - Sem login: acesso por link com token validado no backend (validade + revogação); nunca expor ao usuário os dados internos de análises e uso
+- **Toda a parte visual segue o design system em `design-system/`** (tokens de cor/tipografia/espaçamento/raio/sombra em `tokens/tokens.css`, diretrizes em `README.md`, guia em `guide/`) — nenhum valor visual hardcoded fora dos tokens (`@PRD.md` 6.1)
 - Resultado simples primeiro; detalhes progressivos
 
 ## Regras de Comportamento
@@ -61,6 +62,7 @@ Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa com to
 - Interface português BR; monetário real apenas na apresentação; datas no fuso Brasília
 - Validação no frontend e obrigatória no backend; regras de negócio centralizadas (sem duplicação)
 - Respostas API em formato consistente; zero segredos/tokens/credenciais no código ou frontend
+- CSS/estilos consomem os tokens de `design-system/tokens/tokens.css` (via `var(--lastro-*)`); divergência exige ajustar o design system, nunca um valor avulso no componente
 
 ## Segurança e Persistência
 Sem JWT de usuário e sem bcrypt (não há login). Link de acesso com token de alta entropia, validado no servidor, com validade e revogação; webhook Kiwify com assinatura verificada e tratamento idempotente. HTTPS obrigatório, sem dados privados públicos, segredos só em `.env`. Retenção/LGPD dos dados internos e ORM (Prisma ou TypeORM): TBD.
