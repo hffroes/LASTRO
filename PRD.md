@@ -177,7 +177,7 @@ Recomendação:
 
 - ✅ **1º acesso**: o usuário conclui o checkout de compra → com a compra confirmada, ele é levado direto à página inicial do produto **e** recebe por e-mail o link de acesso
 - ✅ **2º acesso e seguintes**: pelo link recebido no e-mail
-- ✅ O link é validado pelo servidor contra um registro mínimo de acessos emitidos na compra (e-mail, token e validade), o que permite expirar e revogar acessos. Nenhum dado de análise do usuário é guardado nesse registro
+- ✅ **Validação de acesso**: o servidor valida cada acesso pelo **token do link** contra o **email de compra registrado**. Somente o email para o qual o link foi emitido (aquele confirmado na compra via Kiwify) pode acessar o link. O registro mínimo armazena: e-mail, token (hash seguro), data de emissão e validade. Isso permite expirar e revogar acessos por email específico. Nenhum dado de análise do usuário é guardado nesse registro
 - ✅ **Uma análise por acesso, sem persistência para o usuário**: cada acesso é uma análise nova. O usuário não tem histórico, não salva e não retoma análises anteriores — **para conservar um resultado, ele precisa exportá-lo** (ver 2.8)
 - ✅ **Armazenamento interno da LASTRO**: os resultados gerados e os dados de uso (acessos, tempo de permanência no link e afins) são armazenados pela LASTRO para acompanhamento do produto. Esses dados não são devolvidos ao usuário nem compõem histórico na interface (ver 6.3 para tratamento e privacidade)
 
