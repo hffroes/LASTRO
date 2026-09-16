@@ -4,11 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mapa de Fases — Terreno Viável</title>
+<link rel="icon" href="design-system/assets/logo/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="design-system/tokens/tokens.css">
+<script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <style>
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
     margin: 0;
     background: var(--lastro-gray-50);
@@ -16,159 +21,245 @@
     font-family: var(--lastro-font-body);
     font-size: 15px;
     line-height: 1.6;
-  }
-  @media (prefers-color-scheme: dark) {
-    body { background: var(--lastro-dark-bg); color: var(--lastro-gray-100); }
-    .card { background: var(--lastro-dark-surface); border-color: var(--lastro-dark-border); }
-    table { background: var(--lastro-dark-raised); }
-    th { background: var(--lastro-dark-border); color: var(--lastro-gray-100); }
-    td { border-color: var(--lastro-dark-border); }
-    a { color: var(--lastro-dark-action); }
-    .legenda-swatch { border-color: var(--lastro-dark-border); }
-    code { background: var(--lastro-dark-raised); color: var(--lastro-blue-300); }
-  }
-  header {
-    background: var(--lastro-navy);
-    color: #fff;
-    padding: 40px 24px 32px;
-  }
-  header .wrap { max-width: 1080px; margin: 0 auto; }
-  header p.eyebrow {
-    font-family: var(--lastro-font-mono);
-    font-size: 13px;
-    letter-spacing: .04em;
-    color: var(--lastro-blue-300);
-    text-transform: lowercase;
-    margin: 0 0 8px;
-  }
-  h1 {
-    font-family: var(--lastro-font-display);
-    font-weight: 700;
-    font-size: 32px;
-    margin: 0 0 8px;
-  }
-  header p.sub { margin: 0; color: var(--lastro-gray-300); max-width: 720px; }
-  main { max-width: 1080px; margin: 0 auto; padding: 32px 24px 80px; }
-  .card {
-    background: #fff;
-    border: 1px solid var(--lastro-gray-200);
-    border-radius: var(--lastro-radius-md);
-    box-shadow: var(--lastro-shadow-sm);
-    padding: 24px;
-    margin-bottom: 32px;
-  }
-  h2 {
-    font-family: var(--lastro-font-display);
-    font-weight: 600;
-    font-size: 20px;
-    margin: 0 0 16px;
-    color: var(--lastro-blue-600);
-  }
-  @media (prefers-color-scheme: dark) { h2 { color: var(--lastro-blue-400); } }
-  ul { padding-left: 20px; margin: 0 0 12px; }
-  li { margin-bottom: 4px; }
-  code {
-    font-family: var(--lastro-font-mono);
-    background: var(--lastro-gray-100);
-    color: var(--lastro-blue-700);
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-size: 13px;
-  }
-  .mermaid { display: flex; justify-content: center; overflow-x: auto; margin: 8px 0; }
-  .nota {
-    font-size: 13.5px;
-    color: var(--lastro-gray-600);
-    background: var(--lastro-blue-50);
-    border-left: 3px solid var(--lastro-blue-500);
-    padding: 10px 14px;
-    border-radius: 0 6px 6px 0;
-    margin: 16px 0 0;
-  }
-  @media (prefers-color-scheme: dark) {
-    .nota { background: var(--lastro-dark-raised); color: var(--lastro-gray-300); }
-  }
-  .table-scroll { overflow-x: auto; margin-top: 16px; }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13.5px;
-    min-width: 640px;
-  }
-  th, td {
-    border: 1px solid var(--lastro-gray-200);
-    padding: 8px 10px;
-    text-align: left;
-    vertical-align: top;
-  }
-  th {
-    background: var(--lastro-gray-100);
-    font-family: var(--lastro-font-mono);
-    font-weight: 500;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: .03em;
-    color: var(--lastro-gray-600);
-    position: sticky;
-    top: 0;
-  }
-  td:first-child, th:first-child { font-family: var(--lastro-font-mono); white-space: nowrap; }
-  td.center, th.center { text-align: center; }
-  .ok { color: var(--lastro-success); font-weight: 600; }
-  .no { color: var(--lastro-gray-400); }
-  .legenda-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px;
-    margin-top: 12px;
-  }
-  .legenda-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13.5px;
-  }
-  .legenda-swatch {
-    width: 20px; height: 20px;
-    border-radius: 5px;
-    border: 1px solid var(--lastro-gray-300);
-    flex-shrink: 0;
-  }
-  footer {
-    text-align: center;
-    color: var(--lastro-gray-500);
-    font-size: 12.5px;
-    padding: 24px;
+    -webkit-font-smoothing: antialiased;
   }
   a { color: var(--lastro-blue-600); }
+  [data-lucide] { width: 18px; height: 18px; stroke-width: 1.75; }
+
+  /* ---------- cabeçalho fixo ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    padding: 14px 32px;
+    background: rgba(246,248,250,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--lastro-gray-200);
+  }
+  .topbar .brand { display: flex; align-items: center; gap: 12px; }
+  .logo-dark { display: none; }
+  .wordmark { font-family: var(--lastro-font-display); font-weight: 600; font-size: 17px; letter-spacing: -0.03em; color: var(--lastro-navy); }
+  .divider { width: 1px; height: 18px; background: var(--lastro-gray-200); }
+  .doc-name { font-size: 13px; color: var(--lastro-gray-500); font-weight: 500; }
+  .chip {
+    font-family: var(--lastro-font-mono); font-size: 11px; color: var(--lastro-gray-600);
+    background: var(--lastro-gray-100); border: 1px solid var(--lastro-gray-200);
+    border-radius: var(--lastro-radius-pill); padding: 4px 10px;
+  }
+
+  main { max-width: 1080px; margin: 0 auto; padding: 0 24px 96px; }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 48px 0 8px; display: flex; flex-direction: column; gap: 16px; }
+  .eyebrow {
+    font-family: var(--lastro-font-mono); font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--lastro-blue-500); font-weight: 500;
+  }
+  h1.display {
+    font-family: var(--lastro-font-display); font-weight: 700; font-size: 40px;
+    letter-spacing: -0.03em; line-height: 1.1; margin: 0; max-width: 760px;
+  }
+  .hero p.lead { font-size: 16px; line-height: 1.6; color: var(--lastro-gray-600); margin: 0; max-width: 680px; }
+
+  .card-plain {
+    background: #fff; border: 1px solid var(--lastro-gray-200); border-radius: var(--lastro-radius-md);
+    box-shadow: var(--lastro-shadow-sm); padding: 24px; margin-top: 20px;
+  }
+  .card-plain ul { margin: 0; padding-left: 20px; }
+  .card-plain li { margin-bottom: 6px; }
+  code {
+    font-family: var(--lastro-font-mono); background: var(--lastro-gray-100); color: var(--lastro-blue-700);
+    padding: 1px 6px; border-radius: 4px; font-size: 13px;
+  }
+
+  /* ---------- tira de KPIs ---------- */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 28px 0 8px; }
+  .kpi-tile {
+    background: #fff; border: 1px solid var(--lastro-gray-200); border-radius: var(--lastro-radius-md);
+    padding: 18px 20px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .kpi-tile.dark { background: var(--lastro-navy); border-color: var(--lastro-navy); }
+  .kpi-label { font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--lastro-gray-600); }
+  .kpi-tile.dark .kpi-label { color: var(--lastro-gray-400); }
+  .kpi-value { font-family: var(--lastro-font-mono); font-size: 26px; font-weight: 500; color: var(--lastro-navy); letter-spacing: -0.02em; }
+  .kpi-tile.dark .kpi-value { color: #fff; }
+  .kpi-note { font-size: 12px; color: var(--lastro-gray-500); }
+  .kpi-tile.dark .kpi-note { color: var(--lastro-blue-300); }
+
+  /* ---------- seções numeradas ---------- */
+  section.doc-section { padding-top: 56px; border-top: 1px solid var(--lastro-gray-200); margin-top: 56px; }
+  section.doc-section:first-of-type { border-top: none; margin-top: 40px; padding-top: 0; }
+  .section-head { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  h2.section-title { font-family: var(--lastro-font-display); font-weight: 600; font-size: 28px; letter-spacing: -0.025em; margin: 0; }
+  .section-head p { font-size: 14.5px; line-height: 1.6; color: var(--lastro-gray-600); margin: 0; max-width: 680px; }
+
+  /* ---------- cards de diagrama ---------- */
+  .diagram-card {
+    background: #fff; border: 1px solid var(--lastro-gray-200); border-radius: var(--lastro-radius-md);
+    box-shadow: var(--lastro-shadow-sm); padding: 20px; overflow-x: auto;
+  }
+  .mermaid { display: flex; justify-content: center; min-width: 720px; }
+
+  /* ---------- caixas de alerta ---------- */
+  .alert { display: flex; gap: 12px; border-radius: 10px; padding: 14px 16px; margin-top: 16px; border: 1px solid; }
+  .alert strong { display: block; font-size: 13.5px; font-weight: 600; margin-bottom: 2px; }
+  .alert span.txt { font-size: 13px; line-height: 1.5; }
+  .alert-info { background: var(--lastro-blue-50); border-color: var(--lastro-blue-200); }
+  .alert-info strong, .alert-info [data-lucide] { color: var(--lastro-blue-700); }
+  .alert-info span.txt { color: var(--lastro-blue-700); }
+  .alert-warning { background: var(--lastro-warning-bg); border-color: var(--lastro-warning); }
+  .alert-warning strong, .alert-warning [data-lucide] { color: var(--lastro-warning); }
+  .alert-warning span.txt { color: var(--lastro-warning); }
+
+  /* ---------- cards de tabela com cabeçalho ---------- */
+  .data-card {
+    background: #fff; border: 1px solid var(--lastro-gray-200); border-radius: var(--lastro-radius-md);
+    box-shadow: var(--lastro-shadow-sm); overflow: hidden; margin-top: 24px;
+  }
+  .data-card-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 16px 20px; border-bottom: 1px solid var(--lastro-gray-100);
+  }
+  .data-card-head strong { font-family: var(--lastro-font-display); font-size: 16px; font-weight: 600; color: var(--lastro-gray-900); }
+  .data-card-head .meta { font-size: 12.5px; color: var(--lastro-gray-500); display: block; margin-top: 2px; }
+  .count-badge {
+    font-family: var(--lastro-font-mono); font-size: 11px; color: var(--lastro-gray-600);
+    background: var(--lastro-gray-100); border: 1px solid var(--lastro-gray-200);
+    border-radius: var(--lastro-radius-pill); padding: 3px 10px; white-space: nowrap;
+  }
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 640px; }
+  thead tr { background: var(--lastro-gray-50); }
+  th {
+    text-align: left; font-family: var(--lastro-font-mono); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--lastro-gray-600);
+    padding: 10px 16px; border-bottom: 1px solid var(--lastro-gray-200); white-space: nowrap;
+  }
+  td { padding: 9px 16px; border-bottom: 1px solid var(--lastro-gray-100); vertical-align: top; color: var(--lastro-gray-800); }
+  tbody tr:hover { background: var(--lastro-gray-50); }
+  td:first-child, th:first-child { font-family: var(--lastro-font-mono); white-space: nowrap; color: var(--lastro-navy); font-weight: 500; }
+  td.center, th.center { text-align: center; }
+  .ok { color: var(--lastro-success); font-weight: 700; }
+  .no { color: var(--lastro-gray-400); }
+
+  /* ---------- legenda / badges ---------- */
+  .pill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 16px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;
+    border-radius: var(--lastro-radius-pill); padding: 7px 12px; border: 1px solid;
+  }
+  .pill .dot { width: 8px; height: 8px; border-radius: 999px; background: currentColor; flex: none; }
+  .pill-fe { color: var(--lastro-blue-700); background: var(--lastro-blue-50); border-color: var(--lastro-blue-200); }
+  .pill-femotor { color: var(--lastro-blue-700); background: var(--lastro-blue-100); border-color: var(--lastro-blue-300); }
+  .pill-febemotor { color: #ffffff; background: var(--lastro-blue-500); border-color: var(--lastro-blue-600); }
+  .pill-banco { color: var(--lastro-success); background: var(--lastro-success-bg); border-color: var(--lastro-success); }
+  .pill-comercial { color: var(--lastro-warning); background: var(--lastro-warning-bg); border-color: var(--lastro-warning); }
+  .pill-label { font-weight: 400; font-size: 12.5px; }
+
+  footer {
+    max-width: 1080px; margin: 0 auto; padding: 24px 24px 40px; border-top: 1px solid var(--lastro-gray-200);
+    text-align: center; color: var(--lastro-gray-500); font-size: 12.5px;
+  }
+
+  /* ---------- tema escuro ---------- */
+  @media (prefers-color-scheme: dark) {
+    body { background: var(--lastro-dark-bg); color: var(--lastro-gray-100); }
+    a { color: var(--lastro-dark-action); }
+    .topbar { background: rgba(10,26,47,0.88); border-bottom-color: var(--lastro-dark-border); }
+    .logo-light { display: none; } .logo-dark { display: inline-block; }
+    .wordmark { color: #fff; }
+    .divider { background: var(--lastro-dark-border); }
+    .doc-name { color: var(--lastro-gray-400); }
+    .chip { background: var(--lastro-dark-raised); border-color: var(--lastro-dark-border); color: var(--lastro-gray-300); }
+    h1.display, h2.section-title, .data-card-head strong { color: #fff; }
+    .hero p.lead, .section-head p { color: var(--lastro-gray-300); }
+    .card-plain, .diagram-card, .data-card, .kpi-tile { background: var(--lastro-dark-surface); border-color: var(--lastro-dark-border); }
+    .kpi-tile.dark { background: #05101f; border-color: var(--lastro-dark-border); }
+    .kpi-value { color: #fff; }
+    .data-card-head { border-bottom-color: var(--lastro-dark-border); }
+    section.doc-section { border-top-color: var(--lastro-dark-border); }
+    thead tr { background: var(--lastro-dark-raised); }
+    th { color: var(--lastro-gray-400); border-bottom-color: var(--lastro-dark-border); }
+    td { border-bottom-color: var(--lastro-dark-border); color: var(--lastro-gray-200); }
+    tbody tr:hover { background: var(--lastro-dark-raised); }
+    td:first-child, th:first-child { color: var(--lastro-dark-action); }
+    code { background: var(--lastro-dark-raised); color: var(--lastro-blue-300); }
+    .count-badge { background: var(--lastro-dark-raised); border-color: var(--lastro-dark-border); color: var(--lastro-gray-300); }
+    .alert-info { background: rgba(47,109,240,0.12); border-color: var(--lastro-dark-action); }
+    .alert-info strong, .alert-info span.txt, .alert-info [data-lucide] { color: #92B8FB; }
+    .alert-warning { background: rgba(194,118,10,0.14); border-color: var(--lastro-warning); }
+    .alert-warning strong, .alert-warning span.txt, .alert-warning [data-lucide] { color: #E3A552; }
+    footer { border-top-color: var(--lastro-dark-border); }
+  }
+
+  @media (max-width: 720px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .topbar { padding: 12px 16px; }
+    .doc-name { display: none; }
+    main { padding: 0 16px 64px; }
+  }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="wrap">
-    <p class="eyebrow">lastro · terreno viável</p>
-    <h1>Mapa de Fases</h1>
-    <p class="sub">Mapa orientativo auxiliar ao <code>plan.md</code>. Mostra como as 34 fases (F00–F33) se relacionam, onde cada dado vive, o que prova objetivamente que uma fase está pronta e qual parte do stack cada fase toca.</p>
+<div class="topbar">
+  <div class="brand">
+    <img class="logo-light" src="design-system/assets/logo/lastro-symbol-color.svg" alt="lastro" width="26" height="26">
+    <img class="logo-dark" src="design-system/assets/logo/lastro-symbol-on-dark.svg" alt="lastro" width="26" height="26">
+    <span class="wordmark">lastro</span>
+    <span class="divider"></span>
+    <span class="doc-name">Mapa de Fases · Terreno Viável</span>
   </div>
-</header>
+  <span class="chip">34 fases · F00–F33</span>
+</div>
 
 <main>
 
-  <section class="card">
-    <h2>Como ler este mapa</h2>
-    <ul>
-      <li><strong>Não substitui o <code>plan.md</code>.</strong> Os 27 campos de cada fase (escopo, testes, riscos, decisões, checkpoint de UX) continuam sendo a referência de execução. Este documento é um índice visual de consulta rápida.</li>
-      <li><strong>Fonte de verdade continua sendo <code>PRD.md</code> e <code>CLAUDE.md</code>.</strong> Todo dado aqui foi extraído do <code>plan.md</code> aprovado — nenhuma regra, tabela ou coeficiente novo foi criado.</li>
-      <li><strong>Critério objetivo ≠ aprovação de UX.</strong> Passar nos testes de uma fase é condição necessária, nunca suficiente, para avançar.</li>
-      <li><strong>Manutenção:</strong> atualize este arquivo (e o <code>mapa-fases.md</code>) no mesmo commit em que o status de uma fase muda no <code>plan.md</code>.</li>
-    </ul>
+  <section class="hero">
+    <span class="eyebrow">mapa orientativo</span>
+    <h1 class="display">Mapa de Fases</h1>
+    <p class="lead">Auxiliar ao <code>plan.md</code>. Mostra como as 34 fases (F00–F33) se relacionam, onde cada dado vive, o que prova objetivamente que uma fase está pronta e qual parte do stack cada fase toca.</p>
+
+    <div class="card-plain">
+      <ul>
+        <li><strong>Não substitui o <code>plan.md</code>.</strong> Os 27 campos de cada fase (escopo, testes, riscos, decisões, checkpoint de UX) continuam sendo a referência de execução. Este documento é um índice visual de consulta rápida.</li>
+        <li><strong>Fonte de verdade continua sendo <code>PRD.md</code> e <code>CLAUDE.md</code>.</strong> Todo dado aqui foi extraído do <code>plan.md</code> aprovado — nenhuma regra, tabela ou coeficiente novo foi criado.</li>
+        <li><strong>Critério objetivo ≠ aprovação de UX.</strong> Passar nos testes de uma fase é condição necessária, nunca suficiente, para avançar.</li>
+        <li><strong>Manutenção:</strong> atualize este arquivo (e o <code>mapa-fases.md</code>) no mesmo commit em que o status de uma fase muda no <code>plan.md</code>.</li>
+      </ul>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-tile">
+        <span class="kpi-label">Fases mapeadas</span>
+        <span class="kpi-value">34</span>
+        <span class="kpi-note">F00 a F33</span>
+      </div>
+      <div class="kpi-tile">
+        <span class="kpi-label">Macroetapas</span>
+        <span class="kpi-value">2</span>
+        <span class="kpi-note">Produto (25) · Comercial (9)</span>
+      </div>
+      <div class="kpi-tile">
+        <span class="kpi-label">Tabelas no banco</span>
+        <span class="kpi-value">5</span>
+        <span class="kpi-note">CLAUDE.md 6.1</span>
+      </div>
+      <div class="kpi-tile dark">
+        <span class="kpi-label">Decisões bloqueantes</span>
+        <span class="kpi-value">16</span>
+        <span class="kpi-note">D-B1 a D-B16</span>
+      </div>
+    </div>
   </section>
 
-  <section class="card">
-    <h2>1. Fluxo de dependências entre as 34 fases</h2>
-    <p>Cadeia real de dependências (campo "12. Dependências" de cada fase) — linear por fase, por desenho: cada fase só começa com a anterior aprovada. As cores indicam a camada de stack predominante (ver Legenda).</p>
-    <div class="mermaid" id="diagrama-dependencias">
+  <section class="doc-section" id="dependencias">
+    <div class="section-head">
+      <span class="eyebrow">01 · Dependências</span>
+      <h2 class="section-title">Fluxo entre as 34 fases</h2>
+      <p>Cadeia real de dependências (campo "12. Dependências" de cada fase) — linear por fase, por desenho: cada fase só começa com a anterior aprovada. As cores indicam a camada de stack predominante (ver Legenda, seção 05).</p>
+    </div>
+    <div class="diagram-card">
+      <div class="mermaid" id="diagrama-dependencias">
 flowchart TD
     classDef fe fill:#DBE8FE,stroke:#1A52D6,color:#0A1A2F
     classDef femotor fill:#BED4FD,stroke:#1A52D6,color:#0A1A2F
@@ -217,13 +308,18 @@ flowchart TD
     end
 
     F24 --> F25
+      </div>
     </div>
   </section>
 
-  <section class="card">
-    <h2>2. Linha do tempo dos dados</h2>
-    <p>Cada dado do produto muda de "casa" ao longo das fases: nasce como estado efêmero no navegador, vira módulo TS versionado (para não ter número mágico antes de existir banco), e só depois migra para PostgreSQL.</p>
-    <div class="mermaid" id="diagrama-dados">
+  <section class="doc-section" id="dados">
+    <div class="section-head">
+      <span class="eyebrow">02 · Dados</span>
+      <h2 class="section-title">Linha do tempo dos dados</h2>
+      <p>Cada dado do produto muda de "casa" ao longo das fases: nasce como estado efêmero no navegador, vira módulo TS versionado (para não ter número mágico antes de existir banco), e só depois migra para PostgreSQL.</p>
+    </div>
+    <div class="diagram-card">
+      <div class="mermaid" id="diagrama-dados">
 flowchart LR
     A["Estado efêmero no navegador<br/>(useAnalise, useState)<br/>F05–F10"] --> B["Módulos TS versionados em memória<br/>parametros.ts · dados/cub-2026-08.ts<br/>F11–F23"]
     B --> C["PostgreSQL: parameters + external_data<br/>(Prisma, migrations, seed)<br/>F24"]
@@ -231,128 +327,179 @@ flowchart LR
     D --> E["Extensões do domínio accesses:<br/>eventos de webhook (F28) · log de envio (F29)"]
     E --> F["PostgreSQL: access_events + analyses<br/>(snapshot de premissas, nunca exposto ao usuário)<br/>F31"]
     F --> G["Agregações de métricas<br/>F32"]
+      </div>
     </div>
-    <p class="nota"><code>eventosCompraRepo</code> (F28) e o log de envio de e-mail (F29) <strong>não são tabelas novas fora das 5 definidas no <code>CLAUDE.md</code></strong> — são extensões dentro do domínio <code>accesses</code> (rastreiam o ciclo de vida do mesmo acesso emitido).</p>
 
-    <h2 style="margin-top:28px;">Tabela × Fases</h2>
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th>Tabela (CLAUDE.md 6.1)</th><th>Cria o schema</th><th>Escrevem</th><th>Leem</th><th>O que armazena</th><th>Restrição do PRD</th></tr></thead>
-        <tbody>
-          <tr><td>parameters</td><td>F24</td><td>F24 (seed/import)</td><td>F13, F17–F19</td><td>Percentuais de terreno/lucro, aditivos, despesas gerais, taxa de ocupação, faixas de alerta — versionados</td><td>2.10 — sem números mágicos; snapshot no exportado e no interno</td></tr>
-          <tr><td>external_data</td><td>F24</td><td>F24 (importação admin, D-B12)</td><td>F12/F13</td><td>Versões do CUB Sinduscon-MG: competência, data de emissão, origem, valores</td><td>3.4 — nunca sobrescreve; fallback; alerta de desatualização</td></tr>
-          <tr><td>accesses</td><td>F27</td><td>F27, F28, F30</td><td>F27, F26, F30</td><td>E-mail, token (hash), validade, estado</td><td>2.7, 6.3 — token de alta entropia; sem JWT/bcrypt de usuário</td></tr>
-          <tr><td>access_events</td><td>F31</td><td>F31</td><td>F32</td><td>Abertura do link, tempo de permanência</td><td>2.7 — não vira histórico nem é exposto ao usuário</td></tr>
-          <tr><td>analyses</td><td>F31</td><td>F13/F17 (via F31)</td><td>F31 (admin), F32</td><td>Resultado gerado + snapshot de premissas e versão de dados</td><td>2.7, 10.5 — armazenamento interno, nunca devolvido ao usuário</td></tr>
-        </tbody>
-      </table>
+    <div class="alert alert-info">
+      <i data-lucide="info"></i>
+      <div>
+        <strong>Não são tabelas novas</strong>
+        <span class="txt"><code>eventosCompraRepo</code> (F28) e o log de envio de e-mail (F29) não são tabelas fora das 5 definidas no <code>CLAUDE.md</code> — são extensões dentro do domínio <code>accesses</code> (rastreiam o ciclo de vida do mesmo acesso emitido).</span>
+      </div>
+    </div>
+
+    <div class="data-card">
+      <div class="data-card-head">
+        <div>
+          <strong>Tabela × Fases</strong>
+          <span class="meta">As 5 tabelas do CLAUDE.md 6.1 — nenhuma inventada</span>
+        </div>
+        <span class="count-badge">5 tabelas</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Tabela</th><th>Cria o schema</th><th>Escrevem</th><th>Leem</th><th>O que armazena</th><th>Restrição do PRD</th></tr></thead>
+          <tbody>
+            <tr><td>parameters</td><td>F24</td><td>F24 (seed/import)</td><td>F13, F17–F19</td><td>Percentuais de terreno/lucro, aditivos, despesas gerais, taxa de ocupação, faixas de alerta — versionados</td><td>2.10 — sem números mágicos; snapshot no exportado e no interno</td></tr>
+            <tr><td>external_data</td><td>F24</td><td>F24 (importação admin, D-B12)</td><td>F12/F13</td><td>Versões do CUB Sinduscon-MG: competência, data de emissão, origem, valores</td><td>3.4 — nunca sobrescreve; fallback; alerta de desatualização</td></tr>
+            <tr><td>accesses</td><td>F27</td><td>F27, F28, F30</td><td>F27, F26, F30</td><td>E-mail, token (hash), validade, estado</td><td>2.7, 6.3 — token de alta entropia; sem JWT/bcrypt de usuário</td></tr>
+            <tr><td>access_events</td><td>F31</td><td>F31</td><td>F32</td><td>Abertura do link, tempo de permanência</td><td>2.7 — não vira histórico nem é exposto ao usuário</td></tr>
+            <tr><td>analyses</td><td>F31</td><td>F13/F17 (via F31)</td><td>F31 (admin), F32</td><td>Resultado gerado + snapshot de premissas e versão de dados</td><td>2.7, 10.5 — armazenamento interno, nunca devolvido ao usuário</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 
-  <section class="card">
-    <h2>3. Critérios objetivos de conclusão por fase</h2>
-    <p>Uma linha por fase, condensada dos campos 15 e 26 do <code>plan.md</code>. Para o detalhe completo, consulte a fase correspondente lá.</p>
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th>Fase</th><th>Critério técnico objetivo</th><th>Teste que comprova</th></tr></thead>
-        <tbody>
-          <tr><td>F00</td><td>App sobe (front+back); tema persiste; <code>/api/v1/saude</code> responde</td><td><code>useTema.test</code>, lint de tokens</td></tr>
-          <tr><td>F01</td><td>5 rotas respondem; navegação preserva tema; 404 funciona</td><td>Testes de componente/rota</td></tr>
-          <tr><td>F02</td><td>1º acesso → onboarding; acessos seguintes → formulário</td><td><code>usePrimeiroAcesso.test</code></td></tr>
-          <tr><td>F03</td><td>Todos os passos acessíveis; "Pular" leva ao formulário</td><td>Teste de navegação</td></tr>
-          <tr><td>F04</td><td>Reabrir do cabeçalho não limpa o formulário em preenchimento</td><td>Teste de estado preservado</td></tr>
-          <tr><td>F05</td><td>Validação bloqueia "Avançar"; estado sobrevive à navegação</td><td>Teste de validação + <code>useAnalise</code></td></tr>
-          <tr><td>F06</td><td>Autopreenchimento funciona; falha da API não bloqueia</td><td><code>useCep.test</code> (4 cenários)</td></tr>
-          <tr><td>F07</td><td>R$/m² = preço ÷ área, com arredondamento testado</td><td>Testes de arredondamento monetário</td></tr>
-          <tr><td>F08</td><td>4 topografias e 2 formatos batem com o PRD 3.2; Etapa 1 conclui</td><td>Teste de seleção + conclusão de etapa</td></tr>
-          <tr><td>F09</td><td>Combinações de taxonomia idênticas ao PRD 3.1; nenhuma inventada</td><td>Teste de taxonomia em cascata</td></tr>
-          <tr><td>F10</td><td>Restrição casa/galpão aplicada; total de unidades e preço/m² corretos</td><td>Testes de regra por tipologia</td></tr>
-          <tr><td>F11</td><td>As 4 fórmulas de área batem com o exemplo de referência do PRD</td><td><code>areas.test.ts</code></td></tr>
-          <tr><td>F12</td><td>CUB Ajustado reproduz R$ 3.154,91/m²; lacunas retornam pendência, nunca valor</td><td><code>cub.test.ts</code></td></tr>
-          <tr><td>F13</td><td>Motor reproduz o cenário de referência; API valida no backend; &lt; 500ms</td><td><code>economia.test.ts</code> + teste de integração</td></tr>
-          <tr><td>F14</td><td>Preço máximo recomendado = Resultado Terreno (perspectiva Terrenista)</td><td>Teste de componente</td></tr>
-          <tr><td>F15</td><td>Linhas e percentuais da composição batem com o PRD 2.5</td><td>Teste de cálculo de percentuais</td></tr>
-          <tr><td>F16</td><td>As duas perspectivas usam a mesma base; margem resultante confere</td><td>Teste de consistência Terrenista/Incorporador</td></tr>
-          <tr><td>F17</td><td>Recalcula &lt; 500ms; ajuste não altera padrão global</td><td>Teste de sobreposição de premissas</td></tr>
-          <tr><td>F18</td><td>Faixas exatas (40–65%, 10–15%, 80–85%); nenhum alerta bloqueia</td><td>Testes de limite por faixa</td></tr>
-          <tr><td>F19</td><td>Score sempre em [0,100]; decisão bate com os limiares 50/70</td><td>Testes de fronteira do score</td></tr>
-          <tr><td>F20</td><td>PDF contém todas as seções do PRD 2.5 + snapshot; &lt; 3s</td><td>Teste de geração + medição de tempo</td></tr>
-          <tr><td>F21</td><td>HTML idêntico ao PDF em conteúdo; sem dado sensível embutido</td><td>Teste de conteúdo/escapamento</td></tr>
-          <tr><td>F22</td><td>Confirmar limpa tudo; cancelar preserva; aviso some se já exportou</td><td>Teste do modal + limpeza de estado</td></tr>
-          <tr><td>F23</td><td>Fluxo completo passa; sem erro de console; três larguras cobertas</td><td><code>fluxo-completo.test.tsx</code></td></tr>
-          <tr><td>F24</td><td>Cálculo idêntico ao da F19, agora servido pelo banco; fallback funciona</td><td>Teste de repositório + comparação pré/pós migração</td></tr>
-          <tr><td>F25</td><td>Landing pública funciona sem acesso; <code>/app</code> isolado</td><td>Teste de rota pública × protegida</td></tr>
-          <tr><td>F26</td><td>Retorno identifica a compra; nenhum segredo no frontend</td><td>Teste dos estados de confirmação</td></tr>
-          <tr><td>F27</td><td>4 estados de token tratados; validação só no servidor</td><td>Testes de token (válido/expirado/revogado/ausente)</td></tr>
-          <tr><td>F28</td><td>Reenvio do mesmo evento não duplica acesso; assinatura inválida rejeita</td><td>Teste de idempotência e de assinatura</td></tr>
-          <tr><td>F29</td><td>E-mail chega com link funcional; falha é registrada e reprocessável</td><td>Teste de envio + retentativa</td></tr>
-          <tr><td>F30</td><td>Recuperação só ao e-mail registrado; revogação tem efeito imediato</td><td>Teste de enumeração impossível + revogação</td></tr>
-          <tr><td>F31</td><td>Snapshot completo gravado; nenhum endpoint do usuário expõe dado interno</td><td>Teste de gravação + teste de não-exposição</td></tr>
-          <tr><td>F32</td><td>Cada métrica do PRD 9 calculada com fórmula documentada</td><td>Teste de cálculo com dados sintéticos</td></tr>
-          <tr><td>F33</td><td>Checklist de segurança 100% cumprido; nenhum segredo no bundle</td><td>Testes de cabeçalhos, rate limit, varredura de segredos</td></tr>
-        </tbody>
-      </table>
+  <section class="doc-section" id="criterios">
+    <div class="section-head">
+      <span class="eyebrow">03 · Critérios</span>
+      <h2 class="section-title">Critérios objetivos de conclusão</h2>
+      <p>Uma linha por fase, condensada dos campos 15 e 26 do <code>plan.md</code>. Para o detalhe completo, consulte a fase correspondente lá.</p>
+    </div>
+    <div class="data-card">
+      <div class="data-card-head">
+        <div>
+          <strong>Critério técnico × teste</strong>
+          <span class="meta">Condição necessária, não suficiente — falta sempre a aprovação de UX</span>
+        </div>
+        <span class="count-badge">34 fases</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Fase</th><th>Critério técnico objetivo</th><th>Teste que comprova</th></tr></thead>
+          <tbody>
+            <tr><td>F00</td><td>App sobe (front+back); tema persiste; <code>/api/v1/saude</code> responde</td><td><code>useTema.test</code>, lint de tokens</td></tr>
+            <tr><td>F01</td><td>5 rotas respondem; navegação preserva tema; 404 funciona</td><td>Testes de componente/rota</td></tr>
+            <tr><td>F02</td><td>1º acesso → onboarding; acessos seguintes → formulário</td><td><code>usePrimeiroAcesso.test</code></td></tr>
+            <tr><td>F03</td><td>Todos os passos acessíveis; "Pular" leva ao formulário</td><td>Teste de navegação</td></tr>
+            <tr><td>F04</td><td>Reabrir do cabeçalho não limpa o formulário em preenchimento</td><td>Teste de estado preservado</td></tr>
+            <tr><td>F05</td><td>Validação bloqueia "Avançar"; estado sobrevive à navegação</td><td>Teste de validação + <code>useAnalise</code></td></tr>
+            <tr><td>F06</td><td>Autopreenchimento funciona; falha da API não bloqueia</td><td><code>useCep.test</code> (4 cenários)</td></tr>
+            <tr><td>F07</td><td>R$/m² = preço ÷ área, com arredondamento testado</td><td>Testes de arredondamento monetário</td></tr>
+            <tr><td>F08</td><td>4 topografias e 2 formatos batem com o PRD 3.2; Etapa 1 conclui</td><td>Teste de seleção + conclusão de etapa</td></tr>
+            <tr><td>F09</td><td>Combinações de taxonomia idênticas ao PRD 3.1; nenhuma inventada</td><td>Teste de taxonomia em cascata</td></tr>
+            <tr><td>F10</td><td>Restrição casa/galpão aplicada; total de unidades e preço/m² corretos</td><td>Testes de regra por tipologia</td></tr>
+            <tr><td>F11</td><td>As 4 fórmulas de área batem com o exemplo de referência do PRD</td><td><code>areas.test.ts</code></td></tr>
+            <tr><td>F12</td><td>CUB Ajustado reproduz R$ 3.154,91/m²; lacunas retornam pendência, nunca valor</td><td><code>cub.test.ts</code></td></tr>
+            <tr><td>F13</td><td>Motor reproduz o cenário de referência; API valida no backend; &lt; 500ms</td><td><code>economia.test.ts</code> + teste de integração</td></tr>
+            <tr><td>F14</td><td>Preço máximo recomendado = Resultado Terreno (perspectiva Terrenista)</td><td>Teste de componente</td></tr>
+            <tr><td>F15</td><td>Linhas e percentuais da composição batem com o PRD 2.5</td><td>Teste de cálculo de percentuais</td></tr>
+            <tr><td>F16</td><td>As duas perspectivas usam a mesma base; margem resultante confere</td><td>Teste de consistência Terrenista/Incorporador</td></tr>
+            <tr><td>F17</td><td>Recalcula &lt; 500ms; ajuste não altera padrão global</td><td>Teste de sobreposição de premissas</td></tr>
+            <tr><td>F18</td><td>Faixas exatas (40–65%, 10–15%, 80–85%); nenhum alerta bloqueia</td><td>Testes de limite por faixa</td></tr>
+            <tr><td>F19</td><td>Score sempre em [0,100]; decisão bate com os limiares 50/70</td><td>Testes de fronteira do score</td></tr>
+            <tr><td>F20</td><td>PDF contém todas as seções do PRD 2.5 + snapshot; &lt; 3s</td><td>Teste de geração + medição de tempo</td></tr>
+            <tr><td>F21</td><td>HTML idêntico ao PDF em conteúdo; sem dado sensível embutido</td><td>Teste de conteúdo/escapamento</td></tr>
+            <tr><td>F22</td><td>Confirmar limpa tudo; cancelar preserva; aviso some se já exportou</td><td>Teste do modal + limpeza de estado</td></tr>
+            <tr><td>F23</td><td>Fluxo completo passa; sem erro de console; três larguras cobertas</td><td><code>fluxo-completo.test.tsx</code></td></tr>
+            <tr><td>F24</td><td>Cálculo idêntico ao da F19, agora servido pelo banco; fallback funciona</td><td>Teste de repositório + comparação pré/pós migração</td></tr>
+            <tr><td>F25</td><td>Landing pública funciona sem acesso; <code>/app</code> isolado</td><td>Teste de rota pública × protegida</td></tr>
+            <tr><td>F26</td><td>Retorno identifica a compra; nenhum segredo no frontend</td><td>Teste dos estados de confirmação</td></tr>
+            <tr><td>F27</td><td>4 estados de token tratados; validação só no servidor</td><td>Testes de token (válido/expirado/revogado/ausente)</td></tr>
+            <tr><td>F28</td><td>Reenvio do mesmo evento não duplica acesso; assinatura inválida rejeita</td><td>Teste de idempotência e de assinatura</td></tr>
+            <tr><td>F29</td><td>E-mail chega com link funcional; falha é registrada e reprocessável</td><td>Teste de envio + retentativa</td></tr>
+            <tr><td>F30</td><td>Recuperação só ao e-mail registrado; revogação tem efeito imediato</td><td>Teste de enumeração impossível + revogação</td></tr>
+            <tr><td>F31</td><td>Snapshot completo gravado; nenhum endpoint do usuário expõe dado interno</td><td>Teste de gravação + teste de não-exposição</td></tr>
+            <tr><td>F32</td><td>Cada métrica do PRD 9 calculada com fórmula documentada</td><td>Teste de cálculo com dados sintéticos</td></tr>
+            <tr><td>F33</td><td>Checklist de segurança 100% cumprido; nenhum segredo no bundle</td><td>Testes de cabeçalhos, rate limit, varredura de segredos</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 
-  <section class="card">
-    <h2>4. Atuação do stack por fase</h2>
-    <p><span class="ok">✓</span> = a fase toca essa camada · <span class="no">—</span> = não toca</p>
-    <div class="table-scroll">
-      <table>
-        <thead><tr><th>Fase</th><th class="center">Frontend<br>(React/TS)</th><th class="center">Backend<br>(Express)</th><th class="center">Motor puro<br>(utils/motor)</th><th class="center">PostgreSQL<br>/Prisma</th><th class="center">Integração<br>externa</th></tr></thead>
-        <tbody>
-          <tr><td>F00</td><td class="center ok">✓</td><td class="center ok">✓ (saúde)</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F01</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F02</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F03</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F04</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F05</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F06</td><td class="center ok">✓</td><td class="center ok">✓ (proxy CEP)</td><td class="center no">—</td><td class="center no">—</td><td class="center ok">✓ ViaCEP</td></tr>
-          <tr><td>F07</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (formatação)</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F08</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F09</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (taxonomia)</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F10</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (regras de programa)</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F11</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (areas.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F12</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (cub.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F13</td><td class="center ok">✓</td><td class="center ok">✓ (rota/controller)</td><td class="center ok">✓ (economia.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F14</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F15</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F16</td><td class="center ok">✓</td><td class="center ok">✓</td><td class="center ok">✓ (economia.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F17</td><td class="center ok">✓</td><td class="center ok">✓</td><td class="center ok">✓ (premissas.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F18</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (kpis.ts, alertas.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F19</td><td class="center ok">✓</td><td class="center ok">✓</td><td class="center ok">✓ (score.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F20</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center ok">✓ lib de PDF (D-B9)</td></tr>
-          <tr><td>F21</td><td class="center ok">✓</td><td class="center ok">✓*</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F22</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F23</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F24</td><td class="center ok">✓ (admin)</td><td class="center ok">✓</td><td class="center ok">✓ (injeção de dados)</td><td class="center ok">✓</td><td class="center no">—</td></tr>
-          <tr><td>F25</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-          <tr><td>F26</td><td class="center ok">✓</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center ok">✓ Kiwify (checkout)</td></tr>
-          <tr><td>F27</td><td class="center ok">✓ (guarda de rota)</td><td class="center ok">✓ (middleware)</td><td class="center no">—</td><td class="center ok">✓ (accesses)</td><td class="center no">—</td></tr>
-          <tr><td>F28</td><td class="center ok">✓ (admin)</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (accesses)</td><td class="center ok">✓ Kiwify (webhook)</td></tr>
-          <tr><td>F29</td><td class="center no">—</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (log de envio)</td><td class="center ok">✓ Resend</td></tr>
-          <tr><td>F30</td><td class="center ok">✓</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (accesses)</td><td class="center ok">✓ Resend</td></tr>
-          <tr><td>F31</td><td class="center no">—</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (analyses, access_events)</td><td class="center no">—</td></tr>
-          <tr><td>F32</td><td class="center ok">✓ (admin)</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (leitura agregada)</td><td class="center no">—</td></tr>
-          <tr><td>F33</td><td class="center ok">✓ (revisão)</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
-        </tbody>
-      </table>
+  <section class="doc-section" id="stack">
+    <div class="section-head">
+      <span class="eyebrow">04 · Stack</span>
+      <h2 class="section-title">Atuação do stack por fase</h2>
+      <p><span class="ok">✓</span> a fase toca essa camada · <span class="no">—</span> não toca.</p>
     </div>
-    <p class="nota">* F21 só usa backend se D-B10 optar por link hospedado (em vez de arquivo baixado).</p>
+    <div class="data-card">
+      <div class="data-card-head">
+        <div>
+          <strong>Frontend · Backend · Motor · Banco · Integrações</strong>
+          <span class="meta">Derivado dos campos 9/10 (arquivos) de cada fase no plan.md</span>
+        </div>
+        <span class="count-badge">34 fases</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Fase</th><th class="center">Frontend<br>(React/TS)</th><th class="center">Backend<br>(Express)</th><th class="center">Motor puro<br>(utils/motor)</th><th class="center">PostgreSQL<br>/Prisma</th><th class="center">Integração<br>externa</th></tr></thead>
+          <tbody>
+            <tr><td>F00</td><td class="center ok">✓</td><td class="center ok">✓ (saúde)</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F01</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F02</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F03</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F04</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F05</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F06</td><td class="center ok">✓</td><td class="center ok">✓ (proxy CEP)</td><td class="center no">—</td><td class="center no">—</td><td class="center ok">✓ ViaCEP</td></tr>
+            <tr><td>F07</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (formatação)</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F08</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F09</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (taxonomia)</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F10</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (regras de programa)</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F11</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (areas.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F12</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (cub.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F13</td><td class="center ok">✓</td><td class="center ok">✓ (rota/controller)</td><td class="center ok">✓ (economia.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F14</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F15</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F16</td><td class="center ok">✓</td><td class="center ok">✓</td><td class="center ok">✓ (economia.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F17</td><td class="center ok">✓</td><td class="center ok">✓</td><td class="center ok">✓ (premissas.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F18</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (kpis.ts, alertas.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F19</td><td class="center ok">✓</td><td class="center ok">✓</td><td class="center ok">✓ (score.ts)</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F20</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center ok">✓ lib de PDF (D-B9)</td></tr>
+            <tr><td>F21</td><td class="center ok">✓</td><td class="center ok">✓*</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F22</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F23</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F24</td><td class="center ok">✓ (admin)</td><td class="center ok">✓</td><td class="center ok">✓ (injeção de dados)</td><td class="center ok">✓</td><td class="center no">—</td></tr>
+            <tr><td>F25</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+            <tr><td>F26</td><td class="center ok">✓</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center ok">✓ Kiwify (checkout)</td></tr>
+            <tr><td>F27</td><td class="center ok">✓ (guarda de rota)</td><td class="center ok">✓ (middleware)</td><td class="center no">—</td><td class="center ok">✓ (accesses)</td><td class="center no">—</td></tr>
+            <tr><td>F28</td><td class="center ok">✓ (admin)</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (accesses)</td><td class="center ok">✓ Kiwify (webhook)</td></tr>
+            <tr><td>F29</td><td class="center no">—</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (log de envio)</td><td class="center ok">✓ Resend</td></tr>
+            <tr><td>F30</td><td class="center ok">✓</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (accesses)</td><td class="center ok">✓ Resend</td></tr>
+            <tr><td>F31</td><td class="center no">—</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (analyses, access_events)</td><td class="center no">—</td></tr>
+            <tr><td>F32</td><td class="center ok">✓ (admin)</td><td class="center ok">✓</td><td class="center no">—</td><td class="center ok">✓ (leitura agregada)</td><td class="center no">—</td></tr>
+            <tr><td>F33</td><td class="center ok">✓ (revisão)</td><td class="center ok">✓</td><td class="center no">—</td><td class="center no">—</td><td class="center no">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="alert alert-warning">
+      <i data-lucide="alert-triangle"></i>
+      <div>
+        <strong>F21 é condicional</strong>
+        <span class="txt">Só usa backend se D-B10 optar por link hospedado (em vez de arquivo baixado).</span>
+      </div>
+    </div>
   </section>
 
-  <section class="card">
-    <h2>Legenda</h2>
-    <p><strong>Cores do fluxo (seção 1) / categorias de stack:</strong></p>
-    <div class="legenda-grid">
-      <div class="legenda-item"><span class="legenda-swatch" style="background:#DBE8FE"></span><strong>FE</strong> — só frontend</div>
-      <div class="legenda-item"><span class="legenda-swatch" style="background:#BED4FD"></span><strong>FE+Motor</strong> — frontend + motor puro</div>
-      <div class="legenda-item"><span class="legenda-swatch" style="background:#5F93F7"></span><strong>FE+BE+Motor</strong> — frontend + API + motor</div>
-      <div class="legenda-item"><span class="legenda-swatch" style="background:#12876A"></span><strong>+Banco</strong> — acrescenta PostgreSQL/Prisma</div>
-      <div class="legenda-item"><span class="legenda-swatch" style="background:#C2760A"></span><strong>Comercial/Segurança</strong> — Macroetapa 2</div>
+  <section class="doc-section" id="legenda">
+    <div class="section-head">
+      <span class="eyebrow">05 · Legenda</span>
+      <h2 class="section-title">Cores, categorias e símbolos</h2>
+      <p>As mesmas cores do fluxograma da seção 01, como badges de leitura rápida.</p>
     </div>
-    <p style="margin-top:16px;"><strong>Símbolos das tabelas:</strong> <span class="ok">✓</span> toca a camada · <span class="no">—</span> não toca · <code>*</code> condicional a uma decisão bloqueante (ver <code>plan.md</code>).</p>
+    <div class="pill-grid">
+      <span class="pill pill-fe"><span class="dot"></span>FE <span class="pill-label">— só frontend</span></span>
+      <span class="pill pill-femotor"><span class="dot"></span>FE+Motor <span class="pill-label">— + motor puro</span></span>
+      <span class="pill pill-febemotor"><span class="dot"></span>FE+BE+Motor <span class="pill-label">— + API Express</span></span>
+      <span class="pill pill-banco"><span class="dot"></span>+Banco <span class="pill-label">— PostgreSQL/Prisma</span></span>
+      <span class="pill pill-comercial"><span class="dot"></span>Comercial/Segurança <span class="pill-label">— Macroetapa 2</span></span>
+    </div>
+    <p style="margin-top:20px; font-size:13.5px; color:var(--lastro-gray-600);">
+      <strong>Símbolos das tabelas:</strong> <span class="ok">✓</span> toca a camada · <span class="no">—</span> não toca · <code>*</code> condicional a uma decisão bloqueante (ver <code>plan.md</code>).
+    </p>
   </section>
 
 </main>
@@ -375,6 +522,7 @@ flowchart LR
     },
     flowchart: { curve: 'basis' }
   });
+  if (window.lucide) { lucide.createIcons(); }
 </script>
 </body>
 </html>
