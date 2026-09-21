@@ -1,8 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 
 export type Tema = 'claro' | 'escuro';
 
+interface ContextoTema {
+  tema: Tema;
+  alternar: () => void;
+}
+
 const CHAVE_ARMAZENAMENTO = 'lastro-tema';
+
+const ContextoTemaReact = createContext<ContextoTema | null>(null);
 
 function lerPreferenciaSistema(): Tema {
   if (typeof window === 'undefined' || !window.matchMedia) {
@@ -32,7 +39,9 @@ function aplicarTemaNoDocumento(tema: Tema): void {
   document.documentElement.setAttribute('data-theme', tema === 'escuro' ? 'dark' : 'light');
 }
 
-export function useTema() {
+// Estado compartilhado via Context: mais de um componente lê o tema (Cabecalho escolhe o
+// logo, AlternadorTema desenha o botão) e todos precisam reagir à mesma alternância.
+export function TemaProvider({ children }: { children: ReactNode }) {
   const [tema, setTema] = useState<Tema>(() => lerTemaArmazenado() ?? lerPreferenciaSistema());
 
   useEffect(() => {
@@ -47,5 +56,13 @@ export function useTema() {
     });
   }, []);
 
-  return { tema, alternar };
+  return <ContextoTemaReact.Provider value={{ tema, alternar }}>{children}</ContextoTemaReact.Provider>;
+}
+
+export function useTema(): ContextoTema {
+  const contexto = useContext(ContextoTemaReact);
+  if (!contexto) {
+    throw new Error('useTema precisa ser usado dentro de <TemaProvider>.');
+  }
+  return contexto;
 }

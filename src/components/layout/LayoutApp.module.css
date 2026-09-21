@@ -1,0 +1,17 @@
+.pagina {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--lastro-surface-base);
+  color: var(--lastro-text-primary);
+}
+
+.faixaEtapas {
+  border-bottom: 1px solid var(--lastro-border-default);
+  background: var(--lastro-surface-raised);
+}
+
+.conteudo {
+  flex: 1;
+  padding: var(--lastro-space-40) var(--lastro-space-24);
+}

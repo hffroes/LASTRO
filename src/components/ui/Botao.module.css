@@ -1,0 +1,38 @@
+.botao {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  font-weight: 600;
+  padding: var(--lastro-space-8) var(--lastro-space-16);
+  border-radius: var(--lastro-radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.botao:focus-visible {
+  outline: 2px solid var(--lastro-action);
+  outline-offset: 2px;
+}
+
+.botao:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.primaria {
+  background: var(--lastro-action);
+  color: var(--lastro-text-on-action);
+}
+
+.primaria:hover:not(:disabled) {
+  background: var(--lastro-blue-600);
+}
+
+.secundaria {
+  background: transparent;
+  color: var(--lastro-text-primary);
+  border-color: var(--lastro-border-default);
+}
+
+.secundaria:hover:not(:disabled) {
+  border-color: var(--lastro-border-strong);
+}

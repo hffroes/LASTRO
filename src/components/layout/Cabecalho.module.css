@@ -1,0 +1,25 @@
+.cabecalho {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--lastro-space-16) var(--lastro-space-24);
+  background: var(--lastro-surface-base);
+  border-bottom: 1px solid var(--lastro-border-default);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--lastro-action);
+  outline-offset: 2px;
+}
+
+.logo {
+  height: var(--lastro-space-40);
+}

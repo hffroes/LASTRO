@@ -1,6 +1,6 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, renderHook, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useTema } from './useTema';
+import { TemaProvider, useTema } from './useTema';
 
 function mockarPreferenciaSistema(prefereEscuro: boolean): void {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
@@ -15,6 +15,18 @@ function mockarPreferenciaSistema(prefereEscuro: boolean): void {
   }));
 }
 
+function DoisConsumidores() {
+  const a = useTema();
+  const b = useTema();
+  return (
+    <div>
+      <span data-testid="tema-a">{a.tema}</span>
+      <span data-testid="tema-b">{b.tema}</span>
+      <button onClick={a.alternar}>alternar</button>
+    </div>
+  );
+}
+
 describe('useTema', () => {
   beforeEach(() => {
     window.localStorage.clear();
@@ -22,13 +34,14 @@ describe('useTema', () => {
   });
 
   afterEach(() => {
+    cleanup();
     vi.restoreAllMocks();
   });
 
   it('usa o tema claro do sistema quando não há preferência salva', () => {
     mockarPreferenciaSistema(false);
 
-    const { result } = renderHook(() => useTema());
+    const { result } = renderHook(() => useTema(), { wrapper: TemaProvider });
 
     expect(result.current.tema).toBe('claro');
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
@@ -37,7 +50,7 @@ describe('useTema', () => {
   it('usa o tema escuro do sistema quando não há preferência salva', () => {
     mockarPreferenciaSistema(true);
 
-    const { result } = renderHook(() => useTema());
+    const { result } = renderHook(() => useTema(), { wrapper: TemaProvider });
 
     expect(result.current.tema).toBe('escuro');
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
@@ -47,7 +60,7 @@ describe('useTema', () => {
     mockarPreferenciaSistema(true);
     window.localStorage.setItem('lastro-tema', 'claro');
 
-    const { result } = renderHook(() => useTema());
+    const { result } = renderHook(() => useTema(), { wrapper: TemaProvider });
 
     expect(result.current.tema).toBe('claro');
   });
@@ -55,7 +68,7 @@ describe('useTema', () => {
   it('alterna o tema, atualiza o documento e persiste em localStorage', () => {
     mockarPreferenciaSistema(false);
 
-    const { result } = renderHook(() => useTema());
+    const { result } = renderHook(() => useTema(), { wrapper: TemaProvider });
 
     act(() => {
       result.current.alternar();
@@ -82,7 +95,7 @@ describe('useTema', () => {
       throw new Error('localStorage bloqueado');
     });
 
-    const { result } = renderHook(() => useTema());
+    const { result } = renderHook(() => useTema(), { wrapper: TemaProvider });
 
     expect(result.current.tema).toBe('claro');
 
@@ -92,5 +105,31 @@ describe('useTema', () => {
 
     expect(result.current.tema).toBe('escuro');
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+  });
+
+  it('lança um erro claro quando usado fora de <TemaProvider>', () => {
+    const consoleErro = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    expect(() => renderHook(() => useTema())).toThrow('useTema precisa ser usado dentro de <TemaProvider>.');
+
+    consoleErro.mockRestore();
+  });
+
+  it('mantém dois consumidores diferentes sincronizados após alternar (regressão do bug de estado duplicado)', () => {
+    mockarPreferenciaSistema(false);
+
+    render(
+      <TemaProvider>
+        <DoisConsumidores />
+      </TemaProvider>,
+    );
+
+    expect(screen.getByTestId('tema-a').textContent).toBe('claro');
+    expect(screen.getByTestId('tema-b').textContent).toBe('claro');
+
+    fireEvent.click(screen.getByRole('button', { name: 'alternar' }));
+
+    expect(screen.getByTestId('tema-a').textContent).toBe('escuro');
+    expect(screen.getByTestId('tema-b').textContent).toBe('escuro');
   });
 });
