@@ -1,0 +1,33 @@
+@import '../../design-system/tokens/tokens.css';
+
+:root {
+  color-scheme: light dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--lastro-font-body);
+  background: var(--lastro-surface-base);
+  color: var(--lastro-text-primary);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--lastro-font-display);
+  margin: 0;
+}
+
+code,
+pre {
+  font-family: var(--lastro-font-mono);
+}

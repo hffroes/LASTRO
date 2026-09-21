@@ -1,0 +1,19 @@
+.botao {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  padding: var(--lastro-space-8) var(--lastro-space-16);
+  border-radius: var(--lastro-radius-pill);
+  border: 1px solid var(--lastro-border-default);
+  background: var(--lastro-surface-raised);
+  color: var(--lastro-text-primary);
+  cursor: pointer;
+}
+
+.botao:hover {
+  border-color: var(--lastro-border-strong);
+}
+
+.botao:focus-visible {
+  outline: 2px solid var(--lastro-action);
+  outline-offset: 2px;
+}

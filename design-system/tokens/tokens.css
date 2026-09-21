@@ -51,4 +51,45 @@
   --lastro-radius-pill: 999px;
   --lastro-shadow-sm: 0 1px 2px rgba(10,26,47,0.06), 0 2px 8px rgba(10,26,47,0.04);
   --lastro-shadow-lg: 0 8px 28px rgba(10,26,47,0.14);
+
+  /* Espaçamento — adição F00 (plan.md), escala de 4px do README */
+  --lastro-space-4: 4px;
+  --lastro-space-8: 8px;
+  --lastro-space-12: 12px;
+  --lastro-space-16: 16px;
+  --lastro-space-24: 24px;
+  --lastro-space-40: 40px;
+  --lastro-space-88: 88px;
+
+  /* Tamanho de tipografia — adição F00 (plan.md), escala do README (display/h1/h2/body/ui/mono) */
+  --lastro-font-size-display: 54px;
+  --lastro-font-size-h1: 32px;
+  --lastro-font-size-h2: 20px;
+  --lastro-font-size-body: 15px;
+  --lastro-font-size-ui: 13.5px;
+  --lastro-font-size-mono: 14px;
+
+  /* Semântico (tema claro) — adição F00 (plan.md), consumido via var(--lastro-*) nos componentes */
+  --lastro-surface-base: #FFFFFF;
+  --lastro-surface-raised: var(--lastro-gray-50);
+  --lastro-surface-sunken: var(--lastro-gray-100);
+  --lastro-text-primary: var(--lastro-navy);
+  --lastro-text-secondary: var(--lastro-gray-600);
+  --lastro-text-on-action: #FFFFFF;
+  --lastro-border-default: var(--lastro-gray-200);
+  --lastro-border-strong: var(--lastro-gray-300);
+  --lastro-action: var(--lastro-blue-500);
+}
+
+/* Semântico (tema escuro) — adição F00 (plan.md), remapeia sobre os tokens --lastro-dark-* já existentes */
+[data-theme="dark"] {
+  --lastro-surface-base: var(--lastro-dark-bg);
+  --lastro-surface-raised: var(--lastro-dark-surface);
+  --lastro-surface-sunken: var(--lastro-dark-raised);
+  --lastro-text-primary: #F4F7FB;
+  --lastro-text-secondary: var(--lastro-gray-300);
+  --lastro-text-on-action: var(--lastro-navy);
+  --lastro-border-default: var(--lastro-dark-border);
+  --lastro-border-strong: var(--lastro-dark-action);
+  --lastro-action: var(--lastro-dark-action);
 }
