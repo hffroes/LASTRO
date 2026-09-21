@@ -148,7 +148,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Opus** |
 | **25. Justificativa** | Define stack, build, convenção de estilo e altera o design system — escolhas que todas as 33 fases seguintes herdam. |
 | **26. Conclusão** | App roda no Replit, tokens estendidos aprovados, lint de tokens passando. |
-| **27. Checkpoint** | `[ ]` Usuário aprova a fundação e o diff do `tokens.css`. |
+| **27. Checkpoint** | `[x]` Usuário aprova a fundação e o diff do `tokens.css`. |
 
 ---
 
@@ -1402,7 +1402,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 
 | Ordem | Macro | Fase | Entrega visível | Complexidade | Modelo | Decisão bloqueante | Status |
 |---|---|---|---|---|---|---|---|
-| 1 | 1 | F00 Fundação e design system | App no ar com tokens e dark mode | Média | Opus | D-R1, D-R4 (resolvidas) | `[ ]` |
+| 1 | 1 | F00 Fundação e design system | App no ar com tokens e dark mode | Média | Opus | D-R1, D-R4 (resolvidas) | `[x]` |
 | 2 | 1 | F01 Shell e navegação | Quatro páginas navegáveis | Baixa | Sonnet | — | `[ ]` |
 | 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[ ]` |
 | 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[ ]` |
