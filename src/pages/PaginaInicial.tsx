@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { AcoesCartao, Cartao } from '../components/ui/Cartao';
+import { Alerta } from '../components/ui/Alerta';
 import { Botao } from '../components/ui/Botao';
 import { usePrimeiroAcesso } from '../hooks/usePrimeiroAcesso';
 import estilos from './PaginaInicial.module.css';
@@ -22,25 +22,41 @@ export function PaginaInicial() {
   }
 
   return (
-    <Cartao>
-      <p className={estilos.rotulo}>lastro — Terreno Viável</p>
+    <div className={estilos.pagina}>
+      <p className={estilos.sobretitulo}>Terreno viável</p>
+
       <h1 className={estilos.display}>Devo adquirir este terreno?</h1>
-      <p className={estilos.subDisplay}>E vale a pena construir aqui?</p>
-      <p className={estilos.corpo}>
-        A LASTRO cruza os dados do terreno com o que você quer construir e devolve uma
-        recomendação clara — comprar, não comprar ou comprar com ressalvas — com a
-        composição de custos por trás do resultado. Leva poucos minutos.
+      <p className={estilos.subtitulo}>E construir aqui vai dar dinheiro?</p>
+
+      <p className={estilos.leitura}>
+        Duas perguntas, uma conta só. A lastro calcula quanto o terreno pode valer para o que
+        você pretende construir, compara com o preço pedido e devolve uma recomendação clara:
+        comprar, não comprar ou comprar com ressalvas.
       </p>
-      <p className={estilos.aviso}>
-        O resultado não fica salvo: para conservar a análise, exporte em PDF ou HTML antes de
-        sair.
+
+      <p className={estilos.metadados}>
+        Poucos minutos · sem cadastro · uma análise por acesso
       </p>
-      <AcoesCartao>
-        <Botao onClick={aoComecarAnalise}>Começar análise</Botao>
-      </AcoesCartao>
-      <button type="button" className={estilos.linkSecundario} onClick={aoVerMetodologia}>
-        Ver a metodologia
-      </button>
-    </Cartao>
+
+      <p className={estilos.preparo}>
+        Tenha à mão a área e o preço pedido do terreno, e o que pretende construir: tipologia,
+        pavimentos, unidades e preço de venda.
+      </p>
+
+      <div className={estilos.acoes}>
+        <Botao tamanho="grande" onClick={aoComecarAnalise}>
+          Começar análise
+        </Botao>
+        <Botao variante="fantasma" tamanho="grande" onClick={aoVerMetodologia}>
+          Ver a metodologia
+        </Botao>
+      </div>
+
+      <div className={estilos.aviso}>
+        <Alerta tom="atencao" titulo="O resultado não fica salvo">
+          Exportar em PDF ou HTML é a única forma de conservar a análise.
+        </Alerta>
+      </div>
+    </div>
   );
 }

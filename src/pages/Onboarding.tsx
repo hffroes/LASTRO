@@ -16,7 +16,7 @@ export function Onboarding() {
       <h1>Onboarding{modoConsulta ? ' (modo consulta)' : ''}</h1>
       <p>Conteúdo definitivo chega na F03/F04.</p>
       <AcoesCartao>
-        <Botao variante="secundaria" onClick={() => navegar(-1)}>
+        <Botao variante="contorno" onClick={() => navegar(-1)}>
           Voltar
         </Botao>
         {!modoConsulta && <Botao onClick={() => navegar('/terreno')}>Avançar</Botao>}

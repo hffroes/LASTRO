@@ -3,7 +3,24 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const RAIZ_SRC = path.resolve(__dirname, '..');
-const PROPRIEDADES_TOKENIZADAS = ['font-size', 'padding', 'margin', 'gap', 'border-radius', 'box-shadow'];
+const PROPRIEDADES_TOKENIZADAS = [
+  'font-size',
+  'padding',
+  'padding-top',
+  'padding-right',
+  'padding-bottom',
+  'padding-left',
+  'margin',
+  'margin-top',
+  'margin-right',
+  'margin-bottom',
+  'margin-left',
+  'gap',
+  'row-gap',
+  'column-gap',
+  'border-radius',
+  'box-shadow',
+];
 
 function listarModulosCss(diretorio: string): string[] {
   return readdirSync(diretorio).flatMap((entrada) => {

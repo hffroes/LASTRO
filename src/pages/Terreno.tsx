@@ -10,7 +10,7 @@ export function Terreno() {
       <h1>Terreno</h1>
       <p>Conteúdo definitivo chega nas fases F05–F08.</p>
       <AcoesCartao>
-        <Botao variante="secundaria" onClick={() => navegar('/onboarding')}>
+        <Botao variante="contorno" onClick={() => navegar('/onboarding')}>
           Voltar
         </Botao>
         <Botao onClick={() => navegar('/produto')}>Avançar</Botao>

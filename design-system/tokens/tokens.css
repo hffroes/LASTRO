@@ -62,16 +62,22 @@
   --lastro-space-88: 88px;
 
   /* Tamanho de tipografia — adição F00 (plan.md), escala do README (display/h1/h2/body/ui/mono) */
-  --lastro-font-size-display: 54px;
-  --lastro-font-size-h1: 32px;
+  /* O display interpola entre os dois tamanhos já documentados (h1 32 e display 54): em 54px fixo
+     ele ocupava 4 linhas e ~40% da tela num viewport de 375px. Nenhum tamanho novo é introduzido. */
+  --lastro-font-size-display: clamp(32px, 7.5vw, 54px);
+  /* Mesmo tratamento no h1, entre h2 (20) e h1 (32): sem isso, no mobile o display cai para 32px
+     e empata com o h1, achatando a hierarquia entre título e subtítulo. */
+  --lastro-font-size-h1: clamp(20px, 5vw, 32px);
   --lastro-font-size-h2: 20px;
   --lastro-font-size-body: 15px;
   --lastro-font-size-ui: 13.5px;
   --lastro-font-size-mono: 14px;
 
   /* Semântico (tema claro) — adição F00 (plan.md), consumido via var(--lastro-*) nos componentes */
-  --lastro-surface-base: #FFFFFF;
-  --lastro-surface-raised: var(--lastro-gray-50);
+  /* Correção da revisão de UX: no guia a página é cinza-50 e o card é branco. Estava invertido,
+     o que fazia a superfície elevada ficar mais escura que o fundo da página. */
+  --lastro-surface-base: var(--lastro-gray-50);
+  --lastro-surface-raised: #FFFFFF;
   --lastro-surface-sunken: var(--lastro-gray-100);
   --lastro-text-primary: var(--lastro-navy);
   --lastro-text-secondary: var(--lastro-gray-600);
@@ -79,6 +85,47 @@
   --lastro-border-default: var(--lastro-gray-200);
   --lastro-border-strong: var(--lastro-gray-300);
   --lastro-action: var(--lastro-blue-500);
+
+  /* Azul de ação aplicado a texto (links, rótulos) — adição da revisão de UX.
+     O blue-500 sobre superfície clara dá 4,32:1 e reprova AA em texto pequeno; o guia já usa
+     o blue-600 nesse papel (texto do botão secundário, links do painel de fontes). */
+  --lastro-action-text: var(--lastro-blue-600);
+
+  /* Alertas (tema claro) — adição da revisão de UX, valores do guia visual, seção 05.
+     Exceção deliberada: o guia usa #A6650A no corpo do alerta de atenção, que dá 4,26:1 e
+     reprova AA; aqui o corpo usa o mesmo #92590A do título (5,23:1). */
+  --lastro-info-bg: var(--lastro-blue-50);
+  --lastro-info-border: var(--lastro-blue-200);
+  --lastro-info-title: var(--lastro-blue-700);
+  --lastro-info-text: var(--lastro-blue-600);
+  --lastro-warning-border: #F2DDB4;
+  --lastro-warning-title: #92590A;
+  --lastro-warning-text: #92590A;
+  --lastro-success-border: #BFE3D8;
+  --lastro-success-title: #0C6A53;
+  --lastro-success-text: #0F7A60;
+  --lastro-danger-border: #F5CCC7;
+  --lastro-danger-title: #C7382E;
+  --lastro-danger-text: #C7382E;
+
+  /* Precisão tipográfica do guia (seção 03) — tracking e entrelinha por nível */
+  --lastro-tracking-display: -0.035em;
+  --lastro-tracking-h1: -0.025em;
+  --lastro-tracking-h2: -0.02em;
+  --lastro-tracking-eyebrow: 0.14em;
+  --lastro-tracking-rotulo: 0.12em;
+  --lastro-leading-display: 1.05;
+  --lastro-leading-h1: 1.15;
+  --lastro-leading-h2: 1.25;
+  --lastro-leading-body: 1.6;
+  --lastro-leading-ui: 1.55;
+
+  /* Larguras de leitura do guia: título até 780px, texto corrido até 620px */
+  --lastro-medida-display: 780px;
+  --lastro-medida-texto: 620px;
+
+  /* Altura do controle padrão do guia (botão md, botão de ícone) */
+  --lastro-altura-controle: 38px;
 }
 
 /* Semântico (tema escuro) — adição F00 (plan.md), remapeia sobre os tokens --lastro-dark-* já existentes */
@@ -90,6 +137,34 @@
   --lastro-text-secondary: var(--lastro-gray-300);
   --lastro-text-on-action: var(--lastro-navy);
   --lastro-border-default: var(--lastro-dark-border);
-  --lastro-border-strong: var(--lastro-dark-action);
+  /* Borda forte no escuro é um cinza, não o azul de ação: com o azul, todo elemento de contorno
+     (botão, pastilha de etapa) passava a parecer ação primária. */
+  --lastro-border-strong: var(--lastro-gray-600);
   --lastro-action: var(--lastro-dark-action);
+  --lastro-action-text: var(--lastro-blue-300);
+
+  /* Cor semântica no escuro — adição da revisão de UX. Antes o tema escuro herdava as cores
+     claras, e o alerta virava uma caixa creme sobre a página navy. O guia (seção 07) resolve
+     com o tom claro do matiz sobre o próprio matiz em 18% de opacidade. */
+  --lastro-success: #6FD8B8;
+  --lastro-warning: #F0B95C;
+  --lastro-danger: #F58C82;
+  --lastro-ai: #B9A6F5;
+  --lastro-info-bg: rgba(47, 109, 240, 0.18);
+  --lastro-info-border: rgba(146, 184, 251, 0.32);
+  --lastro-info-title: var(--lastro-blue-200);
+  --lastro-info-text: var(--lastro-blue-300);
+  --lastro-success-bg: rgba(18, 135, 106, 0.18);
+  --lastro-success-border: rgba(111, 216, 184, 0.32);
+  --lastro-success-title: #6FD8B8;
+  --lastro-success-text: #6FD8B8;
+  --lastro-warning-bg: rgba(194, 118, 10, 0.18);
+  --lastro-warning-border: rgba(240, 185, 92, 0.32);
+  --lastro-warning-title: #F0B95C;
+  --lastro-warning-text: #F0B95C;
+  --lastro-danger-bg: rgba(199, 56, 46, 0.18);
+  --lastro-danger-border: rgba(245, 140, 130, 0.32);
+  --lastro-danger-title: #F58C82;
+  --lastro-danger-text: #F58C82;
+  --lastro-ai-bg: rgba(109, 74, 224, 0.22);
 }

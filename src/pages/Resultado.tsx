@@ -10,7 +10,7 @@ export function Resultado() {
       <h1>Resultado</h1>
       <p>Conteúdo definitivo chega nas fases F13–F21.</p>
       <AcoesCartao>
-        <Botao variante="secundaria" onClick={() => navegar('/produto')}>
+        <Botao variante="contorno" onClick={() => navegar('/produto')}>
           Voltar
         </Botao>
       </AcoesCartao>

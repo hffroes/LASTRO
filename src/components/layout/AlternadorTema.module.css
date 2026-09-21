@@ -1,16 +1,21 @@
+/* Botão de ícone 38x38 do guia: o rótulo textual anterior quebrava em três linhas no mobile. */
 .botao {
-  font-family: var(--lastro-font-body);
-  font-size: var(--lastro-font-size-ui);
-  padding: var(--lastro-space-8) var(--lastro-space-16);
-  border-radius: var(--lastro-radius-pill);
-  border: 1px solid var(--lastro-border-default);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--lastro-altura-controle);
+  height: var(--lastro-altura-controle);
+  flex: none;
+  border-radius: var(--lastro-radius-sm);
+  border: 1px solid var(--lastro-border-strong);
   background: var(--lastro-surface-raised);
-  color: var(--lastro-text-primary);
+  color: var(--lastro-text-secondary);
   cursor: pointer;
 }
 
 .botao:hover {
-  border-color: var(--lastro-border-strong);
+  background: var(--lastro-surface-sunken);
+  color: var(--lastro-text-primary);
 }
 
 .botao:focus-visible {
