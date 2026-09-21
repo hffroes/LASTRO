@@ -182,7 +182,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Composição de layout e roteamento padrão, sem regra de negócio. |
 | **26. Conclusão** | Jornada navegável de ponta a ponta com placeholders. |
-| **27. Checkpoint** | `[ ]` Usuário aprova a estrutura de navegação e o comportamento das etapas. |
+| **27. Checkpoint** | `[x]` Usuário aprova a estrutura de navegação e o comportamento das etapas. |
 
 ---
 
@@ -1403,7 +1403,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | Ordem | Macro | Fase | Entrega visível | Complexidade | Modelo | Decisão bloqueante | Status |
 |---|---|---|---|---|---|---|---|
 | 1 | 1 | F00 Fundação e design system | App no ar com tokens e dark mode | Média | Opus | D-R1, D-R4 (resolvidas) | `[x]` |
-| 2 | 1 | F01 Shell e navegação | Quatro páginas navegáveis | Baixa | Sonnet | — | `[ ]` |
+| 2 | 1 | F01 Shell e navegação | Quatro páginas navegáveis | Baixa | Sonnet | — | `[x]` |
 | 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[ ]` |
 | 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[ ]` |
 | 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[ ]` |
