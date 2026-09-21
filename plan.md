@@ -216,7 +216,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | UI e copy com pequena regra de roteamento condicional. |
 | **26. Conclusão** | Página inicial aprovada em conteúdo e comportamento. |
-| **27. Checkpoint** | `[ ]` Usuário aprova textos, hierarquia e o roteamento do CTA. |
+| **27. Checkpoint** | `[x]` Usuário aprova textos, hierarquia e o roteamento do CTA. |
 
 ---
 
@@ -1404,7 +1404,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 |---|---|---|---|---|---|---|---|
 | 1 | 1 | F00 Fundação e design system | App no ar com tokens e dark mode | Média | Opus | D-R1, D-R4 (resolvidas) | `[x]` |
 | 2 | 1 | F01 Shell e navegação | Quatro páginas navegáveis | Baixa | Sonnet | — | `[x]` |
-| 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[ ]` |
+| 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[x]` |
 | 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[ ]` |
 | 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[ ]` |
 | 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[ ]` |
