@@ -1,0 +1,56 @@
+.rotulo {
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-ui);
+  color: var(--lastro-text-secondary);
+  text-transform: lowercase;
+  margin: 0 0 var(--lastro-space-8);
+}
+
+.display {
+  font-family: var(--lastro-font-display);
+  font-size: var(--lastro-font-size-display);
+  line-height: 1.05;
+  margin: 0 0 var(--lastro-space-8);
+}
+
+.subDisplay {
+  font-family: var(--lastro-font-display);
+  font-size: var(--lastro-font-size-h1);
+  color: var(--lastro-text-secondary);
+  margin: 0 0 var(--lastro-space-16);
+}
+
+.corpo {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-body);
+  color: var(--lastro-text-primary);
+  margin: 0 0 var(--lastro-space-16);
+}
+
+.aviso {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  color: var(--lastro-warning);
+  background: var(--lastro-warning-bg);
+  border-radius: var(--lastro-radius-sm);
+  padding: var(--lastro-space-12) var(--lastro-space-16);
+  margin: 0 0 var(--lastro-space-16);
+}
+
+.linkSecundario {
+  display: inline-block;
+  margin-top: var(--lastro-space-12);
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  color: var(--lastro-action);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.linkSecundario:focus-visible {
+  outline: 2px solid var(--lastro-action);
+  outline-offset: 2px;
+}

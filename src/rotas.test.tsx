@@ -18,7 +18,7 @@ afterEach(cleanup);
 
 describe('rotas', () => {
   it.each([
-    ['/', 'Página inicial'],
+    ['/', 'Devo adquirir este terreno?'],
     ['/onboarding', 'Onboarding'],
     ['/terreno', 'Terreno'],
     ['/produto', 'Produto'],
