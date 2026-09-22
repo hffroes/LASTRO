@@ -36,7 +36,7 @@ Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa com to
 - Valores monetários: nunca de strings; percentuais em convenção única (0.10 vs 10%)
 - Resultado exportado e registro interno preservam snapshot dos parâmetros e da versão de dados usados
 - Ajustes do usuário não alteram padrões globais
-- Alertas são orientativos, não conclusivos
+- Alertas são orientativos, não conclusivos: apontam a due diligence necessária (zoneamento, plano diretor, matrícula/documentação, capacidade de solo) para o usuário avançar com segurança; análise documental/regulatória aprofundada é produto futuro Fase 2+ (`@PRD.md` 8), não escopo do MVP
 - Sem login: acesso por link com token validado no backend (validade + revogação); nunca expor ao usuário os dados internos de análises e uso
 - **Toda a parte visual segue o design system em `design-system/`** (tokens de cor/tipografia/espaçamento/raio/sombra em `tokens/tokens.css`, diretrizes em `README.md`, guia em `guide/`) — nenhum valor visual hardcoded fora dos tokens (`@PRD.md` 6.1)
 - Resultado simples primeiro; detalhes progressivos

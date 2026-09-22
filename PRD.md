@@ -113,7 +113,7 @@ A primeira olha para o preço do terreno; a segunda olha para o resultado do emp
   - **Coeficiente da soma da metragem das unidades por metragem de pavimento fora da faixa 80%–85%** — o coeficiente considera a **soma da área de todas as unidades do pavimento**, nunca a área de uma unidade isolada (num prédio de 4 unidades por andar, contabilizam-se as 4). Abaixo da faixa indica que as unidades podem ser otimizadas; acima indica unidades grandes demais para a área de aproveitamento (hall, corredores, escadas e elevadores). Não se aplica a projetos residenciais de casas
 - ✅ Alerta qualitativo de adequação ao mercado:
   - Tipologia, preço por m² e padrão de acabamento escolhidos devem ser coerentes com o perfil socioeconômico do bairro/região (evitar produto luxuoso em região de menor poder aquisitivo e vice-versa)
-- ✅ Sem análise profunda — apenas apontadores para validação futura
+- ✅ Entrega um **estudo de viabilidade preliminar**: os alertas apontam exatamente onde está a due diligence necessária (zoneamento, plano diretor, documentação/matrícula, capacidade de solo, legislação local) para o usuário avançar com segurança à etapa seguinte — análise documental e regulatória aprofundada é produto futuro (Fase 2+, ver seção 8)
 
 #### 2.5 Output e Recomendação
 Estrutura de resultado:
@@ -625,10 +625,11 @@ Não há cadastro, login nem histórico. O acesso nasce da compra e se mantém p
 1. Conjuntos de casas, prédios ou galpões (múltiplas edificações em um mesmo terreno)
 2. Uso Misto com mapeamento CUB definido
 3. Análise técnica profunda (novo produto: "Lastro Engineering")
-4. Suporte a mais estados/regiões
-5. Base de preços de mercado para validar o preço de venda (fonte a definir)
-6. Integração com plataformas imobiliárias
-7. Mobile app nativo
+4. **Due diligence documental e regulatória** (novo produto): análise aprofundada de lei de uso e ocupação do solo, plano diretor, zoneamento, matrícula e documentação pertinente — complementa o "Lastro Engineering" (técnico) com a camada legal/documental apontada pelos alertas do MVP (ver 2.4)
+5. Suporte a mais estados/regiões
+6. Base de preços de mercado para validar o preço de venda (fonte a definir)
+7. Integração com plataformas imobiliárias
+8. Mobile app nativo
 
 ### Longo Prazo
 1. Marketplace de terrenos
