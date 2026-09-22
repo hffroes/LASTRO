@@ -242,7 +242,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **2. Macroetapa** | 1 |
 | **3. Objetivo** | Explicar a metodologia (método do resíduo do terreno) antes da primeira análise. |
 | **4. Parte da jornada** | "Compreender o que ele faz". |
-| **5. Entrega visível** | Sequência de passos navegável explicando: o que será perguntado, como o cálculo funciona (VGV → custos → resíduo do terreno), o que o resultado entrega e o que ele **não** é (não substitui validação urbanística). |
+| **5. Entrega visível** | Sequência de passos navegável explicando: o que será perguntado, como o cálculo funciona (VGV → custos → resíduo do terreno) e o que o resultado entrega — um **estudo de viabilidade preliminar**, a base que deixa o usuário apto a avançar com segurança para uma análise mais aprofundada (validação urbanística, técnica e legal). |
 | **6. Comportamento esperado** | Avançar/voltar entre os passos, pular para o formulário a qualquer momento, e ao concluir marcar o onboarding como visto. |
 | **7. Escopo incluído** | Estrutura de passos, conteúdo textual da metodologia, botões de navegação e "Pular". |
 | **8. Fora do escopo** | Ilustrações finais, animações, opção "não mostrar novamente" e refinamento de acessibilidade — tudo na F04. |
