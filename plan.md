@@ -13,6 +13,7 @@
 - Cada fase é uma fatia vertical: entrega algo **visível e testável no Replit**.
 - Nenhuma fase começa sem a **aprovação explícita de UX e produto** da anterior (aprovação técnica não substitui).
 - Status: `[ ] Não iniciada` · `[~] Em desenvolvimento` · `[?] Aguardando decisão` · `[>] Aguardando validação no Replit` · `[x] Aprovada`
+- Marca `✓opus`: a fase, além de aprovada, passou por revisão com Opus contra o `design-system/guide/` (contraste medido, três faixas, conformidade com o guia). Ver seção E.
 
 ---
 
@@ -25,7 +26,8 @@
 | D-R1 | CSS Modules × Tailwind (`CLAUDE.md` regra 5) | **CSS Modules**, consumindo `var(--lastro-*)` | F00 |
 | D-R2 | Prisma × TypeORM (`PRD` 6.1) | **Prisma** | F24 |
 | D-R3 | Quando o Postgres entra | **Tarde na M1**: F00–F23 com módulos TS versionados; F24 traz `parameters` + `external_data` | F24 |
-| D-R4 | Lacunas do design system (sem tokens de espaçamento, tamanho de fonte ou mecanismo de tema) | **Estender `design-system/tokens/tokens.css`** na F00, sem alterar valores existentes | F00 |
+| D-R4 | Lacunas do design system (sem tokens de espaçamento, tamanho de fonte ou mecanismo de tema) | **Estender `design-system/tokens/tokens.css`** na F00. A condição "sem alterar valores existentes" foi superada pela revisão pós-F02, que precisou corrigir valores errados — ver D-R5 | F00 |
+| D-R5 | Qual é a fonte de verdade visual e o que uma fase visual precisa provar | **O `design-system/guide/` é a referência**, não o `README.md` nem o `tokens.css`, que são resumos incompletos dele. Toda fase visual mede contraste (AA) e confere as três faixas antes do checkpoint — ver seção E | Revisão pós-F02 |
 
 ### B. Decisões bloqueantes
 
@@ -72,6 +74,18 @@ Podem ser tomadas depois sem retrabalho relevante.
 Todas rastreadas acima: CSS Modules × Tailwind (D-R1) · Prisma × TypeORM (D-R2) · metodologia do LASTRO Score (D-B7) · os 10 pontos de potencial de mercado pós-FipeZap (D-B8) · despesas gerais 11% × 12% (D-B2) · fallback do CUB sem padrão Baixo (D-B4) · ausência de CAL-16 (D-B5) · mapeamento de Uso Misto (D-B6) · critério de desatualização do CUB (D-A3) · quantidade de versões mantidas (D-A4) · fonte e processo de importação do CUB (D-B12) · validade do link (D-B13) · revogação e recuperação (D-B14) · retenção e anonimização (D-B15) · base legal LGPD (D-B15) · biblioteca e estratégia de PDF (D-B9) · formato e segurança do HTML (D-B10) · comportamento de "limpar análise" (D-B11) · métricas (D-B16).
 
 **Regra permanente:** nenhuma dessas pendências pode ser resolvida silenciosamente na implementação. Não inventar fórmulas, percentuais, limiares, dados de mercado, valores de CUB ou regras de fallback. Onde faltar decisão, o parâmetro fica centralizado, marcado `TBD` no código e exposto como pendência na interface quando afetar o resultado.
+
+### E. Regras permanentes de trabalho visual (revisão de UX pós-F02)
+
+A revisão da F02 com Opus abriu o `design-system/guide/Lastro Design System.dc.html` pela primeira vez — nenhuma fase o havia consultado — e encontrou divergências herdadas da F00 que teriam contaminado as 31 fases seguintes. O registro abaixo existe para o erro não se repetir.
+
+1. **O guia é a fonte de verdade visual.** O `README.md` e o `tokens.css` são resumos incompletos dele. Só o guia especifica: botões (md 38px, lg 46px; variantes primária, secundária, contorno, fantasma), alertas (ícone + título + corpo, com borda), o padrão de eyebrow, tracking por nível, entrelinha e larguras de leitura. **Abrir o guia antes de escrever qualquer tela.**
+2. **Contraste é medido, nunca estimado.** O `PRD` 7 exige WCAG 2.1 AA. Na F02, o aviso reprovava com 3,24:1 e o link com 4,32:1, ambos passando despercebidos na aprovação visual. Duas cores do próprio guia também reprovam (`#A6650A` a 4,26:1; `#2F6DF0` sobre cinza-50 a 4,32:1) — nesses casos, usar um passo mais escuro do mesmo matiz e registrar a exceção comentada no `tokens.css`.
+3. **Toda cor semântica precisa existir nos dois temas.** O bloco `[data-theme="dark"]` não redefinia nenhuma cor de alerta, e o aviso virava uma caixa creme sobre a página navy. Ao criar qualquer token de cor, criar o par escuro junto.
+4. **Validar nas três faixas, não só no desktop.** O aceite da F02 pedia "CTA alcançável sem rolagem no desktop" e passou com o botão em 713px de uma tela de 750px no mobile — fora da dobra. Medir a posição dos elementos de ação em 375, 820 e 1280.
+5. **Nenhum valor visual avulso.** Quando o guia usar algo que não existe no `tokens.css`, o token entra no design system (`CLAUDE.md`, convenções de código), nunca direto no componente. O lint de tokens cobre cor e as propriedades de tamanho, incluindo as formas longhand.
+6. **Ícones são do set Lucide** (`lucide-react`, 18px, traço 1.75), nunca desenhados à mão — `PRD` 6.1 e README do design system.
+7. **O Replit não decide design.** Na sincronização da F02, o agente do Replit reescreveu copy e layout por conta própria; o conteúdo aprovado vem do GitHub e sincronização é cópia fiel, não oportunidade de melhoria.
 
 ---
 
@@ -148,7 +162,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Opus** |
 | **25. Justificativa** | Define stack, build, convenção de estilo e altera o design system — escolhas que todas as 33 fases seguintes herdam. |
 | **26. Conclusão** | App roda no Replit, tokens estendidos aprovados, lint de tokens passando. |
-| **27. Checkpoint** | `[ ]` Usuário aprova a fundação e o diff do `tokens.css`. |
+| **27. Checkpoint** | `[x]` Usuário aprova a fundação e o diff do `tokens.css`. `✓opus`: revisada contra o guia na revisão pós-F02 — superfícies clara/elevada estavam invertidas, faltavam tracking, entrelinha e o par escuro das cores semânticas (seção E). |
 
 ---
 
@@ -182,7 +196,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Composição de layout e roteamento padrão, sem regra de negócio. |
 | **26. Conclusão** | Jornada navegável de ponta a ponta com placeholders. |
-| **27. Checkpoint** | `[ ]` Usuário aprova a estrutura de navegação e o comportamento das etapas. |
+| **27. Checkpoint** | `[x]` Usuário aprova a estrutura de navegação e o comportamento das etapas. `✓opus`: revisada contra o guia na revisão pós-F02 — `Botao` fechava em 33px contra os 38px do guia e faltavam as variantes contorno e fantasma; `AlternadorTema` virou botão de ícone (seção E). |
 
 ---
 
@@ -216,7 +230,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | UI e copy com pequena regra de roteamento condicional. |
 | **26. Conclusão** | Página inicial aprovada em conteúdo e comportamento. |
-| **27. Checkpoint** | `[ ]` Usuário aprova textos, hierarquia e o roteamento do CTA. |
+| **27. Checkpoint** | `[x]` Usuário aprova textos, hierarquia e o roteamento do CTA. `✓opus`: revisada contra o guia — aviso e link reprovavam AA (3,24:1 e 4,32:1), CTA ficava fora da dobra no mobile, título em 54px fixos, e o texto violava a regra de caixa baixa da marca (seção E). |
 
 ---
 
@@ -1402,9 +1416,9 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 
 | Ordem | Macro | Fase | Entrega visível | Complexidade | Modelo | Decisão bloqueante | Status |
 |---|---|---|---|---|---|---|---|
-| 1 | 1 | F00 Fundação e design system | App no ar com tokens e dark mode | Média | Opus | D-R1, D-R4 (resolvidas) | `[ ]` |
-| 2 | 1 | F01 Shell e navegação | Quatro páginas navegáveis | Baixa | Sonnet | — | `[ ]` |
-| 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[ ]` |
+| 1 | 1 | F00 Fundação e design system | App no ar com tokens e dark mode | Média | Opus | D-R1, D-R4 (resolvidas) | `[x]` ✓opus |
+| 2 | 1 | F01 Shell e navegação | Quatro páginas navegáveis | Baixa | Sonnet | — | `[x]` ✓opus |
+| 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[x]` ✓opus |
 | 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[ ]` |
 | 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[ ]` |
 | 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[ ]` |

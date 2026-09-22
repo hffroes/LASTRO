@@ -1,0 +1,75 @@
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lastro-space-8);
+  font-family: var(--lastro-font-body);
+  font-weight: 600;
+  border: 1px solid transparent;
+  border-radius: var(--lastro-radius-sm);
+  cursor: pointer;
+}
+
+/* Altura vem da entrelinha explícita: sem ela o botão fechava em 33px, contra os 38px do guia. */
+.medio {
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  padding: var(--lastro-space-8) var(--lastro-space-16);
+}
+
+.grande {
+  font-size: var(--lastro-font-size-body);
+  line-height: var(--lastro-leading-ui);
+  padding: var(--lastro-space-12) var(--lastro-space-24);
+}
+
+.botao:focus-visible {
+  outline: 2px solid var(--lastro-action);
+  outline-offset: 2px;
+}
+
+.botao:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.primaria {
+  background: var(--lastro-action);
+  border-color: var(--lastro-action);
+  color: var(--lastro-text-on-action);
+}
+
+.primaria:hover:not(:disabled) {
+  background: var(--lastro-blue-600);
+  border-color: var(--lastro-blue-600);
+}
+
+.secundaria {
+  background: var(--lastro-blue-50);
+  border-color: var(--lastro-blue-200);
+  color: var(--lastro-blue-600);
+}
+
+.secundaria:hover:not(:disabled) {
+  background: var(--lastro-blue-100);
+}
+
+.contorno {
+  background: var(--lastro-surface-raised);
+  border-color: var(--lastro-border-strong);
+  color: var(--lastro-text-primary);
+}
+
+.contorno:hover:not(:disabled) {
+  background: var(--lastro-surface-sunken);
+}
+
+.fantasma {
+  background: transparent;
+  border-color: transparent;
+  color: var(--lastro-action-text);
+}
+
+.fantasma:hover:not(:disabled) {
+  background: var(--lastro-surface-sunken);
+}

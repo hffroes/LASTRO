@@ -1,0 +1,15 @@
+.cartao {
+  background: var(--lastro-surface-raised);
+  border: 1px solid var(--lastro-border-default);
+  border-radius: var(--lastro-radius-md);
+  box-shadow: var(--lastro-shadow-sm);
+  padding: var(--lastro-space-24);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.acoes {
+  display: flex;
+  gap: var(--lastro-space-12);
+  margin-top: var(--lastro-space-16);
+}

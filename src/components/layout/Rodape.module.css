@@ -1,0 +1,12 @@
+.rodape {
+  padding: var(--lastro-space-24);
+  text-align: center;
+}
+
+.texto {
+  margin: 0;
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-ui);
+  color: var(--lastro-text-secondary);
+  text-transform: lowercase;
+}

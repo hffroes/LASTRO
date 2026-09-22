@@ -1,0 +1,61 @@
+.lista {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lastro-space-8);
+  list-style: none;
+  margin: 0;
+  padding: var(--lastro-space-16) var(--lastro-space-24);
+  flex-wrap: wrap;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--lastro-space-8);
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  color: var(--lastro-text-secondary);
+}
+
+.item:not(:last-child)::after {
+  content: '';
+  width: var(--lastro-space-24);
+  height: 1px;
+  background: var(--lastro-border-default);
+  margin-left: var(--lastro-space-8);
+}
+
+.indice {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--lastro-space-24);
+  height: var(--lastro-space-24);
+  border-radius: var(--lastro-radius-pill);
+  border: 1px solid var(--lastro-border-default);
+  font-family: var(--lastro-font-mono);
+  flex-shrink: 0;
+}
+
+.item[data-estado='ativa'] {
+  color: var(--lastro-text-primary);
+}
+
+.item[data-estado='ativa'] .indice {
+  background: var(--lastro-action);
+  border-color: var(--lastro-action);
+  color: var(--lastro-text-on-action);
+}
+
+.item[data-estado='concluida'] .indice {
+  background: var(--lastro-surface-sunken);
+  border-color: var(--lastro-border-strong);
+  color: var(--lastro-text-primary);
+}
+
+@media (max-width: 480px) {
+  .rotulo {
+    display: none;
+  }
+}
