@@ -40,8 +40,8 @@
 }
 
 .primaria:hover:not(:disabled) {
-  background: var(--lastro-blue-600);
-  border-color: var(--lastro-blue-600);
+  background: var(--lastro-action-hover);
+  border-color: var(--lastro-action-hover);
 }
 
 .secundaria {

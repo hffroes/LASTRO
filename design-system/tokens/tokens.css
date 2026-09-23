@@ -85,6 +85,9 @@
   --lastro-border-default: var(--lastro-gray-200);
   --lastro-border-strong: var(--lastro-gray-300);
   --lastro-action: var(--lastro-blue-500);
+  /* Hover do botão primário — adição da F03. Precisa de par escuro: com o blue-600 fixo, o
+     texto navy do tema escuro caía para 2,68:1 no hover. O guia (seção 07) usa o blue-300. */
+  --lastro-action-hover: var(--lastro-blue-600);
 
   /* Azul de ação aplicado a texto (links, rótulos) — adição da revisão de UX.
      O blue-500 sobre superfície clara dá 4,32:1 e reprova AA em texto pequeno; o guia já usa
@@ -141,6 +144,7 @@
      (botão, pastilha de etapa) passava a parecer ação primária. */
   --lastro-border-strong: var(--lastro-gray-600);
   --lastro-action: var(--lastro-dark-action);
+  --lastro-action-hover: var(--lastro-blue-300);
   --lastro-action-text: var(--lastro-blue-300);
 
   /* Cor semântica no escuro — adição da revisão de UX. Antes o tema escuro herdava as cores

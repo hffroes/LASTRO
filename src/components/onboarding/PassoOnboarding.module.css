@@ -1,0 +1,118 @@
+.passo {
+  display: flex;
+  flex-direction: column;
+}
+
+.sobretitulo {
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-ui);
+  letter-spacing: var(--lastro-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--lastro-action-text);
+  margin: 0 0 var(--lastro-space-12);
+}
+
+.titulo {
+  font-family: var(--lastro-font-display);
+  font-size: var(--lastro-font-size-h1);
+  font-weight: 600;
+  line-height: var(--lastro-leading-h1);
+  letter-spacing: var(--lastro-tracking-h1);
+  text-wrap: pretty;
+  margin: 0;
+}
+
+/* O foco no título é programático (troca de passo), não uma parada de teclado: sem anel. */
+.titulo:focus {
+  outline: none;
+}
+
+.introducao {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-body);
+  line-height: var(--lastro-leading-body);
+  color: var(--lastro-text-primary);
+  text-wrap: pretty;
+  margin: var(--lastro-space-16) 0 0;
+}
+
+.itens {
+  margin: var(--lastro-space-24) 0 0;
+  background: var(--lastro-surface-raised);
+  border: 1px solid var(--lastro-border-default);
+  border-radius: var(--lastro-radius-md);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-4);
+  padding: var(--lastro-space-16);
+}
+
+.item + .item {
+  border-top: 1px solid var(--lastro-border-default);
+}
+
+.rotulo {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-body);
+  font-weight: 600;
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-primary);
+}
+
+.descricao {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  text-wrap: pretty;
+  margin: 0;
+}
+
+.formula {
+  list-style: none;
+  margin: var(--lastro-space-24) 0 0;
+  padding: var(--lastro-space-8) var(--lastro-space-16);
+  background: var(--lastro-surface-raised);
+  border: 1px solid var(--lastro-border-default);
+  border-radius: var(--lastro-radius-md);
+}
+
+.linhaFormula {
+  display: flex;
+  align-items: baseline;
+  gap: var(--lastro-space-8);
+  padding: var(--lastro-space-8) 0;
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-body);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-primary);
+}
+
+.operador {
+  flex: none;
+  width: var(--lastro-space-16);
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-mono);
+  color: var(--lastro-text-secondary);
+}
+
+.linhaFormula[data-resultado='true'] {
+  border-top: 1px solid var(--lastro-border-strong);
+  font-weight: 600;
+}
+
+.linhaFormula[data-resultado='true'] .operador {
+  color: var(--lastro-text-primary);
+}
+
+.nota {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  text-wrap: pretty;
+  margin: var(--lastro-space-16) 0 0;
+}

@@ -2,6 +2,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it } from 'vitest';
 import { TemaProvider } from './hooks/useTema';
+import { PASSOS_ONBOARDING } from './content/onboarding';
 import { Rotas } from './rotas';
 
 function renderEm(caminho: string) {
@@ -19,7 +20,7 @@ afterEach(cleanup);
 describe('rotas', () => {
   it.each([
     ['/', 'Devo adquirir este terreno?'],
-    ['/onboarding', 'Onboarding'],
+    ['/onboarding', PASSOS_ONBOARDING[0].titulo],
     ['/terreno', 'Terreno'],
     ['/produto', 'Produto'],
     ['/resultado', 'Resultado'],

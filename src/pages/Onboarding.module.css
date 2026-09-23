@@ -1,0 +1,21 @@
+.pagina {
+  max-width: var(--lastro-medida-texto);
+  margin: 0 auto;
+}
+
+/* "Pular" à esquerda e a navegação à direita; no mobile, a navegação quebra para baixo e
+   continua alinhada à direita, onde o polegar alcança o botão principal. */
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lastro-space-12);
+  margin-top: var(--lastro-space-24);
+}
+
+.navegacao {
+  display: flex;
+  gap: var(--lastro-space-12);
+  margin-left: auto;
+}
