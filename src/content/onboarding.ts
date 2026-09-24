@@ -26,7 +26,7 @@ export const PASSOS_ONBOARDING: PassoMetodologia[] = [
     id: 'perguntas',
     titulo: 'Você descreve o terreno e o que pretende construir',
     introducao:
-      'São duas etapas curtas. A conta parte do cenário que você informa; o custo de construção de referência a lastro completa sozinha.',
+      'São duas etapas curtas: você entra com os dados do terreno e do que pretende construir. O custo de construção de referência a lastro faz por você.',
     itens: [
       {
         rotulo: 'Terreno',
@@ -38,6 +38,9 @@ export const PASSOS_ONBOARDING: PassoMetodologia[] = [
           'Tipologia, padrão de acabamento, pavimentos, unidades por pavimento, e a área e o preço de venda de cada unidade.',
       },
     ],
+    // Cobertura geográfica do MVP (PRD 3.5, CLAUDE.md): precisa ficar explícita para o usuário,
+    // não só nos documentos internos.
+    nota: 'Hoje a lastro cobre apenas Minas Gerais. Outros estados chegam em versões futuras.',
   },
   {
     id: 'vgv',
@@ -55,9 +58,9 @@ export const PASSOS_ONBOARDING: PassoMetodologia[] = [
         descricao: 'A soma das unidades vendidas. É ela que gera o VGV.',
       },
       {
-        rotulo: 'Índice de Aproveitamento (IA)',
+        rotulo: 'Coeficiente de Aproveitamento (CA)',
         descricao:
-          'Área construída ÷ área do terreno. A lastro mostra o índice atingido para você conferir com o plano diretor do município.',
+          'Área construída ÷ área do terreno. A lastro mostra o coeficiente atingido para você conferir com o plano diretor do município.',
       },
     ],
   },

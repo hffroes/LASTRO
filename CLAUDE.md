@@ -21,7 +21,7 @@ Fluxo: React → fetch() → API /api/v1/* → Cálculo → PostgreSQL → Resul
 Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa com toggle Terrenista/Incorporador, exportação PDF e HTML, dark mode, alertas orientativos. **Sem autenticação e sem persistência para o usuário**: acesso por link pós-compra (Kiwify → Resend), uma análise por acesso, conservada só via exportação. Fora do MVP: login/histórico/múltiplas análises, base de preços de mercado, Loteamento, "comprar a terra para investir", conjuntos de edificações e demais itens Fase 2+.
 
 ## Regras Críticas de Domínio
-- "IA" = Índice/Coeficiente Aproveitamento urbanístico, nunca IA artificial
+- "CA" = Coeficiente de Aproveitamento urbanístico (antes chamado "IA" no produto), nunca confundir com IA (inteligência artificial)
 - Motor de cálculo = funções puras, determinísticas, testáveis, separadas de UI e persistência
 - VGV = Unidades × Preço Venda Unitária (não m² × preço/m²)
 - Viabilidade pelo resíduo: Resultado Terreno = VGV − Custo Obra − Despesas Gerais − Lucro Incorporador, comparado ao preço pedido (`@PRD.md` 4.1)

@@ -253,7 +253,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **13. Dados reais × simulados** | Conteúdo textual real, derivado do PRD 4.1; sem números de exemplo simulados. |
 | **14. Regras do PRD** | 2.9, 4.1, 10.3, 10.4 |
 | **15. Aceite funcional** | Todos os passos acessíveis; "Pular" leva ao formulário; conclusão marca a flag. |
-| **16. Aceite de UX** | Explicação compreensível por não-especialista; "IA" sempre como Índice de Aproveitamento. |
+| **16. Aceite de UX** | Explicação compreensível por não-especialista; "CA" sempre como Coeficiente de Aproveitamento. |
 | **17. Testes** | Teste de navegação entre passos e do botão pular. |
 | **18. Validar no Replit** | Percorrer os passos, pular no meio, voltar pela página inicial. |
 | **19. Responsividade** | As três faixas; passos legíveis em mobile sem rolagem horizontal. |
@@ -514,7 +514,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **2. Macroetapa** | 1 |
 | **3. Objetivo** | Entregar a cadeia de áreas e os dois coeficientes para o usuário validar contra o plano diretor — primeira peça do motor puro. |
 | **4. Parte da jornada** | "Conferir áreas e premissas". |
-| **5. Entrega visível** | Painel ao fim da página de Produto com Taxa de Ocupação (ajustável, default 0,6), Área Utilizada, Área Total Construída, Área Comercializável, IA atingido e o coeficiente da soma das unidades por pavimento, todos recalculando em tempo real. |
+| **5. Entrega visível** | Painel ao fim da página de Produto com Taxa de Ocupação (ajustável, default 0,6), Área Utilizada, Área Total Construída, Área Comercializável, CA atingido e o coeficiente da soma das unidades por pavimento, todos recalculando em tempo real. |
 | **6. Comportamento esperado** | Ajustar qualquer insumo atualiza o painel instantaneamente; o coeficiente de unidades some para casas unifamiliares; cada número mostra a fórmula que o gerou. |
 | **7. Escopo incluído** | Módulo puro `areas.ts`, parâmetro centralizado da taxa de ocupação, painel, explicação de cada fórmula, testes unitários. |
 | **8. Fora do escopo** | Faixas de alerta (F18), CUB e custo (F12), limites legais por zona (fora do MVP). |
@@ -523,11 +523,11 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **11. Arquivos removidos** | Nenhum |
 | **12. Dependências** | F10 |
 | **13. Dados reais × simulados** | Reais e calculados. Taxa de ocupação 0,6 é **parâmetro provisório centralizado**, marcado como tal. |
-| **14. Regras do PRD** | 3.3 (cadeia completa), 2.3, 2.2. As quatro áreas são distintas: terreno ≠ utilizada ≠ construída ≠ comercializável. IA é Índice de Aproveitamento, nunca IA artificial. |
-| **15. Aceite funcional** | `Área Utilizada = Área Terreno × Taxa Ocupação`; `Construída = Utilizada × Pavimentos`; `Comercializável = Total Unidades × Área da Unidade`; `IA = Construída ÷ Área Terreno`; `Coef. unidades = (Unidades por pavimento × Área da unidade) ÷ Área Utilizada` (soma de todas as unidades do pavimento, nunca uma isolada). |
+| **14. Regras do PRD** | 3.3 (cadeia completa), 2.3, 2.2. As quatro áreas são distintas: terreno ≠ utilizada ≠ construída ≠ comercializável. CA é Coeficiente de Aproveitamento, nunca confundir com IA (inteligência artificial). |
+| **15. Aceite funcional** | `Área Utilizada = Área Terreno × Taxa Ocupação`; `Construída = Utilizada × Pavimentos`; `Comercializável = Total Unidades × Área da Unidade`; `CA = Construída ÷ Área Terreno`; `Coef. unidades = (Unidades por pavimento × Área da unidade) ÷ Área Utilizada` (soma de todas as unidades do pavimento, nunca uma isolada). |
 | **16. Aceite de UX** | Cada área nomeada sem ambiguidade; fórmula acessível por expansão; unidade de medida sempre visível. |
 | **17. Testes** | Testes unitários de cada fórmula com o exemplo de referência do PRD; casos de borda (1 pavimento, 1 unidade, taxa 0, taxa 1); teste de que casas não produzem o coeficiente de unidades. |
-| **18. Validar no Replit** | 1.000 m², taxa 0,6, 4 pavimentos → utilizada 600, construída 2.400, IA 2,4. Mexer na taxa e ver tudo reagir. |
+| **18. Validar no Replit** | 1.000 m², taxa 0,6, 4 pavimentos → utilizada 600, construída 2.400, CA 2,4. Mexer na taxa e ver tudo reagir. |
 | **19. Responsividade** | As três faixas; painel vira lista no mobile. |
 | **20. Estados** | Insuficiente para calcular, calculado, taxa alterada pelo usuário. |
 | **21. Riscos** | Confundir área construída com comercializável — erro que muda custo e VGV. |
@@ -1335,7 +1335,7 @@ Vale para **toda** sessão futura de implementação.
 | 2.2 — Formato e topografia gráficos | 1 | F08 | 2 e 4 opções com ilustração | Snapshot + teclado | `[ ]` |
 | 2.2 — Etapa 2 produto | 1 | F09, F10 | Taxonomia do 3.1; restrição casa/galpão | Testes de taxonomia | `[ ]` |
 | 2.2 — Preço por m² vendido | 1 | F10 | preço ÷ área da unidade | Teste de cálculo | `[ ]` |
-| 2.3 — Áreas e IA calculados | 1 | F11 | Cadeia do 3.3 | `areas.test.ts` | `[ ]` |
+| 2.3 — Áreas e CA calculados | 1 | F11 | Cadeia do 3.3 | `areas.test.ts` | `[ ]` |
 | 2.3 — Ajuste do custo por faixa/padrão/topografia/formato | 1 | F12 | Quatro aditivos somados | `cub.test.ts` | `[ ]` |
 | 2.4 — Alertas regulatórios e técnicos | 1 | F18 | Checklist completo do 2.4 | `alertas.test.ts` | `[ ]` |
 | 2.4 — Obra/VGV 40–65% | 1 | F18 | Limites exatos | Teste de limite | `[ ]` |
@@ -1407,7 +1407,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 - Comparativo automático entre múltiplos ativos
 - Exportação em Excel
 - Metodologia de área equivalente da NBR 12.721
-- Limites de taxa de ocupação, IA e altura por zona embutidos no app
+- Limites de taxa de ocupação, CA e altura por zona embutidos no app
 - Os projetos CUB `PP-4`, `PIS` e `RP1Q` (sem tipologia LASTRO correspondente)
 
 ---
@@ -1427,7 +1427,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[ ]` |
 | 10 | 1 | F09 Tipo, tipologia e padrão | Classificação em cascata | Média | Opus | **D-B6** | `[ ]` |
 | 11 | 1 | F10 Pavimentos e unidades | Programa + preço por m² | Média | Sonnet | — | `[ ]` |
-| 12 | 1 | F11 Áreas e indicadores | Painel de áreas e IA | Média | Opus | — | `[ ]` |
+| 12 | 1 | F11 Áreas e indicadores | Painel de áreas e CA | Média | Opus | — | `[ ]` |
 | 13 | 1 | F12 Parâmetros e CUB | CUB Ajustado discriminado | Alta | Opus | **D-B4, D-B5** | `[ ]` |
 | 14 | 1 | F13 Motor econômico e API | Resultado cru completo | Alta | Opus | **D-B1, D-B2, D-B3** | `[ ]` |
 | 15 | 1 | F14 Resultado v1 | Resumo e preço máximo | Média | Sonnet | — | `[ ]` |

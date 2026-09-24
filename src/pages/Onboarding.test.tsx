@@ -142,9 +142,14 @@ describe('conteúdo da metodologia', () => {
     ]);
   });
 
-  it('usa "IA" só como Índice de Aproveitamento', () => {
-    expect(textoCompleto).toContain('Índice de Aproveitamento (IA)');
+  it('usa "CA" para Coeficiente de Aproveitamento, nunca "IA"', () => {
+    expect(textoCompleto).toContain('Coeficiente de Aproveitamento (CA)');
+    expect(textoCompleto).not.toMatch(/\bIA\b/);
     expect(textoCompleto).not.toMatch(/intelig[êe]ncia artificial/i);
+  });
+
+  it('avisa que a cobertura do MVP é só Minas Gerais', () => {
+    expect(textoCompleto).toMatch(/Minas Gerais/);
   });
 
   it('não cita percentuais, que ainda dependem de decisões em aberto', () => {

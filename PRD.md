@@ -86,19 +86,19 @@ A primeira olha para o preço do terreno; a segunda olha para o resultado do emp
   - Área utilizada do terreno (m²)
   - Área total construída (m²)
   - Coeficiente da soma da metragem das unidades por metragem de pavimento (%)
-  - Coeficiente de aproveitamento (IA) atingido
+  - Coeficiente de aproveitamento (CA) atingido
 
 *Nota: os campos exibidos variam conforme a tipologia escolhida. É crucial incluir TODAS as variáveis pertinentes para a classificação correta na tabela CUB Sinduscon-MG (tipo de projeto + tipologia + faixa de pavimentos + padrão).*
 
 #### 2.3 Cálculo Automatizado
 - ✅ Cálculo da área utilizada do terreno a partir da taxa de ocupação e da área total construída a partir do número de pavimentos
-- ✅ Cálculo do coeficiente de aproveitamento (IA) **atingido** pelo programa, para o usuário validar contra a legislação local
+- ✅ Cálculo do coeficiente de aproveitamento (CA) **atingido** pelo programa, para o usuário validar contra a legislação local
 - ✅ Sugestão de m² construído baseada em fórmula, com possibilidade de ajuste manual
 - ✅ Ajuste automático do custo de obra conforme faixa de pavimentos (fundação), padrão, topografia e formato do lote
 
 #### 2.4 Alertas Técnicos e Regulatórios
 - ✅ Alerta genérico indicando necessidade de validação antes da aquisição:
-  - Parâmetros urbanísticos (IA, taxa de ocupação, altura máxima, recuos)
+  - Parâmetros urbanísticos (CA, taxa de ocupação, altura máxima, recuos)
   - Zoneamento adequado — lei de uso e ocupação do solo do município e plano diretor
   - Documentação do imóvel, inscrições municipais e afins
   - Capacidade de solo/fundações
@@ -348,11 +348,11 @@ Custo de Obra     = CUB Ajustado × Área Total Construída
 
 *Todos os percentuais acima são parâmetros centralizados e versionados, nunca números mágicos no código. É necessário um documento técnico que explique a origem e a composição de cada aditivo (pendência registrada na fonte).*
 
-### 3.3 Áreas, Taxa de Ocupação e Coeficiente de Aproveitamento (IA)
+### 3.3 Áreas, Taxa de Ocupação e Coeficiente de Aproveitamento (CA)
 
-> **IA = Índice/Coeficiente de Aproveitamento urbanístico.**
+> **CA = Coeficiente de Aproveitamento urbanístico** (antes chamado "IA" no produto).
 
-No MVP o IA **não** é um coeficiente pré-determinado que dita a área construída. O programa do empreendimento é informado pelo usuário e o IA atingido é **calculado** e devolvido para que ele valide contra o plano diretor e a lei de uso e ocupação do solo do seu município.
+No MVP o CA **não** é um coeficiente pré-determinado que dita a área construída. O programa do empreendimento é informado pelo usuário e o CA atingido é **calculado** e devolvido para que ele valide contra o plano diretor e a lei de uso e ocupação do solo do seu município.
 
 **Parâmetro base:**
 
@@ -367,7 +367,7 @@ No MVP o IA **não** é um coeficiente pré-determinado que dita a área constru
 Área Total Construída     = Área Utilizada do Terreno × Número de Pavimentos
 Área Comercializável      = Número Total de Unidades × Área da Unidade Vendida
 
-Coeficiente de Aproveitamento (IA) atingido = Área Total Construída ÷ Área Total do Terreno
+Coeficiente de Aproveitamento (CA) atingido = Área Total Construída ÷ Área Total do Terreno
 Coeficiente da soma da metragem das unidades por metragem de pavimento
     = (Unidades por Pavimento × Área da Unidade) ÷ Área Utilizada do Terreno
       (o numerador é a SOMA das áreas de todas as unidades do pavimento)
@@ -376,7 +376,7 @@ Coeficiente da soma da metragem das unidades por metragem de pavimento
 - O **Custo de Obra** incide sobre a **Área Total Construída** (inclui hall, corredores, escadas e elevadores).
 - O **VGV** incide sobre as **unidades vendidas** (área comercializável), nunca sobre a área construída.
 - O **coeficiente da soma da metragem das unidades por metragem de pavimento** deve ficar entre **80% e 85%**; o residual corresponde a hall, corredores, escadas e elevadores. O numerador soma **todas** as unidades do pavimento — nunca uma unidade isolada. Não se aplica a projetos residenciais de casas.
-- **Taxa de ocupação, IA e altura máxima admissíveis por zona**: não embutidos no MVP — o app exibe os valores atingidos e alerta o usuário para validá-los na legislação local.
+- **Taxa de ocupação, CA e altura máxima admissíveis por zona**: não embutidos no MVP — o app exibe os valores atingidos e alerta o usuário para validá-los na legislação local.
 
 ### 3.4 Dados Externos
 
