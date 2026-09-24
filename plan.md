@@ -28,6 +28,7 @@
 | D-R3 | Quando o Postgres entra | **Tarde na M1**: F00–F23 com módulos TS versionados; F24 traz `parameters` + `external_data` | F24 |
 | D-R4 | Lacunas do design system (sem tokens de espaçamento, tamanho de fonte ou mecanismo de tema) | **Estender `design-system/tokens/tokens.css`** na F00. A condição "sem alterar valores existentes" foi superada pela revisão pós-F02, que precisou corrigir valores errados — ver D-R5 | F00 |
 | D-R5 | Qual é a fonte de verdade visual e o que uma fase visual precisa provar | **O `design-system/guide/` é a referência**, não o `README.md` nem o `tokens.css`, que são resumos incompletos dele. Toda fase visual mede contraste (AA) e confere as três faixas antes do checkpoint — ver seção E | Revisão pós-F02 |
+| D-R6 | A recomendação final (`PRD` 4.4) só tinha rótulo de compra ("COMPRAR"), mas o produto responde duas perguntas distintas (`PRD` 1): comprar o terreno ou executar o empreendimento — quem já tem o terreno e lê pela perspectiva Incorporador recebia "COMPRAR" sem sentido | **Objetivo da análise obrigatório e explícito** no início do fluxo ("comprar o terreno" × "executar o empreendimento"), nunca inferido. Decide a perspectiva padrão (Terrenista/Incorporador, `PRD` 2.6) e o rótulo da recomendação (`PRD` 4.4: COMPRAR/NÃO COMPRAR × FAZER/NÃO FAZER O EMPREENDIMENTO). Pesos do Score e limiares não mudam. Onde exatamente essa pergunta aparece na interface é decisão da F05, quando a fase começar | Revisão pós-F03; aplica-se a F05, F16, F19 |
 
 ### B. Decisões bloqueantes
 
@@ -312,14 +313,14 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **4. Parte da jornada** | "Começar uma análise → identificar o terreno". |
 | **5. Entrega visível** | Página de Terreno com seções ("Identificação e localização", "Dados físicos e financeiros", "Características do lote") e o primeiro campo real — nome/identificação do terreno — com validação e mensagem de erro. |
 | **6. Comportamento esperado** | Campo obrigatório valida ao sair do foco; "Avançar" bloqueado com resumo de pendências; estado do formulário compartilhado entre páginas. |
-| **7. Escopo incluído** | Contexto/estado da análise (`useAnalise`), tipos do terreno, componentes `Campo` e `Alerta`, esquema de validação compartilhado front/back, seções e mensagens em pt-BR. |
-| **8. Fora do escopo** | CEP, cidade, área, preço, formato, topografia (F06–F08). |
+| **7. Escopo incluído** | Contexto/estado da análise (`useAnalise`), tipos do terreno, componentes `Campo` e `Alerta`, esquema de validação compartilhado front/back, seções e mensagens em pt-BR. Inclui a pergunta obrigatória do **objetivo da análise** (D-R6): comprar o terreno × executar o empreendimento — a fase decide onde ela aparece no fluxo (tela própria antes da Etapa 1, ou primeiro campo dela). |
+| **8. Fora do escopo** | CEP, cidade, área, preço, formato, topografia (F06–F08). Uso do objetivo para decidir a perspectiva padrão do resultado (F16) e o rótulo da recomendação (F19) — aqui só se captura e persiste no estado da análise. |
 | **9. Arquivos criados** | `src/hooks/useAnalise.ts`, `src/types/terreno.ts`, `src/types/analise.ts`, `src/utils/validacao/terreno.ts`, `src/components/ui/Campo.tsx`, `Alerta.tsx` (+ `.module.css`), `src/pages/Terreno.module.css` |
 | **10. Arquivos modificados** | `src/pages/Terreno.tsx`, `src/App.tsx` |
 | **11. Arquivos removidos** | Nenhum |
 | **12. Dependências** | F01 |
 | **13. Dados reais × simulados** | Estado real em memória; nada persistido ainda. |
-| **14. Regras do PRD** | 2.2 (Etapa 1), 6.3 (validação no front e obrigatória no back), 10.1 |
+| **14. Regras do PRD** | 2.2 (Etapa 1), 2.6 (objetivo da análise), 6.3 (validação no front e obrigatória no back), 10.1 |
 | **15. Aceite funcional** | Validação dispara corretamente; estado sobrevive à navegação entre páginas; recarregar a página descarta (comportamento esperado até D-A2). |
 | **16. Aceite de UX** | Mensagem de erro específica e em pt-BR; erro associado ao campo via `aria-describedby`; nenhum alerta bloqueia digitação. |
 | **17. Testes** | Testes unitários do esquema de validação (vazio, só espaços, limite de tamanho); teste do `useAnalise`; teste do bloqueio de "Avançar". |
@@ -327,7 +328,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **19. Responsividade** | As três faixas; campos em coluna única no mobile. |
 | **20. Estados** | Vazio, preenchido, inválido, foco, desabilitado. |
 | **21. Riscos** | Perda acidental do formulário ao recarregar — mitigação depende de D-A2/D-B11. |
-| **22. Decisões** | D-A2 (rascunho no navegador); liberdade de pular etapas (herdado da F01). |
+| **22. Decisões** | D-A2 (rascunho no navegador); liberdade de pular etapas (herdado da F01); posição exata do objetivo da análise no fluxo (D-R6 já resolve o quê e o porquê, falta o onde). |
 | **23. Complexidade** | Média |
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Define o padrão de formulário e validação de todo o produto, mas sem regra econômica. |
@@ -693,7 +694,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **11. Arquivos removidos** | Nenhum |
 | **12. Dependências** | F15 |
 | **13. Dados reais × simulados** | Reais. |
-| **14. Regras do PRD** | 2.6, 4.1 ("Perspectiva de leitura"), 1 (as duas perguntas) |
+| **14. Regras do PRD** | 2.6 (perspectiva + objetivo da análise), 4.1 ("Perspectiva de leitura"), 1 (as duas perguntas) |
 | **15. Aceite funcional** | As duas perspectivas usam a mesma base; a margem resultante segue exatamente a fórmula do PRD 4.1; alternar não altera nenhum insumo. |
 | **16. Aceite de UX** | Fica evidente o que está fixo em cada modo; toggle operável por teclado com estado anunciado. |
 | **17. Testes** | Testes unitários da margem resultante; teste de consistência (no ponto de equilíbrio as duas leituras coincidem); teste do toggle. |
@@ -701,12 +702,12 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **19. Responsividade** | As três faixas. |
 | **20. Estados** | Terrenista, Incorporador, margem negativa. |
 | **21. Riscos** | Usuário achar que o toggle muda o cenário, e não a leitura. |
-| **22. Decisões** | Qual perspectiva é a padrão ao abrir o resultado. |
+| **22. Decisões** | ~~Qual perspectiva é a padrão ao abrir o resultado~~ — resolvida por D-R6: a padrão é a do objetivo da análise escolhido na F05 (comprar → Terrenista; executar → Incorporador). |
 | **23. Complexidade** | Média |
 | **24. Modelo** | **Opus** |
 | **25. Justificativa** | Mexe no motor econômico e na interpretação do resultado — regra crítica de domínio. |
 | **26. Conclusão** | Duas leituras corretas e coerentes entre si. |
-| **27. Checkpoint** | `[ ]` Usuário aprova as duas perspectivas e define a padrão. |
+| **27. Checkpoint** | `[ ]` Usuário aprova as duas perspectivas e a perspectiva padrão herdada do objetivo. |
 
 ---
 
@@ -784,19 +785,19 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 |---|---|
 | **1. Nome** | LASTRO Score e recomendação |
 | **2. Macroetapa** | 1 |
-| **3. Objetivo** | Entregar o veredito do produto: score 0–100 e a recomendação Comprar / Comprar com Ressalvas / Não Comprar. |
+| **3. Objetivo** | Entregar o veredito do produto: score 0–100 e a recomendação, com o rótulo do objetivo escolhido na F05 — Comprar / Comprar com Ressalvas / Não Comprar, ou Fazer / Fazer com Ressalvas / Não Fazer o Empreendimento (D-R6). |
 | **4. Parte da jornada** | "Entender a recomendação" (fecho). |
 | **5. Entrega visível** | Topo da página de Resultado com o score, a decisão com seu sinal (🟢/🟡/🔴), a composição do score por critério e o texto de recomendação com principal risco/oportunidade. |
 | **6. Comportamento esperado** | Score e decisão recalculam com as premissas; a composição do score é auditável critério a critério. |
-| **7. Escopo incluído** | `score.ts` puro conforme a metodologia aprovada em D-B7/D-B8, limiares do PRD 4.4 inalterados, veredito, detalhamento por critério, texto de recomendação e risco/oportunidade. |
+| **7. Escopo incluído** | `score.ts` puro conforme a metodologia aprovada em D-B7/D-B8, limiares do PRD 4.4 inalterados, veredito, detalhamento por critério, texto de recomendação e risco/oportunidade. O rótulo (comprar × executar) vem do objetivo da análise (D-R6), não é reescolhido aqui. |
 | **8. Fora do escopo** | Qualquer alteração de pesos ou limiares sem aprovação. |
 | **9. Arquivos criados** | `src/utils/motor/score.ts`, `src/utils/motor/__tests__/score.test.ts`, `src/components/resultado/Veredito.tsx`, `ComposicaoScore.tsx`, `RiscoOportunidade.tsx` (+ `.module.css`), `src/content/recomendacoes.ts` |
 | **10. Arquivos modificados** | `src/pages/Resultado.tsx`, `src/types/analise.ts`, `server/controllers/analisesController.ts` |
 | **11. Arquivos removidos** | Nenhum |
 | **12. Dependências** | F18 |
 | **13. Dados reais × simulados** | **Esta fase não começa sem D-B7 e D-B8.** Nenhuma metodologia pode ser inventada. Se "potencial de mercado" ficar sem fonte, a decisão do usuário define entre critério qualitativo, outro indicador ou redistribuição dos 10 pontos. |
-| **14. Regras do PRD** | 4.3 (pesos 40/30/20/10 e pendências), 4.4 (limiares), 2.5 |
-| **15. Aceite funcional** | 🟢 Comprar: viável, score > 70 e todos os percentuais OK · 🟡 Ressalvas: viável mas score 50–70 ou algum percentual fora · 🔴 Não Comprar: inviável ou score < 50. Score sempre entre 0 e 100. |
+| **14. Regras do PRD** | 4.3 (pesos 40/30/20/10 e pendências), 4.4 (limiares e os dois conjuntos de rótulos), 2.5, 2.6 (objetivo da análise) |
+| **15. Aceite funcional** | 🟢 viável, score > 70 e todos os percentuais OK · 🟡 viável mas score 50–70 ou algum percentual fora · 🔴 inviável ou score < 50 — mostrado como Comprar/Ressalvas/Não Comprar ou Fazer/Ressalvas/Não Fazer conforme o objetivo (D-R6). Score sempre entre 0 e 100. |
 | **16. Aceite de UX** | Decisão compreensível sem ler o resto; composição do score acessível por expansão; sinal não depende só de cor. |
 | **17. Testes** | Testes de cada critério isolado; casos de fronteira 49/50/70/71; score fora de [0,100] impossível; determinismo (mesma entrada → mesma saída); coerência entre decisão e alertas. |
 | **18. Validar no Replit** | Gerar cenários que caiam em cada uma das três decisões e nas fronteiras. |

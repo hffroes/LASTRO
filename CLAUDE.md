@@ -33,6 +33,7 @@ Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa com to
 - Coeficiente de aproveitamento das unidades = **soma** das áreas de todas as unidades do pavimento ÷ área do pavimento (nunca uma unidade isolada), faixa 80–85%
 - Dados externos: CUB Sinduscon-MG **sem API** (importação periódica versionada, com fallback); CEP via API pública sem chave, cuja falha não bloqueia a análise. Sem base de preços de mercado no MVP (FipeZap foi retirada). Nunca embutir valores de CUB no código
 - LASTRO Score, viabilidade, recomendação: sem mudanças sem aprovação
+- Objetivo da análise (comprar o terreno × executar o empreendimento, `@PRD.md` 2.6) é escolha explícita e obrigatória do usuário, nunca inferida pelo sistema; decide a perspectiva padrão e o rótulo da recomendação final (`@PRD.md` 4.4), sem mudar score, limiares nem fórmula
 - Valores monetários: nunca de strings; percentuais em convenção única (0.10 vs 10%)
 - Resultado exportado e registro interno preservam snapshot dos parâmetros e da versão de dados usados
 - Ajustes do usuário não alteram padrões globais
