@@ -55,6 +55,27 @@ Veja `@PRD.md` seção 2 (IN/OUT). Resumo: análise econômica interativa com to
 11. **Justifique previa: novas pastas nível-1, serviços externos, infraestrutura**
 12. **Teste alterações sensíveis antes de considerar concluído**
 
+## Governança do Repositório e Merge
+GitHub é a fonte da verdade sobre o estado do código e do histórico (o `@PRD.md` continua a fonte de verdade sobre produto/domínio — seção "Fonte de Verdade"). Isso detalha e tem precedência sobre a regra 3 de "Regras de Comportamento" nos pontos abaixo.
+
+- **Sincronize sempre antes de começar ou retomar**: atualize a branch atual a partir do remoto (`fetch`/`pull`) antes de iniciar ou continuar qualquer trabalho
+- **Revise antes de alterar**: antes de alterar trabalho já existente, revise os commits feitos desde a última intervenção
+- **Mudanças aprovadas em homologação não são revertidas silenciosamente**: alterações feitas em homologação são decisões já aprovadas, não erros a corrigir por conta própria
+- **Conflito de uma mudança aprovada com PRD, arquitetura, regra de negócio, segurança ou integridade de dados**: não reverter; manter a alteração, explicar o conflito, apontar a regra afetada e pedir decisão explícita do usuário
+- **Risco crítico, de segurança ou de perda de dados**: pausar o trabalho e exigir aprovação explícita do usuário antes de prosseguir
+- **Autoria dos commits**: sempre que possível, identifique e informe a origem de cada commit — Claude, Replit, humano ou desconhecida; nunca adivinhe a origem quando não for possível determiná-la com segurança
+
+### Pré-Merge Review (obrigatório antes de merge para `main`)
+Antes de qualquer merge para `main`, gere na conversa uma revisão contendo:
+1. Branch de origem e branch alvo
+2. Lista dos commits incluídos, com resumo e origem (Claude/Replit/humano/desconhecida)
+3. Resumo das mudanças, com destaque para as feitas em homologação
+4. Checagem de aderência ao `@PRD.md` e à arquitetura
+5. Riscos pendentes
+6. Status final (pronto para merge / bloqueado / pendente de decisão)
+
+Nenhum merge para `main` ocorre sem aprovação explícita do usuário nesta revisão. Qualquer mudança na branch após a aprovação invalida a revisão e exige uma nova.
+
 ## Convenções de Código
 - TypeScript strict mode, evitar `any` (justificar se indispensável)
 - Componentes/classes/tipos: `PascalCase`; funções/variáveis: `camelCase`; constantes: `UPPER_SNAKE_CASE`
