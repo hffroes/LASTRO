@@ -15,7 +15,7 @@ Fornecer uma ferramenta web de análise econômica rápida para responder objeti
 1. **"Devo ou não adquirir este terreno para fazer x construção?"**
 2. **"Construir isso neste terreno vai dar dinheiro?"**
 
-A primeira olha para o preço do terreno; a segunda olha para o resultado do empreendimento. As duas são lidas pela mesma base de cálculo, mudando apenas a perspectiva (ver 4.1).
+A primeira olha para o preço do terreno; a segunda olha para o resultado do empreendimento. As duas são lidas pela mesma base de cálculo, mudando apenas a perspectiva (ver 4.1). O usuário escolhe explicitamente, no início do fluxo, qual das duas perguntas quer responder — esse **objetivo da análise** decide o rótulo da recomendação final (ver 2.6 e 4.4) e nunca é inferido pelo sistema.
 
 ### Público-Alvo
 - Pequenos construtores e incorporadoras
@@ -26,7 +26,7 @@ A primeira olha para o preço do terreno; a segunda olha para o resultado do emp
 
 ### Valor Entregue
 - **Análise econômica rápida** baseada em premissas de mercado
-- **Recomendação clara** (Comprar / Não Comprar / Comprar com Ressalvas)
+- **Recomendação clara**, no vocabulário do objetivo escolhido: Comprar / Não Comprar / Comprar com Ressalvas, ou Fazer / Não Fazer / Fazer com Ressalvas o empreendimento (ver 2.6, 4.4)
 - **Simplicidade visual** no topo + **Complexidade técnica** acessível por baixo
 - **Alertas regulatórios e técnicos** que direcionam para validações posteriores
 
@@ -86,19 +86,19 @@ A primeira olha para o preço do terreno; a segunda olha para o resultado do emp
   - Área utilizada do terreno (m²)
   - Área total construída (m²)
   - Coeficiente da soma da metragem das unidades por metragem de pavimento (%)
-  - Coeficiente de aproveitamento (IA) atingido
+  - Coeficiente de aproveitamento (CA) atingido
 
 *Nota: os campos exibidos variam conforme a tipologia escolhida. É crucial incluir TODAS as variáveis pertinentes para a classificação correta na tabela CUB Sinduscon-MG (tipo de projeto + tipologia + faixa de pavimentos + padrão).*
 
 #### 2.3 Cálculo Automatizado
 - ✅ Cálculo da área utilizada do terreno a partir da taxa de ocupação e da área total construída a partir do número de pavimentos
-- ✅ Cálculo do coeficiente de aproveitamento (IA) **atingido** pelo programa, para o usuário validar contra a legislação local
+- ✅ Cálculo do coeficiente de aproveitamento (CA) **atingido** pelo programa, para o usuário validar contra a legislação local
 - ✅ Sugestão de m² construído baseada em fórmula, com possibilidade de ajuste manual
 - ✅ Ajuste automático do custo de obra conforme faixa de pavimentos (fundação), padrão, topografia e formato do lote
 
 #### 2.4 Alertas Técnicos e Regulatórios
 - ✅ Alerta genérico indicando necessidade de validação antes da aquisição:
-  - Parâmetros urbanísticos (IA, taxa de ocupação, altura máxima, recuos)
+  - Parâmetros urbanísticos (CA, taxa de ocupação, altura máxima, recuos)
   - Zoneamento adequado — lei de uso e ocupação do solo do município e plano diretor
   - Documentação do imóvel, inscrições municipais e afins
   - Capacidade de solo/fundações
@@ -162,7 +162,13 @@ Recomendação:
 [Texto claro e direto sobre viabilidade e próximos passos]
 ```
 
+> O rótulo da linha DECISÃO depende do **objetivo da análise** escolhido pelo usuário (ver 2.6): objetivo "comprar o terreno" mostra COMPRAR / COMPRAR COM RESSALVAS / NÃO COMPRAR; objetivo "executar o empreendimento" mostra FAZER O EMPREENDIMENTO / FAZER COM RESSALVAS / NÃO FAZER O EMPREENDIMENTO (ver 4.4). O score, os limiares e o resto da estrutura são idênticos — só a palavra muda.
+
 #### 2.6 Interatividade
+- ✅ **Objetivo da análise** — antes de preencher o formulário, o usuário escolhe explicitamente qual das duas perguntas do produto (seção 1) quer responder. É uma escolha obrigatória, nunca inferida pelo sistema:
+  - **Comprar o terreno**: a pergunta é se deve adquirir o terreno pelo preço pedido
+  - **Executar o empreendimento**: a pergunta é se vale construir o programa informado no terreno (já adquirido, ou com preço já definido)
+  - Essa escolha define a perspectiva padrão abaixo (Terrenista para "comprar o terreno", Incorporador para "executar o empreendimento") e o rótulo da recomendação final (ver 4.4). O usuário pode alternar a perspectiva depois pelo toggle, para explorar a outra leitura, sem que isso mude o objetivo nem recomece a análise
 - ✅ Usuário pode ajustar premissas (preço de venda, % de lucro, custos) em tempo real
 - ✅ Resultado atualiza dinamicamente com os ajustes
 - ✅ Visualização clara do impacto de cada mudança
@@ -348,11 +354,11 @@ Custo de Obra     = CUB Ajustado × Área Total Construída
 
 *Todos os percentuais acima são parâmetros centralizados e versionados, nunca números mágicos no código. É necessário um documento técnico que explique a origem e a composição de cada aditivo (pendência registrada na fonte).*
 
-### 3.3 Áreas, Taxa de Ocupação e Coeficiente de Aproveitamento (IA)
+### 3.3 Áreas, Taxa de Ocupação e Coeficiente de Aproveitamento (CA)
 
-> **IA = Índice/Coeficiente de Aproveitamento urbanístico.**
+> **CA = Coeficiente de Aproveitamento urbanístico** (antes chamado "IA" no produto).
 
-No MVP o IA **não** é um coeficiente pré-determinado que dita a área construída. O programa do empreendimento é informado pelo usuário e o IA atingido é **calculado** e devolvido para que ele valide contra o plano diretor e a lei de uso e ocupação do solo do seu município.
+No MVP o CA **não** é um coeficiente pré-determinado que dita a área construída. O programa do empreendimento é informado pelo usuário e o CA atingido é **calculado** e devolvido para que ele valide contra o plano diretor e a lei de uso e ocupação do solo do seu município.
 
 **Parâmetro base:**
 
@@ -367,7 +373,7 @@ No MVP o IA **não** é um coeficiente pré-determinado que dita a área constru
 Área Total Construída     = Área Utilizada do Terreno × Número de Pavimentos
 Área Comercializável      = Número Total de Unidades × Área da Unidade Vendida
 
-Coeficiente de Aproveitamento (IA) atingido = Área Total Construída ÷ Área Total do Terreno
+Coeficiente de Aproveitamento (CA) atingido = Área Total Construída ÷ Área Total do Terreno
 Coeficiente da soma da metragem das unidades por metragem de pavimento
     = (Unidades por Pavimento × Área da Unidade) ÷ Área Utilizada do Terreno
       (o numerador é a SOMA das áreas de todas as unidades do pavimento)
@@ -376,7 +382,7 @@ Coeficiente da soma da metragem das unidades por metragem de pavimento
 - O **Custo de Obra** incide sobre a **Área Total Construída** (inclui hall, corredores, escadas e elevadores).
 - O **VGV** incide sobre as **unidades vendidas** (área comercializável), nunca sobre a área construída.
 - O **coeficiente da soma da metragem das unidades por metragem de pavimento** deve ficar entre **80% e 85%**; o residual corresponde a hall, corredores, escadas e elevadores. O numerador soma **todas** as unidades do pavimento — nunca uma unidade isolada. Não se aplica a projetos residenciais de casas.
-- **Taxa de ocupação, IA e altura máxima admissíveis por zona**: não embutidos no MVP — o app exibe os valores atingidos e alerta o usuário para validá-los na legislação local.
+- **Taxa de ocupação, CA e altura máxima admissíveis por zona**: não embutidos no MVP — o app exibe os valores atingidos e alerta o usuário para validá-los na legislação local.
 
 ### 3.4 Dados Externos
 
@@ -490,9 +496,19 @@ Score baseado em:
 
 ### 4.4 Recomendação Final
 
+O rótulo depende do **objetivo da análise** escolhido pelo usuário (ver 2.6); a nota e os limiares são idênticos nos dois casos — só a palavra muda.
+
+**Objetivo "Comprar o terreno" (perspectiva Terrenista):**
 - 🟢 **COMPRAR**: Viável, score > 70, todos os percentuais OK
 - 🟡 **COMPRAR COM RESSALVAS**: Viável mas score 50-70 ou algum percentual fora do padrão
 - 🔴 **NÃO COMPRAR**: Inviável ou score < 50
+
+**Objetivo "Executar o empreendimento" (perspectiva Incorporador):**
+- 🟢 **FAZER O EMPREENDIMENTO**: Viável, score > 70, todos os percentuais OK
+- 🟡 **FAZER COM RESSALVAS**: Viável mas score 50-70 ou algum percentual fora do padrão
+- 🔴 **NÃO FAZER O EMPREENDIMENTO**: Inviável ou score < 50
+
+> **Decisão registrada (revisão pós-F03):** a dualidade já estava prevista na seção 1 (as duas perguntas do produto) e no toggle de perspectiva (2.6), mas a Recomendação Final só tinha rótulo de compra — quem já possui o terreno e lê pela perspectiva Incorporador recebia "COMPRAR", sem sentido. Aprovado explicitamente: o objetivo escolhido pelo usuário decide qual dos dois conjuntos de rótulos aparece. Os pesos do Score (4.3) e os limiares acima **não mudam**.
 
 ---
 
@@ -516,12 +532,13 @@ Não há cadastro, login nem histórico. O acesso nasce da compra e se mantém p
 3. Acesso liberado → vai direto ao formulário de análise (onboarding fica disponível para consulta, mas não se repete)
 
 ### 5.3 Fluxo de Análise
-1. **Preencher formulário**: dados do terreno (Etapa 1) e do produto (Etapa 2)
-2. **Sistema calcula**: VGV, custo de obra, despesas, resíduo do terreno e viabilidade
-3. **Mostra resultado interativo**: Score, decisão, composição de custos, alertas
-4. **Usuário ajusta**: muda premissas na perspectiva Terrenista ou Incorporador e vê o resultado atualizar
-5. **Exporta**: PDF ou HTML — **único meio de conservar a análise**; a interface avisa que o resultado não fica salvo
-6. Nova análise → recomeça do formulário vazio; a análise anterior **não** é recuperável pelo usuário
+1. **Escolher o objetivo da análise**: comprar o terreno ou executar o empreendimento (ver 2.6) — decide a perspectiva padrão e o rótulo da recomendação
+2. **Preencher formulário**: dados do terreno (Etapa 1) e do produto (Etapa 2)
+3. **Sistema calcula**: VGV, custo de obra, despesas, resíduo do terreno e viabilidade
+4. **Mostra resultado interativo**: Score, decisão (rótulo conforme o objetivo escolhido), composição de custos, alertas
+5. **Usuário ajusta**: muda premissas na perspectiva Terrenista ou Incorporador e vê o resultado atualizar
+6. **Exporta**: PDF ou HTML — **único meio de conservar a análise**; a interface avisa que o resultado não fica salvo
+7. Nova análise → recomeça do formulário vazio; a análise anterior **não** é recuperável pelo usuário
 
 *Nos bastidores, cada análise gerada e os dados de uso são registrados pela LASTRO (ver 2.7 e 6.3), sem qualquer efeito sobre o que o usuário vê.*
 

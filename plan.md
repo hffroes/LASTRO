@@ -28,6 +28,7 @@
 | D-R3 | Quando o Postgres entra | **Tarde na M1**: F00–F23 com módulos TS versionados; F24 traz `parameters` + `external_data` | F24 |
 | D-R4 | Lacunas do design system (sem tokens de espaçamento, tamanho de fonte ou mecanismo de tema) | **Estender `design-system/tokens/tokens.css`** na F00. A condição "sem alterar valores existentes" foi superada pela revisão pós-F02, que precisou corrigir valores errados — ver D-R5 | F00 |
 | D-R5 | Qual é a fonte de verdade visual e o que uma fase visual precisa provar | **O `design-system/guide/` é a referência**, não o `README.md` nem o `tokens.css`, que são resumos incompletos dele. Toda fase visual mede contraste (AA) e confere as três faixas antes do checkpoint — ver seção E | Revisão pós-F02 |
+| D-R6 | A recomendação final (`PRD` 4.4) só tinha rótulo de compra ("COMPRAR"), mas o produto responde duas perguntas distintas (`PRD` 1): comprar o terreno ou executar o empreendimento — quem já tem o terreno e lê pela perspectiva Incorporador recebia "COMPRAR" sem sentido | **Objetivo da análise obrigatório e explícito** no início do fluxo ("comprar o terreno" × "executar o empreendimento"), nunca inferido. Decide a perspectiva padrão (Terrenista/Incorporador, `PRD` 2.6) e o rótulo da recomendação (`PRD` 4.4: COMPRAR/NÃO COMPRAR × FAZER/NÃO FAZER O EMPREENDIMENTO). Pesos do Score e limiares não mudam. Onde exatamente essa pergunta aparece na interface é decisão da F05, quando a fase começar | Revisão pós-F03; aplica-se a F05, F16, F19 |
 
 ### B. Decisões bloqueantes
 
@@ -253,7 +254,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **13. Dados reais × simulados** | Conteúdo textual real, derivado do PRD 4.1; sem números de exemplo simulados. |
 | **14. Regras do PRD** | 2.9, 4.1, 10.3, 10.4 |
 | **15. Aceite funcional** | Todos os passos acessíveis; "Pular" leva ao formulário; conclusão marca a flag. |
-| **16. Aceite de UX** | Explicação compreensível por não-especialista; "IA" sempre como Índice de Aproveitamento. |
+| **16. Aceite de UX** | Explicação compreensível por não-especialista; "CA" sempre como Coeficiente de Aproveitamento. |
 | **17. Testes** | Teste de navegação entre passos e do botão pular. |
 | **18. Validar no Replit** | Percorrer os passos, pular no meio, voltar pela página inicial. |
 | **19. Responsividade** | As três faixas; passos legíveis em mobile sem rolagem horizontal. |
@@ -312,14 +313,14 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **4. Parte da jornada** | "Começar uma análise → identificar o terreno". |
 | **5. Entrega visível** | Página de Terreno com seções ("Identificação e localização", "Dados físicos e financeiros", "Características do lote") e o primeiro campo real — nome/identificação do terreno — com validação e mensagem de erro. |
 | **6. Comportamento esperado** | Campo obrigatório valida ao sair do foco; "Avançar" bloqueado com resumo de pendências; estado do formulário compartilhado entre páginas. |
-| **7. Escopo incluído** | Contexto/estado da análise (`useAnalise`), tipos do terreno, componentes `Campo` e `Alerta`, esquema de validação compartilhado front/back, seções e mensagens em pt-BR. |
-| **8. Fora do escopo** | CEP, cidade, área, preço, formato, topografia (F06–F08). |
+| **7. Escopo incluído** | Contexto/estado da análise (`useAnalise`), tipos do terreno, componentes `Campo` e `Alerta`, esquema de validação compartilhado front/back, seções e mensagens em pt-BR. Inclui a pergunta obrigatória do **objetivo da análise** (D-R6): comprar o terreno × executar o empreendimento — a fase decide onde ela aparece no fluxo (tela própria antes da Etapa 1, ou primeiro campo dela). |
+| **8. Fora do escopo** | CEP, cidade, área, preço, formato, topografia (F06–F08). Uso do objetivo para decidir a perspectiva padrão do resultado (F16) e o rótulo da recomendação (F19) — aqui só se captura e persiste no estado da análise. |
 | **9. Arquivos criados** | `src/hooks/useAnalise.ts`, `src/types/terreno.ts`, `src/types/analise.ts`, `src/utils/validacao/terreno.ts`, `src/components/ui/Campo.tsx`, `Alerta.tsx` (+ `.module.css`), `src/pages/Terreno.module.css` |
 | **10. Arquivos modificados** | `src/pages/Terreno.tsx`, `src/App.tsx` |
 | **11. Arquivos removidos** | Nenhum |
 | **12. Dependências** | F01 |
 | **13. Dados reais × simulados** | Estado real em memória; nada persistido ainda. |
-| **14. Regras do PRD** | 2.2 (Etapa 1), 6.3 (validação no front e obrigatória no back), 10.1 |
+| **14. Regras do PRD** | 2.2 (Etapa 1), 2.6 (objetivo da análise), 6.3 (validação no front e obrigatória no back), 10.1 |
 | **15. Aceite funcional** | Validação dispara corretamente; estado sobrevive à navegação entre páginas; recarregar a página descarta (comportamento esperado até D-A2). |
 | **16. Aceite de UX** | Mensagem de erro específica e em pt-BR; erro associado ao campo via `aria-describedby`; nenhum alerta bloqueia digitação. |
 | **17. Testes** | Testes unitários do esquema de validação (vazio, só espaços, limite de tamanho); teste do `useAnalise`; teste do bloqueio de "Avançar". |
@@ -327,7 +328,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **19. Responsividade** | As três faixas; campos em coluna única no mobile. |
 | **20. Estados** | Vazio, preenchido, inválido, foco, desabilitado. |
 | **21. Riscos** | Perda acidental do formulário ao recarregar — mitigação depende de D-A2/D-B11. |
-| **22. Decisões** | D-A2 (rascunho no navegador); liberdade de pular etapas (herdado da F01). |
+| **22. Decisões** | D-A2 (rascunho no navegador); liberdade de pular etapas (herdado da F01); posição exata do objetivo da análise no fluxo (D-R6 já resolve o quê e o porquê, falta o onde). |
 | **23. Complexidade** | Média |
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Define o padrão de formulário e validação de todo o produto, mas sem regra econômica. |
@@ -514,7 +515,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **2. Macroetapa** | 1 |
 | **3. Objetivo** | Entregar a cadeia de áreas e os dois coeficientes para o usuário validar contra o plano diretor — primeira peça do motor puro. |
 | **4. Parte da jornada** | "Conferir áreas e premissas". |
-| **5. Entrega visível** | Painel ao fim da página de Produto com Taxa de Ocupação (ajustável, default 0,6), Área Utilizada, Área Total Construída, Área Comercializável, IA atingido e o coeficiente da soma das unidades por pavimento, todos recalculando em tempo real. |
+| **5. Entrega visível** | Painel ao fim da página de Produto com Taxa de Ocupação (ajustável, default 0,6), Área Utilizada, Área Total Construída, Área Comercializável, CA atingido e o coeficiente da soma das unidades por pavimento, todos recalculando em tempo real. |
 | **6. Comportamento esperado** | Ajustar qualquer insumo atualiza o painel instantaneamente; o coeficiente de unidades some para casas unifamiliares; cada número mostra a fórmula que o gerou. |
 | **7. Escopo incluído** | Módulo puro `areas.ts`, parâmetro centralizado da taxa de ocupação, painel, explicação de cada fórmula, testes unitários. |
 | **8. Fora do escopo** | Faixas de alerta (F18), CUB e custo (F12), limites legais por zona (fora do MVP). |
@@ -523,11 +524,11 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **11. Arquivos removidos** | Nenhum |
 | **12. Dependências** | F10 |
 | **13. Dados reais × simulados** | Reais e calculados. Taxa de ocupação 0,6 é **parâmetro provisório centralizado**, marcado como tal. |
-| **14. Regras do PRD** | 3.3 (cadeia completa), 2.3, 2.2. As quatro áreas são distintas: terreno ≠ utilizada ≠ construída ≠ comercializável. IA é Índice de Aproveitamento, nunca IA artificial. |
-| **15. Aceite funcional** | `Área Utilizada = Área Terreno × Taxa Ocupação`; `Construída = Utilizada × Pavimentos`; `Comercializável = Total Unidades × Área da Unidade`; `IA = Construída ÷ Área Terreno`; `Coef. unidades = (Unidades por pavimento × Área da unidade) ÷ Área Utilizada` (soma de todas as unidades do pavimento, nunca uma isolada). |
+| **14. Regras do PRD** | 3.3 (cadeia completa), 2.3, 2.2. As quatro áreas são distintas: terreno ≠ utilizada ≠ construída ≠ comercializável. CA é Coeficiente de Aproveitamento, nunca confundir com IA (inteligência artificial). |
+| **15. Aceite funcional** | `Área Utilizada = Área Terreno × Taxa Ocupação`; `Construída = Utilizada × Pavimentos`; `Comercializável = Total Unidades × Área da Unidade`; `CA = Construída ÷ Área Terreno`; `Coef. unidades = (Unidades por pavimento × Área da unidade) ÷ Área Utilizada` (soma de todas as unidades do pavimento, nunca uma isolada). |
 | **16. Aceite de UX** | Cada área nomeada sem ambiguidade; fórmula acessível por expansão; unidade de medida sempre visível. |
 | **17. Testes** | Testes unitários de cada fórmula com o exemplo de referência do PRD; casos de borda (1 pavimento, 1 unidade, taxa 0, taxa 1); teste de que casas não produzem o coeficiente de unidades. |
-| **18. Validar no Replit** | 1.000 m², taxa 0,6, 4 pavimentos → utilizada 600, construída 2.400, IA 2,4. Mexer na taxa e ver tudo reagir. |
+| **18. Validar no Replit** | 1.000 m², taxa 0,6, 4 pavimentos → utilizada 600, construída 2.400, CA 2,4. Mexer na taxa e ver tudo reagir. |
 | **19. Responsividade** | As três faixas; painel vira lista no mobile. |
 | **20. Estados** | Insuficiente para calcular, calculado, taxa alterada pelo usuário. |
 | **21. Riscos** | Confundir área construída com comercializável — erro que muda custo e VGV. |
@@ -693,7 +694,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **11. Arquivos removidos** | Nenhum |
 | **12. Dependências** | F15 |
 | **13. Dados reais × simulados** | Reais. |
-| **14. Regras do PRD** | 2.6, 4.1 ("Perspectiva de leitura"), 1 (as duas perguntas) |
+| **14. Regras do PRD** | 2.6 (perspectiva + objetivo da análise), 4.1 ("Perspectiva de leitura"), 1 (as duas perguntas) |
 | **15. Aceite funcional** | As duas perspectivas usam a mesma base; a margem resultante segue exatamente a fórmula do PRD 4.1; alternar não altera nenhum insumo. |
 | **16. Aceite de UX** | Fica evidente o que está fixo em cada modo; toggle operável por teclado com estado anunciado. |
 | **17. Testes** | Testes unitários da margem resultante; teste de consistência (no ponto de equilíbrio as duas leituras coincidem); teste do toggle. |
@@ -701,12 +702,12 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **19. Responsividade** | As três faixas. |
 | **20. Estados** | Terrenista, Incorporador, margem negativa. |
 | **21. Riscos** | Usuário achar que o toggle muda o cenário, e não a leitura. |
-| **22. Decisões** | Qual perspectiva é a padrão ao abrir o resultado. |
+| **22. Decisões** | ~~Qual perspectiva é a padrão ao abrir o resultado~~ — resolvida por D-R6: a padrão é a do objetivo da análise escolhido na F05 (comprar → Terrenista; executar → Incorporador). |
 | **23. Complexidade** | Média |
 | **24. Modelo** | **Opus** |
 | **25. Justificativa** | Mexe no motor econômico e na interpretação do resultado — regra crítica de domínio. |
 | **26. Conclusão** | Duas leituras corretas e coerentes entre si. |
-| **27. Checkpoint** | `[ ]` Usuário aprova as duas perspectivas e define a padrão. |
+| **27. Checkpoint** | `[ ]` Usuário aprova as duas perspectivas e a perspectiva padrão herdada do objetivo. |
 
 ---
 
@@ -784,19 +785,19 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 |---|---|
 | **1. Nome** | LASTRO Score e recomendação |
 | **2. Macroetapa** | 1 |
-| **3. Objetivo** | Entregar o veredito do produto: score 0–100 e a recomendação Comprar / Comprar com Ressalvas / Não Comprar. |
+| **3. Objetivo** | Entregar o veredito do produto: score 0–100 e a recomendação, com o rótulo do objetivo escolhido na F05 — Comprar / Comprar com Ressalvas / Não Comprar, ou Fazer / Fazer com Ressalvas / Não Fazer o Empreendimento (D-R6). |
 | **4. Parte da jornada** | "Entender a recomendação" (fecho). |
 | **5. Entrega visível** | Topo da página de Resultado com o score, a decisão com seu sinal (🟢/🟡/🔴), a composição do score por critério e o texto de recomendação com principal risco/oportunidade. |
 | **6. Comportamento esperado** | Score e decisão recalculam com as premissas; a composição do score é auditável critério a critério. |
-| **7. Escopo incluído** | `score.ts` puro conforme a metodologia aprovada em D-B7/D-B8, limiares do PRD 4.4 inalterados, veredito, detalhamento por critério, texto de recomendação e risco/oportunidade. |
+| **7. Escopo incluído** | `score.ts` puro conforme a metodologia aprovada em D-B7/D-B8, limiares do PRD 4.4 inalterados, veredito, detalhamento por critério, texto de recomendação e risco/oportunidade. O rótulo (comprar × executar) vem do objetivo da análise (D-R6), não é reescolhido aqui. |
 | **8. Fora do escopo** | Qualquer alteração de pesos ou limiares sem aprovação. |
 | **9. Arquivos criados** | `src/utils/motor/score.ts`, `src/utils/motor/__tests__/score.test.ts`, `src/components/resultado/Veredito.tsx`, `ComposicaoScore.tsx`, `RiscoOportunidade.tsx` (+ `.module.css`), `src/content/recomendacoes.ts` |
 | **10. Arquivos modificados** | `src/pages/Resultado.tsx`, `src/types/analise.ts`, `server/controllers/analisesController.ts` |
 | **11. Arquivos removidos** | Nenhum |
 | **12. Dependências** | F18 |
 | **13. Dados reais × simulados** | **Esta fase não começa sem D-B7 e D-B8.** Nenhuma metodologia pode ser inventada. Se "potencial de mercado" ficar sem fonte, a decisão do usuário define entre critério qualitativo, outro indicador ou redistribuição dos 10 pontos. |
-| **14. Regras do PRD** | 4.3 (pesos 40/30/20/10 e pendências), 4.4 (limiares), 2.5 |
-| **15. Aceite funcional** | 🟢 Comprar: viável, score > 70 e todos os percentuais OK · 🟡 Ressalvas: viável mas score 50–70 ou algum percentual fora · 🔴 Não Comprar: inviável ou score < 50. Score sempre entre 0 e 100. |
+| **14. Regras do PRD** | 4.3 (pesos 40/30/20/10 e pendências), 4.4 (limiares e os dois conjuntos de rótulos), 2.5, 2.6 (objetivo da análise) |
+| **15. Aceite funcional** | 🟢 viável, score > 70 e todos os percentuais OK · 🟡 viável mas score 50–70 ou algum percentual fora · 🔴 inviável ou score < 50 — mostrado como Comprar/Ressalvas/Não Comprar ou Fazer/Ressalvas/Não Fazer conforme o objetivo (D-R6). Score sempre entre 0 e 100. |
 | **16. Aceite de UX** | Decisão compreensível sem ler o resto; composição do score acessível por expansão; sinal não depende só de cor. |
 | **17. Testes** | Testes de cada critério isolado; casos de fronteira 49/50/70/71; score fora de [0,100] impossível; determinismo (mesma entrada → mesma saída); coerência entre decisão e alertas. |
 | **18. Validar no Replit** | Gerar cenários que caiam em cada uma das três decisões e nas fronteiras. |
@@ -1335,7 +1336,7 @@ Vale para **toda** sessão futura de implementação.
 | 2.2 — Formato e topografia gráficos | 1 | F08 | 2 e 4 opções com ilustração | Snapshot + teclado | `[ ]` |
 | 2.2 — Etapa 2 produto | 1 | F09, F10 | Taxonomia do 3.1; restrição casa/galpão | Testes de taxonomia | `[ ]` |
 | 2.2 — Preço por m² vendido | 1 | F10 | preço ÷ área da unidade | Teste de cálculo | `[ ]` |
-| 2.3 — Áreas e IA calculados | 1 | F11 | Cadeia do 3.3 | `areas.test.ts` | `[ ]` |
+| 2.3 — Áreas e CA calculados | 1 | F11 | Cadeia do 3.3 | `areas.test.ts` | `[ ]` |
 | 2.3 — Ajuste do custo por faixa/padrão/topografia/formato | 1 | F12 | Quatro aditivos somados | `cub.test.ts` | `[ ]` |
 | 2.4 — Alertas regulatórios e técnicos | 1 | F18 | Checklist completo do 2.4 | `alertas.test.ts` | `[ ]` |
 | 2.4 — Obra/VGV 40–65% | 1 | F18 | Limites exatos | Teste de limite | `[ ]` |
@@ -1407,7 +1408,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 - Comparativo automático entre múltiplos ativos
 - Exportação em Excel
 - Metodologia de área equivalente da NBR 12.721
-- Limites de taxa de ocupação, IA e altura por zona embutidos no app
+- Limites de taxa de ocupação, CA e altura por zona embutidos no app
 - Os projetos CUB `PP-4`, `PIS` e `RP1Q` (sem tipologia LASTRO correspondente)
 
 ---
@@ -1427,7 +1428,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[ ]` |
 | 10 | 1 | F09 Tipo, tipologia e padrão | Classificação em cascata | Média | Opus | **D-B6** | `[ ]` |
 | 11 | 1 | F10 Pavimentos e unidades | Programa + preço por m² | Média | Sonnet | — | `[ ]` |
-| 12 | 1 | F11 Áreas e indicadores | Painel de áreas e IA | Média | Opus | — | `[ ]` |
+| 12 | 1 | F11 Áreas e indicadores | Painel de áreas e CA | Média | Opus | — | `[ ]` |
 | 13 | 1 | F12 Parâmetros e CUB | CUB Ajustado discriminado | Alta | Opus | **D-B4, D-B5** | `[ ]` |
 | 14 | 1 | F13 Motor econômico e API | Resultado cru completo | Alta | Opus | **D-B1, D-B2, D-B3** | `[ ]` |
 | 15 | 1 | F14 Resultado v1 | Resumo e preço máximo | Média | Sonnet | — | `[ ]` |

@@ -42,7 +42,7 @@ Este arquivo é um repositório vivo de ideias, funcionalidades e referências d
   Exigiria persistência de histórico e múltiplas análises por projeto — MVP é intencionalmente "uma análise por acesso, sem histórico".
 
 - **[fora de escopo] IA conversacional sobre dados do empreendimento**
-  Assistente que responde perguntas em linguagem natural consultando dados históricos. Exigiria persistência que o MVP não tem. Atenção adicional: nomenclatura "IA" no domínio LASTRO é reservada a Índice/Coeficiente de Aproveitamento urbanístico — qualquer feature de IA artificial exigiria cuidado para não confundir a terminologia do produto.
+  Assistente que responde perguntas em linguagem natural consultando dados históricos. Exigiria persistência que o MVP não tem. Nota histórica: o domínio LASTRO chamava o coeficiente urbanístico de "IA" e por isso qualquer feature de IA artificial exigiria cuidado com a colisão de termos — a sigla do coeficiente foi renomeada para "CA" (Coeficiente de Aproveitamento) exatamente para eliminar essa ambiguidade.
 
 - **[fora de escopo] Módulo de orçamento por composição (paramétrico/básico/executivo/custo alternativo)**
   LASTRO usa CUB ajustado simplificado (soma de aditivos), não orçamento detalhado por composição/insumo. Mudança de motor de cálculo, não é ajuste incremental.
