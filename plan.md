@@ -302,7 +302,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | SVG, acessibilidade e integração com o estado do formulário. |
 | **26. Conclusão** | Onboarding final aprovado, acessível e reabrível. |
-| **27. Checkpoint** | `[>]` Usuário aprova o onboarding como concluído. Implementada conforme D-R7, D-R8 e D-R9; arquivos além dos previstos: `SequenciaMetodologia`, `PainelMetodologia`, `useMetodologia` e o shim de `<dialog>` para o jsdom (`src/configuracaoTestes.ts`). |
+| **27. Checkpoint** | `[>]` Usuário aprova o onboarding como concluído. Implementada conforme D-R7, D-R8 e D-R9; a pedido do usuário, a copy da página inicial (F02) também passou aos dois vocabulários da recomendação (D-R6); arquivos além dos previstos: `SequenciaMetodologia`, `PainelMetodologia`, `useMetodologia` e o shim de `<dialog>` para o jsdom (`src/configuracaoTestes.ts`). |
 
 ---
 

@@ -26,10 +26,13 @@ export function PaginaInicial() {
       <h1 className={estilos.display}>Devo adquirir este terreno?</h1>
       <p className={estilos.subtitulo}>E construir aqui vai dar dinheiro?</p>
 
+      {/* Vocabulário da recomendação acompanha o objetivo escolhido (D-R6, PRD 4.4): só "comprar"
+          deixaria de fora quem já tem o terreno e quer saber se executa o empreendimento. */}
       <p className={estilos.leitura}>
         Duas perguntas, uma conta só. A lastro calcula quanto o terreno pode valer para o que
-        você pretende construir, compara com o preço pedido e devolve uma recomendação clara:
-        comprar, não comprar ou comprar com ressalvas.
+        você pretende construir, compara com o preço pedido e devolve uma recomendação clara, na
+        linguagem do seu objetivo: comprar ou não o terreno, fazer ou não o empreendimento, com ou
+        sem ressalvas.
       </p>
 
       <p className={estilos.metadados}>

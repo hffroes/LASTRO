@@ -39,6 +39,12 @@ describe('PaginaInicial', () => {
     expect(screen.getByRole('button', { name: 'Começar análise' })).toBeTruthy();
   });
 
+  it('cita a recomendação nos dois vocabulários do objetivo da análise', () => {
+    renderPagina();
+
+    expect(screen.getByText(/comprar ou não o terreno, fazer ou não o empreendimento/)).toBeTruthy();
+  });
+
   it('no primeiro acesso, o CTA leva ao onboarding e marca a flag', () => {
     renderPagina();
 
