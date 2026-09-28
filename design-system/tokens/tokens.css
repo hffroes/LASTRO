@@ -129,6 +129,26 @@
 
   /* Altura do controle padrão do guia (botão md, botão de ícone) */
   --lastro-altura-controle: 38px;
+
+  /* Diagrama do resíduo (onboarding) — adição da F04. Segue o gráfico "Distribuição do custo"
+     do guia (seção 06: barra em segmentos, legenda com amostra), mas os custos ficam em cinza e
+     só o resultado do terreno em azul: "azul age, cinza informa", e o terreno é a resposta.
+     Todos passam de 3:1 sobre a superfície elevada (WCAG 1.4.11), nos dois temas. */
+  --lastro-diagrama-vgv: var(--lastro-navy);
+  --lastro-diagrama-obra: var(--lastro-gray-800);
+  --lastro-diagrama-despesas: var(--lastro-gray-600);
+  --lastro-diagrama-lucro: var(--lastro-gray-500);
+  --lastro-diagrama-terreno: var(--lastro-action);
+  --lastro-diagrama-altura-barra: 12px;
+  --lastro-diagrama-amostra: 8px;
+  --lastro-diagrama-amostra-raio: 2px;
+
+  /* Painel sobreposto (metodologia) — adição da F04. O guia define a elevação "lg · modal",
+     mas não o véu por trás; navy translúcido mantém a página legível sem competir com o painel. */
+  --lastro-veu-modal: rgba(10, 26, 47, 0.48);
+
+  /* Indicador de progresso do onboarding — adição da F04 */
+  --lastro-progresso-altura: 4px;
 }
 
 /* Semântico (tema escuro) — adição F00 (plan.md), remapeia sobre os tokens --lastro-dark-* já existentes */
@@ -171,4 +191,14 @@
   --lastro-danger-title: #F58C82;
   --lastro-danger-text: #F58C82;
   --lastro-ai-bg: rgba(109, 74, 224, 0.22);
+
+  /* Diagrama no escuro: a escala inverte (mais claro = mais peso). O navy do tema claro sumiria
+     sobre a superfície navy (1,14:1). */
+  --lastro-diagrama-vgv: var(--lastro-gray-100);
+  --lastro-diagrama-obra: var(--lastro-gray-300);
+  --lastro-diagrama-despesas: var(--lastro-gray-400);
+  --lastro-diagrama-lucro: var(--lastro-gray-500);
+
+  /* Sobre a página navy, o véu navy não escurece nada: usa preto mais denso. */
+  --lastro-veu-modal: rgba(0, 0, 0, 0.6);
 }

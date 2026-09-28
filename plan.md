@@ -29,6 +29,9 @@
 | D-R4 | Lacunas do design system (sem tokens de espaçamento, tamanho de fonte ou mecanismo de tema) | **Estender `design-system/tokens/tokens.css`** na F00. A condição "sem alterar valores existentes" foi superada pela revisão pós-F02, que precisou corrigir valores errados — ver D-R5 | F00 |
 | D-R5 | Qual é a fonte de verdade visual e o que uma fase visual precisa provar | **O `design-system/guide/` é a referência**, não o `README.md` nem o `tokens.css`, que são resumos incompletos dele. Toda fase visual mede contraste (AA) e confere as três faixas antes do checkpoint — ver seção E | Revisão pós-F02 |
 | D-R6 | A recomendação final (`PRD` 4.4) só tinha rótulo de compra ("COMPRAR"), mas o produto responde duas perguntas distintas (`PRD` 1): comprar o terreno ou executar o empreendimento — quem já tem o terreno e lê pela perspectiva Incorporador recebia "COMPRAR" sem sentido | **Objetivo da análise obrigatório e explícito** no início do fluxo ("comprar o terreno" × "executar o empreendimento"), nunca inferido. Decide a perspectiva padrão (Terrenista/Incorporador, `PRD` 2.6) e o rótulo da recomendação (`PRD` 4.4: COMPRAR/NÃO COMPRAR × FAZER/NÃO FAZER O EMPREENDIMENTO). Pesos do Score e limiares não mudam. Onde exatamente essa pergunta aparece na interface é decisão da F05, quando a fase começar | Revisão pós-F03; aplica-se a F05, F16, F19 |
+| D-R7 | "Não mostrar novamente" do onboarding (F04) | **Absorvido pela regra de primeiro acesso da F03**, sem caixa de seleção: o onboarding já abre sozinho só no primeiro "Começar análise" do navegador. Consultar a metodologia pelo painel também conta como visto | F04 |
+| D-R8 | Como a metodologia reabre fora do primeiro acesso | **Painel sobreposto** (`<dialog>` nativo, elevação lg do guia) aberto pelo cabeçalho e pelo "Ver a metodologia" da página inicial, sem sair da página: o formulário por baixo nunca é desmontado. A rota `/onboarding` fica só para o primeiro acesso | F04 |
+| D-R9 | Números no diagrama do resíduo | **Nenhum**: partes de mesma largura, rotuladas "Exemplo ilustrativo · fora de escala". Qualquer proporção anteciparia D-B2/D-B3, e valores poderiam ser lidos como resultado real. Barras em HTML, não SVG, seguindo o gráfico "Distribuição do custo" do guia | F04 |
 
 ### B. Decisões bloqueantes
 
@@ -299,7 +302,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | SVG, acessibilidade e integração com o estado do formulário. |
 | **26. Conclusão** | Onboarding final aprovado, acessível e reabrível. |
-| **27. Checkpoint** | `[ ]` Usuário aprova o onboarding como concluído. |
+| **27. Checkpoint** | `[>]` Usuário aprova o onboarding como concluído. Implementada conforme D-R7, D-R8 e D-R9; arquivos além dos previstos: `SequenciaMetodologia`, `PainelMetodologia`, `useMetodologia` e o shim de `<dialog>` para o jsdom (`src/configuracaoTestes.ts`). |
 
 ---
 
@@ -1421,7 +1424,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 2 | 1 | F01 Shell e navegação | Quatro páginas navegáveis | Baixa | Sonnet | — | `[x]` ✓opus |
 | 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[x]` ✓opus |
 | 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[x]` |
-| 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[ ]` |
+| 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[>]` |
 | 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[ ]` |
 | 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[ ]` |
 | 8 | 1 | F07 Dados físicos e financeiros | Preço em R$/m² calculado | Média | Opus | — | `[ ]` |

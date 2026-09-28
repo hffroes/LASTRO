@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { Alerta } from '../components/ui/Alerta';
 import { Botao } from '../components/ui/Botao';
+import { useMetodologia } from '../hooks/useMetodologia';
 import { usePrimeiroAcesso } from '../hooks/usePrimeiroAcesso';
 import estilos from './PaginaInicial.module.css';
 
 export function PaginaInicial() {
   const navegar = useNavigate();
   const { ehPrimeiroAcesso, marcarComoVisto } = usePrimeiroAcesso();
+  const { abrir: abrirMetodologia } = useMetodologia();
 
   function aoComecarAnalise() {
     if (ehPrimeiroAcesso) {
@@ -15,10 +17,6 @@ export function PaginaInicial() {
     } else {
       navegar('/terreno');
     }
-  }
-
-  function aoVerMetodologia() {
-    navegar('/onboarding', { state: { modoConsulta: true } });
   }
 
   return (
@@ -47,7 +45,7 @@ export function PaginaInicial() {
         <Botao tamanho="grande" onClick={aoComecarAnalise}>
           Começar análise
         </Botao>
-        <Botao variante="fantasma" tamanho="grande" onClick={aoVerMetodologia}>
+        <Botao variante="fantasma" tamanho="grande" onClick={abrirMetodologia}>
           Ver a metodologia
         </Botao>
       </div>

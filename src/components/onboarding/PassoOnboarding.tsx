@@ -1,5 +1,7 @@
 import type { Ref } from 'react';
 import type { PassoMetodologia } from '../../content/onboarding';
+import { DiagramaResiduo } from './DiagramaResiduo';
+import { ProgressoOnboarding } from './ProgressoOnboarding';
 import estilos from './PassoOnboarding.module.css';
 
 interface PropriedadesPassoOnboarding {
@@ -12,6 +14,8 @@ interface PropriedadesPassoOnboarding {
 export function PassoOnboarding({ passo, numero, total, refTitulo }: PropriedadesPassoOnboarding) {
   return (
     <section className={estilos.passo} aria-labelledby={`passo-${passo.id}`}>
+      <ProgressoOnboarding passoAtual={numero} total={total} />
+
       <p className={estilos.sobretitulo}>
         Metodologia · {numero} de {total}
       </p>
@@ -33,6 +37,8 @@ export function PassoOnboarding({ passo, numero, total, refTitulo }: Propriedade
           ))}
         </dl>
       )}
+
+      {passo.diagrama === 'residuo' && <DiagramaResiduo />}
 
       {passo.formula && (
         <ol className={estilos.formula} aria-label="Conta do resíduo do terreno">
