@@ -149,6 +149,18 @@
 
   /* Indicador de progresso do onboarding — adição da F04 */
   --lastro-progresso-altura: 4px;
+
+  /* Campos de formulário — adição da F05, valores do guia (seção 05, "Campos"): rótulo 12.5/600,
+     texto auxiliar e erro em 12, 6px entre rótulo e controle, anel de foco de 3px em azul. */
+  --lastro-font-size-rotulo: 12.5px;
+  --lastro-font-size-auxiliar: 12px;
+  --lastro-gap-campo: 6px;
+  --lastro-text-rotulo: var(--lastro-gray-700);
+  --lastro-anel-foco: 0 0 0 3px rgba(47, 109, 240, 0.16);
+  /* Exceção deliberada ao guia: a borda do campo lá é o cinza-300, que dá 1,65:1 sobre o branco e
+     reprova o 3:1 exigido para o contorno de um controle (WCAG 1.4.11). O cinza-500 dá 4,39:1 no
+     claro e 3,49:1 no escuro, então serve aos dois temas. */
+  --lastro-borda-campo: var(--lastro-gray-500);
 }
 
 /* Semântico (tema escuro) — adição F00 (plan.md), remapeia sobre os tokens --lastro-dark-* já existentes */
@@ -201,4 +213,9 @@
 
   /* Sobre a página navy, o véu navy não escurece nada: usa preto mais denso. */
   --lastro-veu-modal: rgba(0, 0, 0, 0.6);
+
+  /* Campos no escuro: rótulo claro sobre navy, e o anel de foco no azul-400, que é o azul de ação
+     do tema escuro (o azul-500 translúcido some sobre a superfície navy). */
+  --lastro-text-rotulo: var(--lastro-gray-200);
+  --lastro-anel-foco: 0 0 0 3px rgba(95, 147, 247, 0.32);
 }

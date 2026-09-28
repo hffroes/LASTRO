@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it } from 'vitest';
+import { AnaliseProvider } from './hooks/useAnalise';
 import { TemaProvider } from './hooks/useTema';
 import { PASSOS_ONBOARDING } from './content/onboarding';
 import { Rotas } from './rotas';
@@ -9,7 +10,9 @@ function renderEm(caminho: string) {
   return render(
     <TemaProvider>
       <MemoryRouter initialEntries={[caminho]}>
-        <Rotas />
+        <AnaliseProvider>
+          <Rotas />
+        </AnaliseProvider>
       </MemoryRouter>
     </TemaProvider>,
   );

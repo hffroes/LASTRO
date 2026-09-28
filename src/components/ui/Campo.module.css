@@ -1,0 +1,66 @@
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-gap-campo);
+}
+
+.rotulo {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-rotulo);
+  font-weight: 600;
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-rotulo);
+}
+
+/* 38px como o botão md: campo e botão lado a lado alinham sem ajuste. */
+.entrada {
+  width: 100%;
+  height: var(--lastro-altura-controle);
+  padding: 0 var(--lastro-space-12);
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  color: var(--lastro-text-primary);
+  background: var(--lastro-surface-raised);
+  border: 1px solid var(--lastro-borda-campo);
+  border-radius: var(--lastro-radius-sm);
+  outline: none;
+}
+
+.entrada:focus-visible,
+.entrada:focus {
+  border-color: var(--lastro-action);
+  box-shadow: var(--lastro-anel-foco);
+}
+
+.entrada[aria-invalid='true'] {
+  border-color: var(--lastro-danger-text);
+}
+
+.entrada[aria-invalid='true']:focus {
+  box-shadow: var(--lastro-anel-foco);
+}
+
+.dica,
+.erro {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  margin: 0;
+}
+
+.dica {
+  color: var(--lastro-text-secondary);
+}
+
+.erro {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--lastro-gap-campo);
+  color: var(--lastro-danger-text);
+}
+
+/* Alinha o ícone à primeira linha do texto quando a mensagem quebra. */
+.iconeErro {
+  flex: none;
+  margin-top: calc(var(--lastro-space-4) / 2);
+}

@@ -25,7 +25,7 @@ export function Alerta({ tom = 'info', titulo, children }: PropriedadesAlerta) {
       <Icone className={estilos.icone} size={18} strokeWidth={1.75} aria-hidden="true" />
       <div className={estilos.conteudo}>
         {titulo && <strong className={estilos.titulo}>{titulo}</strong>}
-        <span className={estilos.corpo}>{children}</span>
+        <div className={estilos.corpo}>{children}</div>
       </div>
     </div>
   );

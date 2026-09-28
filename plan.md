@@ -32,6 +32,10 @@
 | D-R7 | "Não mostrar novamente" do onboarding (F04) | **Absorvido pela regra de primeiro acesso da F03**, sem caixa de seleção: o onboarding já abre sozinho só no primeiro "Começar análise" do navegador. Consultar a metodologia pelo painel também conta como visto | F04 |
 | D-R8 | Como a metodologia reabre fora do primeiro acesso | **Painel sobreposto** (`<dialog>` nativo, elevação lg do guia) aberto pelo cabeçalho e pelo "Ver a metodologia" da página inicial, sem sair da página: o formulário por baixo nunca é desmontado. A rota `/onboarding` fica só para o primeiro acesso | F04 |
 | D-R9 | Números no diagrama do resíduo | **Nenhum**: partes de mesma largura, rotuladas "Exemplo ilustrativo · fora de escala". Qualquer proporção anteciparia D-B2/D-B3, e valores poderiam ser lidos como resultado real. Barras em HTML, não SVG, seguindo o gráfico "Distribuição do custo" do guia | F04 |
+| D-R10 | Onde aparece o objetivo da análise (D-R6) | **Primeira seção da página de Terreno**, antes de "Identificação e localização", como escolha única em cartões. O indicador segue com 3 etapas e nenhuma rota nova foi criada | F05 |
+| D-R11 | Liberdade de pular etapas (herdada da F01) | **Só avança com a etapa válida**: "Avançar" é barrado com resumo de pendências; voltar é sempre livre. A trava de acesso direto pela URL (`/produto`, `/resultado`) entra junto com a página que ela protege (F09 e F14) | F05 |
+| D-R12 | D-A2 — rascunho no navegador | **Sim, só na aba** (`sessionStorage`, versionado): sobrevive a um F5 e some ao fechar a aba; nada vai ao servidor. O "limpar análise" (D-B11, F22) deve apagar também o rascunho | F05 |
+| D-R13 | Limite do nome/identificação do terreno | **80 caracteres**, contados sem os espaços das pontas; o excesso é acusado, nunca cortado em silêncio | F05 |
 
 ### B. Decisões bloqueantes
 
@@ -63,7 +67,7 @@ Podem ser tomadas depois sem retrabalho relevante.
 | ID | Decisão | Sugestão de momento |
 |----|---------|---------------------|
 | D-A1 | Fonte da lista de municípios de MG (IBGE estático vs API) | F06 — começar com lista estática versionada |
-| D-A2 | Persistir rascunho do formulário no navegador (`sessionStorage`) para sobreviver a refresh | F05 — decidir junto com D-B11 |
+| D-A2 | ~~Persistir rascunho do formulário no navegador (`sessionStorage`) para sobreviver a refresh~~ | **Resolvida na F05** — ver D-R12 |
 | D-A3 | Critério de desatualização do CUB (ex.: >30 dias) | F24 — parametrizar com default provisório marcado TBD |
 | D-A4 | Quantidade N de versões anteriores de CUB mantidas | F24 — parametrizar |
 | D-A5 | Taxa de ocupação default por município (hoje 0,6 global, provisório) | Pós-MVP |
@@ -336,7 +340,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Define o padrão de formulário e validação de todo o produto, mas sem regra econômica. |
 | **26. Conclusão** | Esqueleto do formulário com validação aprovada. |
-| **27. Checkpoint** | `[ ]` Usuário aprova o padrão de campo, erro e navegação entre etapas. |
+| **27. Checkpoint** | `[>]` Usuário aprova o padrão de campo, erro e navegação entre etapas. Implementada conforme D-R10 a D-R13. Diferenças do previsto: o `Alerta` já existia desde a F02 e foi reaproveitado (corpo passou de `span` a `div`, para aceitar lista); entraram `GrupoOpcoes` (escolha em cartões, reaproveitável em F08/F09), `ResumoPendencias` e `src/content/terreno.ts`; `useAnalise` é `.tsx` por conter o provedor. A validação do backend usa o mesmo `src/utils/validacao/terreno.ts`, mas só ganha endpoint na F13 (D-B1). |
 
 ---
 
@@ -1425,7 +1429,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[x]` ✓opus |
 | 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[x]` |
 | 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[x]` |
-| 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[ ]` |
+| 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[>]` |
 | 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[ ]` |
 | 8 | 1 | F07 Dados físicos e financeiros | Preço em R$/m² calculado | Média | Opus | — | `[ ]` |
 | 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[ ]` |

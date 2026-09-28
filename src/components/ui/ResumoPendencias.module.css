@@ -1,0 +1,38 @@
+.resumo {
+  border-radius: var(--lastro-radius-md);
+}
+
+.resumo:focus-visible,
+.resumo:focus {
+  outline: 2px solid var(--lastro-action);
+  outline-offset: 2px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-4);
+  /* Sem marcador: o botão quebra linha como bloco, e o marcador ficava alinhado à última linha. */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Botão com cara de link: leva a um campo da mesma página, não navega. */
+.link {
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--lastro-action);
+  outline-offset: 2px;
+  border-radius: var(--lastro-radius-sm);
+}
