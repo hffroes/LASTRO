@@ -265,7 +265,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Conteúdo + navegação simples; a explicação precisa ser fiel ao PRD 4.1. |
 | **26. Conclusão** | Onboarding percorrível com conteúdo aprovado em substância. |
-| **27. Checkpoint** | `[ ]` Usuário aprova a substância da explicação (o polimento vem na F04). |
+| **27. Checkpoint** | `[x]` Usuário aprova a substância da explicação (o polimento vem na F04). |
 
 ---
 
@@ -1420,7 +1420,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 1 | 1 | F00 Fundação e design system | App no ar com tokens e dark mode | Média | Opus | D-R1, D-R4 (resolvidas) | `[x]` ✓opus |
 | 2 | 1 | F01 Shell e navegação | Quatro páginas navegáveis | Baixa | Sonnet | — | `[x]` ✓opus |
 | 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[x]` ✓opus |
-| 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[ ]` |
+| 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[x]` |
 | 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[ ]` |
 | 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[ ]` |
 | 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[ ]` |
