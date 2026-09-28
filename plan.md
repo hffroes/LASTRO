@@ -340,7 +340,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Define o padrão de formulário e validação de todo o produto, mas sem regra econômica. |
 | **26. Conclusão** | Esqueleto do formulário com validação aprovada. |
-| **27. Checkpoint** | `[>]` Usuário aprova o padrão de campo, erro e navegação entre etapas. Implementada conforme D-R10 a D-R13. Diferenças do previsto: o `Alerta` já existia desde a F02 e foi reaproveitado (corpo passou de `span` a `div`, para aceitar lista); entraram `GrupoOpcoes` (escolha em cartões, reaproveitável em F08/F09), `ResumoPendencias` e `src/content/terreno.ts`; `useAnalise` é `.tsx` por conter o provedor. A validação do backend usa o mesmo `src/utils/validacao/terreno.ts`, mas só ganha endpoint na F13 (D-B1). |
+| **27. Checkpoint** | `[x]` Usuário aprova o padrão de campo, erro e navegação entre etapas. Implementada conforme D-R10 a D-R13. Diferenças do previsto: o `Alerta` já existia desde a F02 e foi reaproveitado (corpo passou de `span` a `div`, para aceitar lista); entraram `GrupoOpcoes` (escolha em cartões, reaproveitável em F08/F09), `ResumoPendencias` e `src/content/terreno.ts`; `useAnalise` é `.tsx` por conter o provedor. A validação do backend usa o mesmo `src/utils/validacao/terreno.ts`, mas só ganha endpoint na F13 (D-B1). |
 
 ---
 
@@ -1429,7 +1429,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[x]` ✓opus |
 | 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[x]` |
 | 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[x]` |
-| 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[>]` |
+| 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[x]` |
 | 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[ ]` |
 | 8 | 1 | F07 Dados físicos e financeiros | Preço em R$/m² calculado | Média | Opus | — | `[ ]` |
 | 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[ ]` |
