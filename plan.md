@@ -302,7 +302,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | SVG, acessibilidade e integração com o estado do formulário. |
 | **26. Conclusão** | Onboarding final aprovado, acessível e reabrível. |
-| **27. Checkpoint** | `[>]` Usuário aprova o onboarding como concluído. Implementada conforme D-R7, D-R8 e D-R9; a pedido do usuário, a copy da página inicial (F02) também passou aos dois vocabulários da recomendação (D-R6); arquivos além dos previstos: `SequenciaMetodologia`, `PainelMetodologia`, `useMetodologia` e o shim de `<dialog>` para o jsdom (`src/configuracaoTestes.ts`). |
+| **27. Checkpoint** | `[x]` Usuário aprova o onboarding como concluído. Implementada conforme D-R7, D-R8 e D-R9; a pedido do usuário, a copy da página inicial (F02) também passou aos dois vocabulários da recomendação (D-R6); arquivos além dos previstos: `SequenciaMetodologia`, `PainelMetodologia`, `useMetodologia` e o shim de `<dialog>` para o jsdom (`src/configuracaoTestes.ts`). |
 
 ---
 
@@ -1424,7 +1424,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 2 | 1 | F01 Shell e navegação | Quatro páginas navegáveis | Baixa | Sonnet | — | `[x]` ✓opus |
 | 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[x]` ✓opus |
 | 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[x]` |
-| 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[>]` |
+| 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[x]` |
 | 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[ ]` |
 | 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[ ]` |
 | 8 | 1 | F07 Dados físicos e financeiros | Preço em R$/m² calculado | Média | Opus | — | `[ ]` |
