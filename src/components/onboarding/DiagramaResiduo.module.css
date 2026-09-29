@@ -1,0 +1,107 @@
+.diagrama {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-16);
+  margin: var(--lastro-space-24) 0 0;
+  padding: var(--lastro-space-16);
+  background: var(--lastro-surface-raised);
+  border: 1px solid var(--lastro-border-default);
+  border-radius: var(--lastro-radius-md);
+}
+
+.aviso {
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-ui);
+  letter-spacing: var(--lastro-tracking-rotulo);
+  text-transform: uppercase;
+  color: var(--lastro-text-secondary);
+}
+
+.linha {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-8);
+}
+
+.rotuloLinha {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  margin: 0;
+}
+
+.rotuloLinha strong {
+  font-weight: 600;
+  color: var(--lastro-text-primary);
+}
+
+.barra {
+  display: flex;
+  gap: var(--lastro-space-4);
+  height: var(--lastro-diagrama-altura-barra);
+  border-radius: var(--lastro-radius-pill);
+  overflow: hidden;
+}
+
+.segmento {
+  flex: 1;
+}
+
+.segmento[data-parte='vgv'],
+.amostra[data-parte='vgv'] {
+  background: var(--lastro-diagrama-vgv);
+}
+
+.segmento[data-parte='obra'],
+.amostra[data-parte='obra'] {
+  background: var(--lastro-diagrama-obra);
+}
+
+.segmento[data-parte='despesas'],
+.amostra[data-parte='despesas'] {
+  background: var(--lastro-diagrama-despesas);
+}
+
+.segmento[data-parte='lucro'],
+.amostra[data-parte='lucro'] {
+  background: var(--lastro-diagrama-lucro);
+}
+
+.segmento[data-parte='terreno'],
+.amostra[data-parte='terreno'] {
+  background: var(--lastro-diagrama-terreno);
+}
+
+.legenda {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--lastro-space-16);
+  row-gap: var(--lastro-space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.itemLegenda {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lastro-space-8);
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+}
+
+/* O terreno é a resposta da conta: destaque por peso e cor do texto, não só pela amostra azul. */
+.itemLegenda[data-destaque='true'] {
+  font-weight: 600;
+  color: var(--lastro-text-primary);
+}
+
+.amostra {
+  flex: none;
+  width: var(--lastro-diagrama-amostra);
+  height: var(--lastro-diagrama-amostra);
+  border-radius: var(--lastro-diagrama-amostra-raio);
+}

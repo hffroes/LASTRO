@@ -1,0 +1,113 @@
+/* Coluna única na largura de leitura: formulário curto, lido de cima a baixo, igual no mobile. */
+.pagina {
+  max-width: var(--lastro-medida-texto);
+  margin: 0 auto;
+}
+
+.sobretitulo {
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-ui);
+  letter-spacing: var(--lastro-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--lastro-action-text);
+  margin: 0 0 var(--lastro-space-12);
+}
+
+.titulo {
+  font-family: var(--lastro-font-display);
+  font-size: var(--lastro-font-size-h1);
+  font-weight: 600;
+  line-height: var(--lastro-leading-h1);
+  letter-spacing: var(--lastro-tracking-h1);
+  margin: 0;
+}
+
+.introducao {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-body);
+  line-height: var(--lastro-leading-body);
+  color: var(--lastro-text-secondary);
+  margin: var(--lastro-space-8) 0 0;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-16);
+  margin-top: var(--lastro-space-24);
+}
+
+.secao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-16);
+  padding: var(--lastro-space-24);
+  background: var(--lastro-surface-raised);
+  border: 1px solid var(--lastro-border-default);
+  border-radius: var(--lastro-radius-md);
+}
+
+.tituloSecao {
+  font-family: var(--lastro-font-display);
+  font-size: var(--lastro-font-size-h2);
+  font-weight: 600;
+  line-height: var(--lastro-leading-h2);
+  letter-spacing: var(--lastro-tracking-h2);
+  margin: 0;
+}
+
+/* Cola a descrição no título da seção, em vez do espaçamento entre blocos. */
+.descricaoSecao {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  margin: calc(-1 * var(--lastro-space-12)) 0 0;
+}
+
+.pendente {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  padding: var(--lastro-space-12);
+  background: var(--lastro-surface-sunken);
+  border-radius: var(--lastro-radius-sm);
+  margin: 0;
+}
+
+.contador {
+  font-family: var(--lastro-font-mono);
+  white-space: nowrap;
+}
+
+.acoes {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--lastro-space-12);
+  margin-top: var(--lastro-space-8);
+}
+
+@media (max-width: 480px) {
+  .secao {
+    padding: var(--lastro-space-16);
+  }
+}
+
+/* CEP tem tamanho fixo (00000-000): o campo curto sinaliza o formato esperado. */
+.campoCurto {
+  max-width: calc(4 * var(--lastro-space-40));
+}
+
+/* Linha própria: é a resposta da consulta, não parte da instrução do campo. */
+.statusCep {
+  display: block;
+}
+
+.statusCep[data-tom='aviso'] {
+  color: var(--lastro-warning-text);
+}
+
+.statusCep[data-tom='sucesso'] {
+  color: var(--lastro-success-text);
+}

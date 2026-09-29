@@ -129,6 +129,44 @@
 
   /* Altura do controle padrão do guia (botão md, botão de ícone) */
   --lastro-altura-controle: 38px;
+
+  /* Diagrama do resíduo (onboarding) — adição da F04. Segue o gráfico "Distribuição do custo"
+     do guia (seção 06: barra em segmentos, legenda com amostra), mas os custos ficam em cinza e
+     só o resultado do terreno em azul: "azul age, cinza informa", e o terreno é a resposta.
+     Todos passam de 3:1 sobre a superfície elevada (WCAG 1.4.11), nos dois temas. */
+  --lastro-diagrama-vgv: var(--lastro-navy);
+  --lastro-diagrama-obra: var(--lastro-gray-800);
+  --lastro-diagrama-despesas: var(--lastro-gray-600);
+  --lastro-diagrama-lucro: var(--lastro-gray-500);
+  --lastro-diagrama-terreno: var(--lastro-action);
+  --lastro-diagrama-altura-barra: 12px;
+  --lastro-diagrama-amostra: 8px;
+  --lastro-diagrama-amostra-raio: 2px;
+
+  /* Painel sobreposto (metodologia) — adição da F04. O guia define a elevação "lg · modal",
+     mas não o véu por trás; navy translúcido mantém a página legível sem competir com o painel. */
+  --lastro-veu-modal: rgba(10, 26, 47, 0.48);
+
+  /* Indicador de progresso do onboarding — adição da F04 */
+  --lastro-progresso-altura: 4px;
+
+  /* Campos de formulário — adição da F05, valores do guia (seção 05, "Campos"): rótulo 12.5/600,
+     texto auxiliar e erro em 12, 6px entre rótulo e controle, anel de foco de 3px em azul. */
+  --lastro-font-size-rotulo: 12.5px;
+  --lastro-font-size-auxiliar: 12px;
+  --lastro-gap-campo: 6px;
+  --lastro-text-rotulo: var(--lastro-gray-700);
+  --lastro-anel-foco: 0 0 0 3px rgba(47, 109, 240, 0.16);
+  /* Exceção deliberada ao guia: a borda do campo lá é o cinza-300, que dá 1,65:1 sobre o branco e
+     reprova o 3:1 exigido para o contorno de um controle (WCAG 1.4.11). O cinza-500 dá 4,39:1 no
+     claro e 3,49:1 no escuro, então serve aos dois temas. */
+  --lastro-borda-campo: var(--lastro-gray-500);
+
+  /* Lista de sugestões (combobox) — adição da F06. 240px mostra ~7 opções; o limite em 40% da
+     altura da tela vale no celular com o teclado virtual aberto. */
+  --lastro-lista-altura-max: min(240px, 40vh);
+  /* Opção ativa por teclado numa lista: barra de ação à esquerda, além do fundo. */
+  --lastro-indicador-ativo: inset 3px 0 0 var(--lastro-action);
 }
 
 /* Semântico (tema escuro) — adição F00 (plan.md), remapeia sobre os tokens --lastro-dark-* já existentes */
@@ -171,4 +209,19 @@
   --lastro-danger-title: #F58C82;
   --lastro-danger-text: #F58C82;
   --lastro-ai-bg: rgba(109, 74, 224, 0.22);
+
+  /* Diagrama no escuro: a escala inverte (mais claro = mais peso). O navy do tema claro sumiria
+     sobre a superfície navy (1,14:1). */
+  --lastro-diagrama-vgv: var(--lastro-gray-100);
+  --lastro-diagrama-obra: var(--lastro-gray-300);
+  --lastro-diagrama-despesas: var(--lastro-gray-400);
+  --lastro-diagrama-lucro: var(--lastro-gray-500);
+
+  /* Sobre a página navy, o véu navy não escurece nada: usa preto mais denso. */
+  --lastro-veu-modal: rgba(0, 0, 0, 0.6);
+
+  /* Campos no escuro: rótulo claro sobre navy, e o anel de foco no azul-400, que é o azul de ação
+     do tema escuro (o azul-500 translúcido some sobre a superfície navy). */
+  --lastro-text-rotulo: var(--lastro-gray-200);
+  --lastro-anel-foco: 0 0 0 3px rgba(95, 147, 247, 0.32);
 }

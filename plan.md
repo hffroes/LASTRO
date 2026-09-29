@@ -29,6 +29,17 @@
 | D-R4 | Lacunas do design system (sem tokens de espaçamento, tamanho de fonte ou mecanismo de tema) | **Estender `design-system/tokens/tokens.css`** na F00. A condição "sem alterar valores existentes" foi superada pela revisão pós-F02, que precisou corrigir valores errados — ver D-R5 | F00 |
 | D-R5 | Qual é a fonte de verdade visual e o que uma fase visual precisa provar | **O `design-system/guide/` é a referência**, não o `README.md` nem o `tokens.css`, que são resumos incompletos dele. Toda fase visual mede contraste (AA) e confere as três faixas antes do checkpoint — ver seção E | Revisão pós-F02 |
 | D-R6 | A recomendação final (`PRD` 4.4) só tinha rótulo de compra ("COMPRAR"), mas o produto responde duas perguntas distintas (`PRD` 1): comprar o terreno ou executar o empreendimento — quem já tem o terreno e lê pela perspectiva Incorporador recebia "COMPRAR" sem sentido | **Objetivo da análise obrigatório e explícito** no início do fluxo ("comprar o terreno" × "executar o empreendimento"), nunca inferido. Decide a perspectiva padrão (Terrenista/Incorporador, `PRD` 2.6) e o rótulo da recomendação (`PRD` 4.4: COMPRAR/NÃO COMPRAR × FAZER/NÃO FAZER O EMPREENDIMENTO). Pesos do Score e limiares não mudam. Onde exatamente essa pergunta aparece na interface é decisão da F05, quando a fase começar | Revisão pós-F03; aplica-se a F05, F16, F19 |
+| D-R7 | "Não mostrar novamente" do onboarding (F04) | **Absorvido pela regra de primeiro acesso da F03**, sem caixa de seleção: o onboarding já abre sozinho só no primeiro "Começar análise" do navegador. Consultar a metodologia pelo painel também conta como visto | F04 |
+| D-R8 | Como a metodologia reabre fora do primeiro acesso | **Painel sobreposto** (`<dialog>` nativo, elevação lg do guia) aberto pelo cabeçalho e pelo "Ver a metodologia" da página inicial, sem sair da página: o formulário por baixo nunca é desmontado. A rota `/onboarding` fica só para o primeiro acesso | F04 |
+| D-R9 | Números no diagrama do resíduo | **Nenhum**: partes de mesma largura, rotuladas "Exemplo ilustrativo · fora de escala". Qualquer proporção anteciparia D-B2/D-B3, e valores poderiam ser lidos como resultado real. Barras em HTML, não SVG, seguindo o gráfico "Distribuição do custo" do guia | F04 |
+| D-R10 | Onde aparece o objetivo da análise (D-R6) | **Primeira seção da página de Terreno**, antes de "Identificação e localização", como escolha única em cartões. O indicador segue com 3 etapas e nenhuma rota nova foi criada | F05 |
+| D-R11 | Liberdade de pular etapas (herdada da F01) | **Só avança com a etapa válida**: "Avançar" é barrado com resumo de pendências; voltar é sempre livre. A trava de acesso direto pela URL (`/produto`, `/resultado`) entra junto com a página que ela protege (F09 e F14) | F05 |
+| D-R12 | D-A2 — rascunho no navegador | **Sim, só na aba** (`sessionStorage`, versionado): sobrevive a um F5 e some ao fechar a aba; nada vai ao servidor. O "limpar análise" (D-B11, F22) deve apagar também o rascunho | F05 |
+| D-R13 | Limite do nome/identificação do terreno | **80 caracteres**, contados sem os espaços das pontas; o excesso é acusado, nunca cortado em silêncio | F05 |
+| D-R14 | Campos de localização obrigatórios | **Só a cidade** (município de MG da lista). CEP, logradouro e bairro são opcionais; o CEP, se preenchido, precisa ter 8 dígitos. Logradouro e bairro limitados a 120 caracteres | F06 |
+| D-R15 | CEP de outro estado | **Erro no campo**, que bloqueia o avançar até corrigir ou apagar o CEP; o endereço não é preenchido. Com a consulta fora do ar a UF é desconhecida e nada bloqueia | F06 |
+| D-R16 | Provedor de CEP | **Só ViaCEP**, via proxy `GET /api/v1/cep/:cep`. Verificado em 29/09/2026 (a partir do Replit): gratuito, sem chave, ~0,3–0,7s; pede validar os 8 dígitos antes e bloqueia uso massivo. BrasilAPI descartada: devolveu endereço real para o CEP inexistente 99999999 e levou 2,4s | F06 |
+| D-R17 | D-A1 e D-A10 — municípios e cache do CEP | **Lista estática** de 853 municípios da API de localidades do IBGE, com o SHA-256 conferido no teste. **Cache em memória no servidor** por 24h, até 1.000 CEPs, só de respostas definitivas (encontrado/inexistente) | F06 |
 
 ### B. Decisões bloqueantes
 
@@ -59,8 +70,8 @@ Podem ser tomadas depois sem retrabalho relevante.
 
 | ID | Decisão | Sugestão de momento |
 |----|---------|---------------------|
-| D-A1 | Fonte da lista de municípios de MG (IBGE estático vs API) | F06 — começar com lista estática versionada |
-| D-A2 | Persistir rascunho do formulário no navegador (`sessionStorage`) para sobreviver a refresh | F05 — decidir junto com D-B11 |
+| D-A1 | ~~Fonte da lista de municípios de MG (IBGE estático vs API)~~ | **Resolvida na F06** — ver D-R17 |
+| D-A2 | ~~Persistir rascunho do formulário no navegador (`sessionStorage`) para sobreviver a refresh~~ | **Resolvida na F05** — ver D-R12 |
 | D-A3 | Critério de desatualização do CUB (ex.: >30 dias) | F24 — parametrizar com default provisório marcado TBD |
 | D-A4 | Quantidade N de versões anteriores de CUB mantidas | F24 — parametrizar |
 | D-A5 | Taxa de ocupação default por município (hoje 0,6 global, provisório) | Pós-MVP |
@@ -68,7 +79,7 @@ Podem ser tomadas depois sem retrabalho relevante.
 | D-A7 | Hospedagem, domínio e certificado HTTPS de produção | F25 |
 | D-A8 | Copy final de onboarding, textos de alerta e microcopy | F04 e F18 — refinar com o usuário na validação |
 | D-A9 | Biblioteca de gráficos (se houver gráfico na composição econômica) | F15 — só se o usuário pedir |
-| D-A10 | Estratégia de cache da consulta de CEP | F06 |
+| D-A10 | ~~Estratégia de cache da consulta de CEP~~ | **Resolvida na F06** — ver D-R17 |
 
 ### D. Pendências conhecidas do PRD (resumo consolidado)
 
@@ -265,7 +276,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Conteúdo + navegação simples; a explicação precisa ser fiel ao PRD 4.1. |
 | **26. Conclusão** | Onboarding percorrível com conteúdo aprovado em substância. |
-| **27. Checkpoint** | `[ ]` Usuário aprova a substância da explicação (o polimento vem na F04). |
+| **27. Checkpoint** | `[x]` Usuário aprova a substância da explicação (o polimento vem na F04). |
 
 ---
 
@@ -299,7 +310,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | SVG, acessibilidade e integração com o estado do formulário. |
 | **26. Conclusão** | Onboarding final aprovado, acessível e reabrível. |
-| **27. Checkpoint** | `[ ]` Usuário aprova o onboarding como concluído. |
+| **27. Checkpoint** | `[x]` Usuário aprova o onboarding como concluído. Implementada conforme D-R7, D-R8 e D-R9; a pedido do usuário, a copy da página inicial (F02) também passou aos dois vocabulários da recomendação (D-R6); arquivos além dos previstos: `SequenciaMetodologia`, `PainelMetodologia`, `useMetodologia` e o shim de `<dialog>` para o jsdom (`src/configuracaoTestes.ts`). |
 
 ---
 
@@ -333,7 +344,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Define o padrão de formulário e validação de todo o produto, mas sem regra econômica. |
 | **26. Conclusão** | Esqueleto do formulário com validação aprovada. |
-| **27. Checkpoint** | `[ ]` Usuário aprova o padrão de campo, erro e navegação entre etapas. |
+| **27. Checkpoint** | `[x]` Usuário aprova o padrão de campo, erro e navegação entre etapas. Implementada conforme D-R10 a D-R13. Diferenças do previsto: o `Alerta` já existia desde a F02 e foi reaproveitado (corpo passou de `span` a `div`, para aceitar lista); entraram `GrupoOpcoes` (escolha em cartões, reaproveitável em F08/F09), `ResumoPendencias` e `src/content/terreno.ts`; `useAnalise` é `.tsx` por conter o provedor. A validação do backend usa o mesmo `src/utils/validacao/terreno.ts`, mas só ganha endpoint na F13 (D-B1). |
 
 ---
 
@@ -367,7 +378,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Integração externa de complexidade moderada com fallback bem definido no PRD. |
 | **26. Conclusão** | Localização preenchível com e sem a API disponível. |
-| **27. Checkpoint** | `[ ]` Usuário aprova o comportamento do CEP e da busca de município. |
+| **27. Checkpoint** | `[x]` Usuário aprova o comportamento do CEP e da busca de município. Implementada conforme D-R14 a D-R17. Diferenças do previsto: o proxy entrou em `server/app.ts` (não em `server/index.ts`), com o `fetch` injetável para teste; entraram `src/utils/texto.ts` (busca sem acento e máscara do CEP) e `src/data/municipios-mg.test.ts`. A consulta dispara ao completar os 8 dígitos, em vez de por espera após a digitação, e uma nova cancela a anterior. Nada é consultado ao recarregar a página, para não sobrescrever o que o usuário corrigiu à mão. |
 
 ---
 
@@ -1420,10 +1431,10 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 1 | 1 | F00 Fundação e design system | App no ar com tokens e dark mode | Média | Opus | D-R1, D-R4 (resolvidas) | `[x]` ✓opus |
 | 2 | 1 | F01 Shell e navegação | Quatro páginas navegáveis | Baixa | Sonnet | — | `[x]` ✓opus |
 | 3 | 1 | F02 Página inicial | Página inicial real com CTA | Baixa | Sonnet | — | `[x]` ✓opus |
-| 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[ ]` |
-| 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[ ]` |
-| 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[ ]` |
-| 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[ ]` |
+| 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[x]` |
+| 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[x]` |
+| 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[x]` |
+| 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[x]` |
 | 8 | 1 | F07 Dados físicos e financeiros | Preço em R$/m² calculado | Média | Opus | — | `[ ]` |
 | 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[ ]` |
 | 10 | 1 | F09 Tipo, tipologia e padrão | Classificação em cascata | Média | Opus | **D-B6** | `[ ]` |

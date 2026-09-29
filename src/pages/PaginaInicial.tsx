@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { Alerta } from '../components/ui/Alerta';
 import { Botao } from '../components/ui/Botao';
+import { useMetodologia } from '../hooks/useMetodologia';
 import { usePrimeiroAcesso } from '../hooks/usePrimeiroAcesso';
 import estilos from './PaginaInicial.module.css';
 
 export function PaginaInicial() {
   const navegar = useNavigate();
   const { ehPrimeiroAcesso, marcarComoVisto } = usePrimeiroAcesso();
+  const { abrir: abrirMetodologia } = useMetodologia();
 
   function aoComecarAnalise() {
     if (ehPrimeiroAcesso) {
@@ -17,10 +19,6 @@ export function PaginaInicial() {
     }
   }
 
-  function aoVerMetodologia() {
-    navegar('/onboarding', { state: { modoConsulta: true } });
-  }
-
   return (
     <div className={estilos.pagina}>
       <p className={estilos.sobretitulo}>Terreno viável</p>
@@ -28,10 +26,13 @@ export function PaginaInicial() {
       <h1 className={estilos.display}>Devo adquirir este terreno?</h1>
       <p className={estilos.subtitulo}>E construir aqui vai dar dinheiro?</p>
 
+      {/* Vocabulário da recomendação acompanha o objetivo escolhido (D-R6, PRD 4.4): só "comprar"
+          deixaria de fora quem já tem o terreno e quer saber se executa o empreendimento. */}
       <p className={estilos.leitura}>
         Duas perguntas, uma conta só. A lastro calcula quanto o terreno pode valer para o que
-        você pretende construir, compara com o preço pedido e devolve uma recomendação clara:
-        comprar, não comprar ou comprar com ressalvas.
+        você pretende construir, compara com o preço pedido e devolve uma recomendação clara, na
+        linguagem do seu objetivo: comprar ou não o terreno, fazer ou não o empreendimento, com ou
+        sem ressalvas.
       </p>
 
       <p className={estilos.metadados}>
@@ -47,7 +48,7 @@ export function PaginaInicial() {
         <Botao tamanho="grande" onClick={aoComecarAnalise}>
           Começar análise
         </Botao>
-        <Botao variante="fantasma" tamanho="grande" onClick={aoVerMetodologia}>
+        <Botao variante="fantasma" tamanho="grande" onClick={abrirMetodologia}>
           Ver a metodologia
         </Botao>
       </div>

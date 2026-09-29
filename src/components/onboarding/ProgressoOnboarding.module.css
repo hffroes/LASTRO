@@ -1,0 +1,16 @@
+.progresso {
+  display: flex;
+  gap: var(--lastro-space-4);
+  margin: 0 0 var(--lastro-space-16);
+}
+
+.segmento {
+  flex: 1;
+  height: var(--lastro-progresso-altura);
+  border-radius: var(--lastro-radius-pill);
+  background: var(--lastro-border-strong);
+}
+
+.segmento[data-estado='percorrido'] {
+  background: var(--lastro-action);
+}

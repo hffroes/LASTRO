@@ -17,17 +17,40 @@ export interface PassoMetodologia {
   titulo: string;
   introducao: string;
   itens?: ItemExplicativo[];
+  // Diagrama entra antes da fórmula: primeiro a ideia de partes de um todo, depois a conta.
+  diagrama?: 'residuo';
   formula?: LinhaFormula[];
   nota?: string;
 }
+
+// Rótulos do diagrama ficam aqui, junto do resto da copy, para a revisão (D-A8) mexer num lugar só.
+// As partes têm a mesma largura de propósito: qualquer proporção sugeriria percentuais que ainda
+// dependem de D-B2 e D-B3, e números no diagrama poderiam ser lidos como resultado real.
+export const DIAGRAMA_RESIDUO = {
+  aviso: 'Exemplo ilustrativo · fora de escala',
+  rotuloTodo: 'VGV',
+  descricaoTodo: 'o que o empreendimento vende',
+  rotuloPartes: 'Para onde vai',
+  partes: [
+    { id: 'obra', rotulo: 'Custo de obra' },
+    { id: 'despesas', rotulo: 'Despesas gerais' },
+    { id: 'lucro', rotulo: 'Lucro do incorporador' },
+    { id: 'terreno', rotulo: 'Resultado do terreno' },
+  ],
+} as const;
 
 export const PASSOS_ONBOARDING: PassoMetodologia[] = [
   {
     id: 'perguntas',
     titulo: 'Você descreve o terreno e o que pretende construir',
     introducao:
-      'São duas etapas curtas: você entra com os dados do terreno e do que pretende construir. O custo de construção de referência a lastro faz por você.',
+      'Primeiro você diz o que quer decidir. Depois, em duas etapas curtas, entra com os dados do terreno e do que pretende construir. O custo de construção de referência a lastro faz por você.',
     itens: [
+      // Objetivo da análise (D-R6, PRD 2.6): é escolha do usuário, e o texto não pode sugerir o contrário.
+      {
+        rotulo: 'Objetivo',
+        descricao: 'Comprar o terreno ou executar o empreendimento. A escolha é sua; a lastro não presume.',
+      },
       {
         rotulo: 'Terreno',
         descricao: 'Cidade, CEP, área, preço pedido, formato do lote e topografia.',
@@ -89,6 +112,7 @@ export const PASSOS_ONBOARDING: PassoMetodologia[] = [
     titulo: 'O que sobra é quanto o terreno pode valer',
     introducao:
       'É o método do resíduo do terreno. A lastro compara esse valor com o preço pedido: se ele cobre o preço, o terreno é viável para o cenário informado.',
+    diagrama: 'residuo',
     formula: [
       { operador: '', rotulo: 'VGV' },
       { operador: '−', rotulo: 'Custo de obra' },
@@ -96,13 +120,15 @@ export const PASSOS_ONBOARDING: PassoMetodologia[] = [
       { operador: '−', rotulo: 'Lucro do incorporador' },
       { operador: '=', rotulo: 'Resultado do terreno' },
     ],
-    nota: 'A mesma conta pode ser lida de dois lados: como terrenista, vendo quanto o terreno pode valer; ou como incorporador, fixando o preço pedido e vendo o lucro que sobra.',
+    nota: 'A mesma conta pode ser lida de dois lados: como terrenista, vendo quanto o terreno pode valer; ou como incorporador, fixando o preço pedido e vendo o lucro que sobra. O objetivo que você escolher define por qual lado a leitura começa.',
   },
   {
     id: 'resultado',
     titulo: 'Você recebe um estudo de viabilidade preliminar',
+    // Vocabulário da recomendação acompanha o objetivo (D-R6, PRD 4.4): só "comprar" deixaria de fora
+    // quem já tem o terreno e quer saber se executa o empreendimento.
     introducao:
-      'Uma recomendação direta — comprar, comprar com ressalvas ou não comprar — com uma nota de 0 a 100 e a composição completa da conta.',
+      'Uma recomendação direta, na linguagem do seu objetivo — comprar ou não o terreno, fazer ou não o empreendimento, com ou sem ressalvas —, com uma nota de 0 a 100 e a composição completa da conta.',
     itens: [
       {
         rotulo: 'Premissas ajustáveis',

@@ -1,20 +1,14 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { PASSOS_ONBOARDING } from '../content/onboarding';
+import { DIAGRAMA_RESIDUO, PASSOS_ONBOARDING } from '../content/onboarding';
 import { Onboarding } from './Onboarding';
 
 const CHAVE_PRIMEIRO_ACESSO = 'lastro-primeiro-acesso-visto';
 
-function renderOnboarding({ modoConsulta = false } = {}) {
+function renderOnboarding() {
   return render(
-    <MemoryRouter
-      initialEntries={[
-        { pathname: '/' },
-        { pathname: '/onboarding', state: modoConsulta ? { modoConsulta: true } : null },
-      ]}
-      initialIndex={1}
-    >
+    <MemoryRouter initialEntries={['/', '/onboarding']} initialIndex={1}>
       <Routes>
         <Route path="/" element={<div>tela inicial</div>} />
         <Route path="/onboarding" element={<Onboarding />} />
@@ -99,25 +93,82 @@ describe('Onboarding', () => {
     expect(window.localStorage.getItem(CHAVE_PRIMEIRO_ACESSO)).toBe('true');
   });
 
-  describe('modo consulta', () => {
-    it('troca "Pular" por "Fechar metodologia", que volta à tela anterior', () => {
-      renderOnboarding({ modoConsulta: true });
+  describe('teclado', () => {
+    it('seta para a direita avança e seta para a esquerda volta', () => {
+      renderOnboarding();
 
-      expect(screen.queryByRole('button', { name: 'Pular' })).toBeNull();
-      fireEvent.click(screen.getByRole('button', { name: 'Fechar metodologia' }));
+      fireEvent.keyDown(document.body, { key: 'ArrowRight' });
+      fireEvent.keyDown(document.body, { key: 'ArrowRight' });
+      expect(tituloAtual()).toBe(PASSOS_ONBOARDING[2].titulo);
 
-      expect(screen.getByText('tela inicial')).toBeTruthy();
+      fireEvent.keyDown(document.body, { key: 'ArrowLeft' });
+      expect(tituloAtual()).toBe(PASSOS_ONBOARDING[1].titulo);
     });
 
-    it('no último passo, o botão principal fecha em vez de iniciar a análise', () => {
-      renderOnboarding({ modoConsulta: true });
+    it('funciona com o foco já dentro da sequência, e leva o foco ao título', () => {
+      renderOnboarding();
 
-      avancarAteOUltimoPasso();
-      expect(screen.queryByRole('button', { name: 'Começar análise' })).toBeNull();
-      fireEvent.click(screen.getByRole('button', { name: 'Fechar' }));
+      fireEvent.keyDown(screen.getByRole('button', { name: 'Avançar' }), { key: 'ArrowRight' });
 
-      expect(screen.getByText('tela inicial')).toBeTruthy();
+      expect(tituloAtual()).toBe(PASSOS_ONBOARDING[1].titulo);
+      expect(document.activeElement).toBe(screen.getByRole('heading', { level: 1 }));
     });
+
+    it('para nas pontas: não volta antes do primeiro passo nem conclui pelo teclado', () => {
+      renderOnboarding();
+
+      fireEvent.keyDown(document.body, { key: 'ArrowLeft' });
+      expect(tituloAtual()).toBe(PASSOS_ONBOARDING[0].titulo);
+
+      for (let i = 0; i < PASSOS_ONBOARDING.length + 2; i += 1) {
+        fireEvent.keyDown(document.body, { key: 'ArrowRight' });
+      }
+      expect(tituloAtual()).toBe(PASSOS_ONBOARDING[PASSOS_ONBOARDING.length - 1].titulo);
+      expect(screen.queryByText('tela de terreno')).toBeNull();
+    });
+
+    it('ignora setas com modificador e setas digitadas num campo', () => {
+      render(
+        <MemoryRouter initialEntries={['/onboarding']}>
+          <input aria-label="campo qualquer" />
+          <Routes>
+            <Route path="/onboarding" element={<Onboarding />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+
+      fireEvent.keyDown(document.body, { key: 'ArrowRight', altKey: true });
+      fireEvent.keyDown(screen.getByLabelText('campo qualquer'), { key: 'ArrowRight' });
+
+      expect(tituloAtual()).toBe(PASSOS_ONBOARDING[0].titulo);
+    });
+  });
+
+  it('o indicador de progresso acompanha o passo atual', () => {
+    renderOnboarding();
+
+    const percorridos = () =>
+      screen.getByTestId('progresso-onboarding').querySelectorAll('[data-estado="percorrido"]').length;
+
+    expect(screen.getByTestId('progresso-onboarding').children).toHaveLength(PASSOS_ONBOARDING.length);
+    expect(percorridos()).toBe(1);
+    fireEvent.click(screen.getByRole('button', { name: 'Avançar' }));
+    expect(percorridos()).toBe(2);
+  });
+
+  it('mostra o diagrama do resíduo rotulado como exemplo, sem valores', () => {
+    renderOnboarding();
+
+    const indiceResiduo = PASSOS_ONBOARDING.findIndex((passo) => passo.diagrama === 'residuo');
+    for (let i = 0; i < indiceResiduo; i += 1) {
+      fireEvent.click(screen.getByRole('button', { name: 'Avançar' }));
+    }
+
+    const figura = screen.getByRole('figure');
+    expect(figura.textContent).toContain('Exemplo ilustrativo · fora de escala');
+    expect(figura.textContent).toContain('Resultado do terreno');
+    // Nenhum número no diagrama: nem R$, nem percentual, nem valor solto.
+    expect(figura.textContent).not.toMatch(/\d/);
   });
 });
 
@@ -126,6 +177,9 @@ describe('conteúdo da metodologia', () => {
     passo.titulo,
     passo.introducao,
     passo.nota ?? '',
+    ...(passo.diagrama === 'residuo'
+      ? [DIAGRAMA_RESIDUO.aviso, DIAGRAMA_RESIDUO.descricaoTodo, DIAGRAMA_RESIDUO.rotuloPartes]
+      : []),
     ...(passo.itens ?? []).flatMap((item) => [item.rotulo, item.descricao]),
     ...(passo.formula ?? []).map((linha) => linha.rotulo),
   ]).join(' ');
@@ -154,6 +208,12 @@ describe('conteúdo da metodologia', () => {
 
   it('não cita percentuais, que ainda dependem de decisões em aberto', () => {
     expect(textoCompleto).not.toMatch(/\d+\s*%/);
+  });
+
+  it('apresenta o objetivo como escolha do usuário e a recomendação nos dois vocabulários', () => {
+    expect(textoCompleto).toContain('Comprar o terreno ou executar o empreendimento');
+    expect(textoCompleto).toMatch(/comprar ou não o terreno/);
+    expect(textoCompleto).toMatch(/fazer ou não o empreendimento/);
   });
 
   it('respeita a caixa baixa da marca', () => {
