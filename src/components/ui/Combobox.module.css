@@ -1,0 +1,82 @@
+.combobox {
+  position: relative;
+}
+
+/* Espaço à direita para o ícone de abrir. */
+.entrada {
+  padding-right: var(--lastro-space-40);
+}
+
+.icone {
+  position: absolute;
+  top: 50%;
+  right: var(--lastro-space-12);
+  transform: translateY(-50%);
+  color: var(--lastro-text-secondary);
+  pointer-events: none;
+}
+
+/* Elevação "sm · dropdown" do guia. A altura máxima respeita a tela do celular: com o teclado
+   virtual aberto sobra pouco, e a lista não pode empurrar o campo para fora da vista. */
+.lista {
+  position: absolute;
+  top: calc(100% + var(--lastro-space-4));
+  left: 0;
+  right: 0;
+  z-index: 5;
+  max-height: var(--lastro-lista-altura-max);
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--lastro-space-4) 0;
+  list-style: none;
+  background: var(--lastro-surface-raised);
+  border: 1px solid var(--lastro-border-default);
+  border-radius: var(--lastro-radius-sm);
+  box-shadow: var(--lastro-shadow-sm);
+}
+
+.opcao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lastro-space-8);
+  padding: var(--lastro-space-8) var(--lastro-space-12);
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-primary);
+  cursor: pointer;
+}
+
+.opcao:hover,
+.opcao[data-ativa='true'] {
+  background: var(--lastro-surface-sunken);
+}
+
+/* Ativa por teclado: além do fundo, uma barra de ação à esquerda, para não depender só de um
+   cinza sutil. */
+.opcao[data-ativa='true'] {
+  box-shadow: var(--lastro-indicador-ativo);
+}
+
+.opcao[aria-selected='true'] {
+  font-weight: 600;
+  color: var(--lastro-action-text);
+}
+
+.aviso {
+  margin: var(--lastro-space-4) 0 0;
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+}
+
+.somenteLeitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

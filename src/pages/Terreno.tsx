@@ -2,17 +2,42 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Botao } from '../components/ui/Botao';
 import { Campo, EntradaTexto } from '../components/ui/Campo';
+import { Combobox } from '../components/ui/Combobox';
 import { GrupoOpcoes } from '../components/ui/GrupoOpcoes';
 import { ResumoPendencias } from '../components/ui/ResumoPendencias';
 import { OPCOES_OBJETIVO, TEXTOS_TERRENO } from '../content/terreno';
+import { MUNICIPIOS_MG, buscarMunicipioPorCodigo } from '../data/municipios-mg';
 import { useAnalise } from '../hooks/useAnalise';
+import { useCep, type EnderecoConsultado, type EstadoCep } from '../hooks/useCep';
+import { formatarCep, somenteDigitos } from '../utils/texto';
 import {
+  DIGITOS_CEP,
   LIMITE_NOME_TERRENO,
   ORDEM_CAMPOS_TERRENO,
+  UF_COBERTA,
   validarEtapaTerreno,
   type CampoEtapaTerreno,
 } from '../utils/validacao/terreno';
 import estilos from './Terreno.module.css';
+
+const OPCOES_MUNICIPIOS = MUNICIPIOS_MG.map((municipio) => ({ valor: municipio.codigoIbge, rotulo: municipio.nome }));
+
+type TomStatusCep = 'neutro' | 'aviso' | 'sucesso';
+
+function statusDoCep(estado: EstadoCep, enderecoPeloCep: boolean): { texto: string; tom: TomStatusCep } | null {
+  const { statusCep } = TEXTOS_TERRENO;
+  switch (estado.situacao) {
+    case 'consultando':
+      return { texto: statusCep.consultando, tom: 'neutro' };
+    case 'naoEncontrado':
+      return { texto: statusCep.naoEncontrado, tom: 'aviso' };
+    case 'indisponivel':
+      return { texto: statusCep.indisponivel, tom: 'aviso' };
+    default:
+      // Depois de um F5 a consulta não se repete, mas a origem do endereço continua indicada.
+      return enderecoPeloCep ? { texto: statusCep.preenchido, tom: 'sucesso' } : null;
+  }
+}
 
 export function Terreno() {
   const navegar = useNavigate();
@@ -20,6 +45,41 @@ export function Terreno() {
   const [camposTocados, setCamposTocados] = useState<ReadonlySet<CampoEtapaTerreno>>(new Set());
   const [tentouAvancar, setTentouAvancar] = useState(false);
   const refResumo = useRef<HTMLDivElement>(null);
+
+  // CEP de fora de MG não preenche nada (D-R15): só registra a UF, e a validação bloqueia.
+  // Em MG, preenche o que o CEP trouxe; campo que o CEP devolve vazio (CEP geral de cidade) não
+  // apaga o que o usuário já tinha digitado.
+  function aoEncontrarEndereco(endereco: EnderecoConsultado) {
+    if (endereco.uf !== UF_COBERTA) {
+      atualizarTerreno({ ufCep: endereco.uf, enderecoPeloCep: false });
+      marcarTocado('cep');
+      return;
+    }
+    const municipio = buscarMunicipioPorCodigo(endereco.codigoIbge);
+    atualizarTerreno({
+      ufCep: endereco.uf,
+      ...(municipio ? { codigoMunicipioIbge: municipio.codigoIbge } : {}),
+      ...(endereco.logradouro ? { logradouro: endereco.logradouro } : {}),
+      ...(endereco.bairro ? { bairro: endereco.bairro } : {}),
+      enderecoPeloCep: true,
+    });
+  }
+
+  const { estado: estadoCep, consultar: consultarCep, limpar: limparCep } = useCep({
+    aoEncontrar: aoEncontrarEndereco,
+  });
+
+  function aoMudarCep(valorDigitado: string) {
+    const digitos = somenteDigitos(valorDigitado).slice(0, DIGITOS_CEP);
+    if (digitos === analise.terreno.cep) return;
+    // CEP mudou: a UF e a indicação de origem da consulta anterior não valem mais para ele.
+    atualizarTerreno({ cep: digitos, ufCep: null, enderecoPeloCep: false });
+    if (digitos.length === DIGITOS_CEP) {
+      void consultarCep(digitos);
+    } else {
+      limparCep();
+    }
+  }
 
   const erros = validarEtapaTerreno(analise);
   const pendencias = ORDEM_CAMPOS_TERRENO.flatMap((campo) => {
@@ -53,6 +113,7 @@ export function Terreno() {
 
   const { secoes, campos } = TEXTOS_TERRENO;
   const tamanhoNome = analise.terreno.nome.trim().length;
+  const statusCep = statusDoCep(estadoCep, analise.terreno.enderecoPeloCep);
 
   return (
     <div className={estilos.pagina}>
@@ -113,7 +174,74 @@ export function Terreno() {
               />
             )}
           </Campo>
-          <p className={estilos.pendente}>{secoes.identificacao.pendente}</p>
+
+          <Campo id="campo-cidade" rotulo={campos.cidade} erro={erroVisivel('cidade')} dica={campos.dicaCidade}>
+            {(controle) => (
+              <Combobox
+                {...controle}
+                opcoes={OPCOES_MUNICIPIOS}
+                valor={analise.terreno.codigoMunicipioIbge}
+                aoMudar={(codigo) => atualizarTerreno({ codigoMunicipioIbge: codigo })}
+                aoSair={() => marcarTocado('cidade')}
+                textoSemResultado={campos.cidadeSemResultado}
+              />
+            )}
+          </Campo>
+
+          <Campo
+            id="campo-cep"
+            rotulo={campos.cep}
+            erro={erroVisivel('cep')}
+            dica={
+              <>
+                {campos.dicaCep}{' '}
+                {/* Região viva sempre presente: o leitor de tela anuncia cada mudança da consulta. */}
+                <span role="status" className={estilos.statusCep} data-tom={statusCep?.tom}>
+                  {statusCep?.texto}
+                </span>
+              </>
+            }
+          >
+            {(controle) => (
+              <EntradaTexto
+                {...controle}
+                name="cep"
+                inputMode="numeric"
+                autoComplete="postal-code"
+                placeholder="00000-000"
+                className={estilos.campoCurto}
+                value={formatarCep(analise.terreno.cep)}
+                onChange={(evento) => aoMudarCep(evento.target.value)}
+                onBlur={() => marcarTocado('cep')}
+              />
+            )}
+          </Campo>
+
+          <Campo id="campo-logradouro" rotulo={campos.logradouro} erro={erroVisivel('logradouro')}>
+            {(controle) => (
+              <EntradaTexto
+                {...controle}
+                name="logradouro"
+                autoComplete="address-line1"
+                value={analise.terreno.logradouro}
+                onChange={(evento) => atualizarTerreno({ logradouro: evento.target.value, enderecoPeloCep: false })}
+                onBlur={() => marcarTocado('logradouro')}
+              />
+            )}
+          </Campo>
+
+          <Campo id="campo-bairro" rotulo={campos.bairro} erro={erroVisivel('bairro')}>
+            {(controle) => (
+              <EntradaTexto
+                {...controle}
+                name="bairro"
+                autoComplete="address-level3"
+                value={analise.terreno.bairro}
+                onChange={(evento) => atualizarTerreno({ bairro: evento.target.value, enderecoPeloCep: false })}
+                onBlur={() => marcarTocado('bairro')}
+              />
+            )}
+          </Campo>
         </section>
 
         <section className={estilos.secao} aria-labelledby="secao-fisicos">

@@ -1,12 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { OBJETIVOS_ANALISE, criarAnaliseVazia, type Analise, type ObjetivoAnalise } from '../types/analise';
-import type { DadosTerreno } from '../types/terreno';
+import { criarTerrenoVazio, type DadosTerreno } from '../types/terreno';
 
 // D-A2 (decidido na F05): rascunho só nesta aba. Sobrevive a um F5 acidental e some ao fechar a
 // aba; nada vai ao servidor, coerente com "sem persistência para o usuário" (PRD 2.7).
 export const CHAVE_RASCUNHO = 'lastro-rascunho-analise';
-// Sobe quando o formato de Analise mudar de forma incompatível: rascunho antigo é descartado, não
-// interpretado errado.
+// Sobe só quando o formato mudar de forma incompatível (um campo mudar de sentido): rascunho antigo
+// é descartado, não interpretado errado. Campo novo não exige subir.
 const VERSAO_RASCUNHO = 1;
 
 interface Rascunho {
@@ -14,19 +14,38 @@ interface Rascunho {
   analise: Analise;
 }
 
-// O sessionStorage é entrada externa (pode ter sido editado ou vir de outra versão do app): só
-// aceita o que tem exatamente o formato esperado.
+// O sessionStorage é entrada externa (pode ter sido editado ou vir de outra versão do app): cada
+// campo é aceito só se tiver o tipo esperado; o resto volta ao valor vazio. Campos novos (F06 em
+// diante) entram vazios em rascunhos antigos, sem precisar subir a versão.
+function texto(valor: unknown): string {
+  return typeof valor === 'string' ? valor : '';
+}
+
+function lerTerreno(bruto: Partial<Record<keyof DadosTerreno, unknown>> | undefined): DadosTerreno {
+  const vazio = criarTerrenoVazio();
+  if (!bruto || typeof bruto !== 'object') return vazio;
+  return {
+    nome: texto(bruto.nome),
+    codigoMunicipioIbge: typeof bruto.codigoMunicipioIbge === 'number' ? bruto.codigoMunicipioIbge : null,
+    cep: texto(bruto.cep),
+    logradouro: texto(bruto.logradouro),
+    bairro: texto(bruto.bairro),
+    ufCep: typeof bruto.ufCep === 'string' ? bruto.ufCep : null,
+    enderecoPeloCep: bruto.enderecoPeloCep === true,
+  };
+}
+
 function lerRascunho(): Analise {
   try {
     const bruto = window.sessionStorage.getItem(CHAVE_RASCUNHO);
     if (!bruto) return criarAnaliseVazia();
     const rascunho = JSON.parse(bruto) as Partial<Rascunho> | null;
     const analise = rascunho?.analise;
-    const objetivoValido = analise?.objetivo === null || OBJETIVOS_ANALISE.includes(analise?.objetivo as ObjetivoAnalise);
-    if (rascunho?.versao !== VERSAO_RASCUNHO || !objetivoValido || typeof analise?.terreno?.nome !== 'string') {
+    if (rascunho?.versao !== VERSAO_RASCUNHO || !analise || typeof analise !== 'object') {
       return criarAnaliseVazia();
     }
-    return { objetivo: analise.objetivo, terreno: { nome: analise.terreno.nome } };
+    const objetivo = OBJETIVOS_ANALISE.includes(analise.objetivo as ObjetivoAnalise) ? analise.objetivo : null;
+    return { objetivo, terreno: lerTerreno(analise.terreno) };
   } catch {
     // sessionStorage bloqueado ou JSON corrompido: começa do zero em vez de quebrar a página.
     return criarAnaliseVazia();

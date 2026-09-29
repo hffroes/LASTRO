@@ -161,6 +161,12 @@
      reprova o 3:1 exigido para o contorno de um controle (WCAG 1.4.11). O cinza-500 dá 4,39:1 no
      claro e 3,49:1 no escuro, então serve aos dois temas. */
   --lastro-borda-campo: var(--lastro-gray-500);
+
+  /* Lista de sugestões (combobox) — adição da F06. 240px mostra ~7 opções; o limite em 40% da
+     altura da tela vale no celular com o teclado virtual aberto. */
+  --lastro-lista-altura-max: min(240px, 40vh);
+  /* Opção ativa por teclado numa lista: barra de ação à esquerda, além do fundo. */
+  --lastro-indicador-ativo: inset 3px 0 0 var(--lastro-action);
 }
 
 /* Semântico (tema escuro) — adição F00 (plan.md), remapeia sobre os tokens --lastro-dark-* já existentes */

@@ -36,6 +36,10 @@
 | D-R11 | Liberdade de pular etapas (herdada da F01) | **Só avança com a etapa válida**: "Avançar" é barrado com resumo de pendências; voltar é sempre livre. A trava de acesso direto pela URL (`/produto`, `/resultado`) entra junto com a página que ela protege (F09 e F14) | F05 |
 | D-R12 | D-A2 — rascunho no navegador | **Sim, só na aba** (`sessionStorage`, versionado): sobrevive a um F5 e some ao fechar a aba; nada vai ao servidor. O "limpar análise" (D-B11, F22) deve apagar também o rascunho | F05 |
 | D-R13 | Limite do nome/identificação do terreno | **80 caracteres**, contados sem os espaços das pontas; o excesso é acusado, nunca cortado em silêncio | F05 |
+| D-R14 | Campos de localização obrigatórios | **Só a cidade** (município de MG da lista). CEP, logradouro e bairro são opcionais; o CEP, se preenchido, precisa ter 8 dígitos. Logradouro e bairro limitados a 120 caracteres | F06 |
+| D-R15 | CEP de outro estado | **Erro no campo**, que bloqueia o avançar até corrigir ou apagar o CEP; o endereço não é preenchido. Com a consulta fora do ar a UF é desconhecida e nada bloqueia | F06 |
+| D-R16 | Provedor de CEP | **Só ViaCEP**, via proxy `GET /api/v1/cep/:cep`. Verificado em 29/09/2026 (a partir do Replit): gratuito, sem chave, ~0,3–0,7s; pede validar os 8 dígitos antes e bloqueia uso massivo. BrasilAPI descartada: devolveu endereço real para o CEP inexistente 99999999 e levou 2,4s | F06 |
+| D-R17 | D-A1 e D-A10 — municípios e cache do CEP | **Lista estática** de 853 municípios da API de localidades do IBGE, com o SHA-256 conferido no teste. **Cache em memória no servidor** por 24h, até 1.000 CEPs, só de respostas definitivas (encontrado/inexistente) | F06 |
 
 ### B. Decisões bloqueantes
 
@@ -66,7 +70,7 @@ Podem ser tomadas depois sem retrabalho relevante.
 
 | ID | Decisão | Sugestão de momento |
 |----|---------|---------------------|
-| D-A1 | Fonte da lista de municípios de MG (IBGE estático vs API) | F06 — começar com lista estática versionada |
+| D-A1 | ~~Fonte da lista de municípios de MG (IBGE estático vs API)~~ | **Resolvida na F06** — ver D-R17 |
 | D-A2 | ~~Persistir rascunho do formulário no navegador (`sessionStorage`) para sobreviver a refresh~~ | **Resolvida na F05** — ver D-R12 |
 | D-A3 | Critério de desatualização do CUB (ex.: >30 dias) | F24 — parametrizar com default provisório marcado TBD |
 | D-A4 | Quantidade N de versões anteriores de CUB mantidas | F24 — parametrizar |
@@ -75,7 +79,7 @@ Podem ser tomadas depois sem retrabalho relevante.
 | D-A7 | Hospedagem, domínio e certificado HTTPS de produção | F25 |
 | D-A8 | Copy final de onboarding, textos de alerta e microcopy | F04 e F18 — refinar com o usuário na validação |
 | D-A9 | Biblioteca de gráficos (se houver gráfico na composição econômica) | F15 — só se o usuário pedir |
-| D-A10 | Estratégia de cache da consulta de CEP | F06 |
+| D-A10 | ~~Estratégia de cache da consulta de CEP~~ | **Resolvida na F06** — ver D-R17 |
 
 ### D. Pendências conhecidas do PRD (resumo consolidado)
 
@@ -374,7 +378,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Integração externa de complexidade moderada com fallback bem definido no PRD. |
 | **26. Conclusão** | Localização preenchível com e sem a API disponível. |
-| **27. Checkpoint** | `[ ]` Usuário aprova o comportamento do CEP e da busca de município. |
+| **27. Checkpoint** | `[>]` Usuário aprova o comportamento do CEP e da busca de município. Implementada conforme D-R14 a D-R17. Diferenças do previsto: o proxy entrou em `server/app.ts` (não em `server/index.ts`), com o `fetch` injetável para teste; entraram `src/utils/texto.ts` (busca sem acento e máscara do CEP) e `src/data/municipios-mg.test.ts`. A consulta dispara ao completar os 8 dígitos, em vez de por espera após a digitação, e uma nova cancela a anterior. Nada é consultado ao recarregar a página, para não sobrescrever o que o usuário corrigiu à mão. |
 
 ---
 
@@ -1430,7 +1434,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[x]` |
 | 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[x]` |
 | 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[x]` |
-| 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[ ]` |
+| 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[>]` |
 | 8 | 1 | F07 Dados físicos e financeiros | Preço em R$/m² calculado | Média | Opus | — | `[ ]` |
 | 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[ ]` |
 | 10 | 1 | F09 Tipo, tipologia e padrão | Classificação em cascata | Média | Opus | **D-B6** | `[ ]` |

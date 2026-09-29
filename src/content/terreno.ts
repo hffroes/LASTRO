@@ -14,7 +14,6 @@ export const TEXTOS_TERRENO = {
     },
     identificacao: {
       titulo: 'Identificação e localização',
-      pendente: 'Cidade e CEP entram aqui na próxima versão do formulário.',
     },
     fisicos: {
       titulo: 'Dados físicos e financeiros',
@@ -29,6 +28,20 @@ export const TEXTOS_TERRENO = {
     objetivo: 'O que você quer decidir?',
     nome: 'Nome ou identificação do terreno',
     dicaNome: 'Aparece no relatório exportado. Ex.: Lote 12, Qd. 4 — Rua Alagoas.',
+    cidade: 'Cidade',
+    dicaCidade: 'Digite para buscar entre os municípios de Minas Gerais.',
+    cidadeSemResultado: 'Nenhum município de Minas Gerais com esse nome.',
+    cep: 'CEP (opcional)',
+    dicaCep: 'Com os 8 dígitos, a lastro preenche cidade, logradouro e bairro.',
+    logradouro: 'Logradouro (opcional)',
+    bairro: 'Bairro (opcional)',
+  },
+  // Situação da consulta do CEP (PRD 3.4): nenhuma delas impede avançar.
+  statusCep: {
+    consultando: 'Consultando o CEP…',
+    preenchido: 'Endereço preenchido pelo CEP. Confira e ajuste se precisar.',
+    naoEncontrado: 'CEP não encontrado. Confira os números ou preencha o endereço à mão.',
+    indisponivel: 'A consulta de CEP não respondeu agora. Preencha o endereço à mão; isso não impede a análise.',
   },
 } as const;
 
