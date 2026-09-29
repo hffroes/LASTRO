@@ -378,7 +378,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Integração externa de complexidade moderada com fallback bem definido no PRD. |
 | **26. Conclusão** | Localização preenchível com e sem a API disponível. |
-| **27. Checkpoint** | `[>]` Usuário aprova o comportamento do CEP e da busca de município. Implementada conforme D-R14 a D-R17. Diferenças do previsto: o proxy entrou em `server/app.ts` (não em `server/index.ts`), com o `fetch` injetável para teste; entraram `src/utils/texto.ts` (busca sem acento e máscara do CEP) e `src/data/municipios-mg.test.ts`. A consulta dispara ao completar os 8 dígitos, em vez de por espera após a digitação, e uma nova cancela a anterior. Nada é consultado ao recarregar a página, para não sobrescrever o que o usuário corrigiu à mão. |
+| **27. Checkpoint** | `[x]` Usuário aprova o comportamento do CEP e da busca de município. Implementada conforme D-R14 a D-R17. Diferenças do previsto: o proxy entrou em `server/app.ts` (não em `server/index.ts`), com o `fetch` injetável para teste; entraram `src/utils/texto.ts` (busca sem acento e máscara do CEP) e `src/data/municipios-mg.test.ts`. A consulta dispara ao completar os 8 dígitos, em vez de por espera após a digitação, e uma nova cancela a anterior. Nada é consultado ao recarregar a página, para não sobrescrever o que o usuário corrigiu à mão. |
 
 ---
 
@@ -1434,7 +1434,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 4 | 1 | F03 Onboarding v1 | Metodologia em passos | Baixa | Sonnet | — | `[x]` |
 | 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[x]` |
 | 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[x]` |
-| 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[>]` |
+| 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[x]` |
 | 8 | 1 | F07 Dados físicos e financeiros | Preço em R$/m² calculado | Média | Opus | — | `[ ]` |
 | 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[ ]` |
 | 10 | 1 | F09 Tipo, tipologia e padrão | Classificação em cascata | Média | Opus | **D-B6** | `[ ]` |
