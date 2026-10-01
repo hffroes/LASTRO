@@ -167,6 +167,17 @@
   --lastro-lista-altura-max: min(240px, 40vh);
   /* Opção ativa por teclado numa lista: barra de ação à esquerda, além do fundo. */
   --lastro-indicador-ativo: inset 3px 0 0 var(--lastro-action);
+
+  /* Ilustrações esquemáticas das opções (formato do lote e topografia) — adição da F08. Em cinza,
+     como o gráfico do guia: "azul age, cinza informa", e a seleção já é mostrada pelo cartão.
+     O traço é o texto secundário, que passa de 3:1 (WCAG 1.4.11) sobre o cartão em todos os estados
+     (normal, hover, selecionado) nos dois temas; o preenchimento só dá volume, não carrega informação.
+     Os dois apontam para tokens semânticos, então o tema escuro vem junto sem bloco próprio.
+     Traço de 1.75 como os ícones Lucide do produto. */
+  --lastro-ilustracao-altura: 56px;
+  --lastro-ilustracao-traco: var(--lastro-text-secondary);
+  --lastro-ilustracao-preenchimento: var(--lastro-surface-sunken);
+  --lastro-ilustracao-traco-largura: 1.75px;
 }
 
 /* Semântico (tema escuro) — adição F00 (plan.md), remapeia sobre os tokens --lastro-dark-* já existentes */

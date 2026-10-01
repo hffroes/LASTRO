@@ -51,6 +51,8 @@ describe('useAnalise', () => {
         enderecoPeloCep: true,
         areaTotalM2: 1250.5,
         precoPedidoCentavos: 120_000_000,
+        formatoLote: 'irregular',
+        topografia: 'acidentada',
       }),
     );
     primeira.unmount();
@@ -83,6 +85,18 @@ describe('useAnalise', () => {
     const { result } = renderUseAnalise();
 
     expect(result.current.analise).toEqual({ objetivo: null, terreno: { ...criarTerrenoVazio(), nome: 'Lote 12' } });
+  });
+
+  it('formato e topografia só voltam do rascunho se forem opções da tabela', () => {
+    window.sessionStorage.setItem(
+      CHAVE_RASCUNHO,
+      JSON.stringify({ versao: 1, analise: { objetivo: null, terreno: { formatoLote: 'triangular', topografia: 3 } } }),
+    );
+
+    const { result } = renderUseAnalise();
+
+    expect(result.current.analise.terreno.formatoLote).toBeNull();
+    expect(result.current.analise.terreno.topografia).toBeNull();
   });
 
   it('área e preço só voltam do rascunho como número; preço só em centavos inteiros', () => {

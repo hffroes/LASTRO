@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AnaliseProvider } from '../hooks/useAnalise';
@@ -74,6 +74,20 @@ function preencherEtapaValida() {
   escolherCidade('Belo Horizonte');
   digitar(campoArea(), '1000');
   digitar(campoPreco(), '1200000');
+  escolherFormato('Regular');
+  escolherTopografia('Plana');
+}
+
+function grupo(legenda: RegExp) {
+  return screen.getByRole('group', { name: legenda });
+}
+
+function escolherFormato(rotulo: string) {
+  fireEvent.click(within(grupo(/Formato do lote/)).getByRole('radio', { name: new RegExp(`^${rotulo}`) }));
+}
+
+function escolherTopografia(rotulo: string) {
+  fireEvent.click(within(grupo(/Topografia/)).getByRole('radio', { name: new RegExp(`^${rotulo}`) }));
 }
 
 function respostaJson(corpo: unknown, status = 200) {
@@ -183,6 +197,9 @@ describe('Terreno', () => {
     digitar(campoArea(), '1000');
     expect(screen.getByRole('button', { name: MENSAGENS_TERRENO.precoAusente })).toBeTruthy();
     digitar(campoPreco(), '1200000');
+    escolherFormato('Irregular');
+    expect(screen.getByRole('button', { name: MENSAGENS_TERRENO.topografiaAusente })).toBeTruthy();
+    escolherTopografia('Acidentada');
     expect(screen.queryByText('Falta preencher para avançar')).toBeNull();
   });
 
@@ -208,6 +225,83 @@ describe('Terreno', () => {
     expect(campoArea().value).toBe('1.000,00');
     expect(campoPreco().value).toBe('1.200.000,00');
     expect(precoUnitario().textContent).toBe('R$ 1.200,00/m²');
+    expect((within(grupo(/Formato do lote/)).getByRole('radio', { name: /^Regular/ }) as HTMLInputElement).checked).toBe(true);
+    expect((within(grupo(/Topografia/)).getByRole('radio', { name: /^Plana/ }) as HTMLInputElement).checked).toBe(true);
+  });
+
+  describe('formato do lote e topografia', () => {
+    it('oferece exatamente as opções do PRD 3.2, na ordem da tabela', () => {
+      renderTerreno();
+
+      const rotulos = (legenda: RegExp) =>
+        within(grupo(legenda))
+          .getAllByRole('radio')
+          .map((radio) => (radio as HTMLInputElement).value);
+      expect(rotulos(/Formato do lote/)).toEqual(['regular', 'irregular']);
+      expect(rotulos(/Topografia/)).toEqual(['plana', 'regular', 'irregular', 'acidentada']);
+    });
+
+    it('nada vem selecionado: não existe formato nem topografia padrão', () => {
+      renderTerreno();
+
+      for (const radio of screen.getAllByRole('radio')) {
+        expect((radio as HTMLInputElement).checked).toBe(false);
+      }
+    });
+
+    it('cada grupo é um conjunto de radios nativos com o mesmo nome, navegável por setas', () => {
+      renderTerreno();
+
+      const nomes = (legenda: RegExp) =>
+        new Set(within(grupo(legenda)).getAllByRole('radio').map((radio) => (radio as HTMLInputElement).name));
+      expect([...nomes(/Formato do lote/)]).toEqual(['formato']);
+      expect([...nomes(/Topografia/)]).toEqual(['topografia']);
+    });
+
+    it('a escolha troca dentro do grupo sem afetar o outro grupo', () => {
+      renderTerreno();
+
+      escolherTopografia('Regular');
+      escolherFormato('Regular');
+      escolherTopografia('Irregular');
+
+      const marcados = screen
+        .getAllByRole('radio')
+        .filter((radio) => (radio as HTMLInputElement).checked)
+        .map((radio) => (radio as HTMLInputElement).id);
+      expect(marcados.sort()).toEqual(['formato-regular', 'topografia-irregular']);
+    });
+
+    it('o nome acessível da opção traz a explicação, e o desenho fica fora da leitura', () => {
+      renderTerreno();
+
+      const acidentada = within(grupo(/Topografia/)).getByRole('radio', { name: /^Acidentada/ });
+      expect(acidentada.closest('label')?.textContent).toContain('encosta íngreme');
+      expect(acidentada.closest('label')?.querySelector('svg')?.closest('[aria-hidden="true"]')).toBeTruthy();
+    });
+
+    it('a Etapa 1 só conclui com formato e topografia escolhidos', () => {
+      renderTerreno();
+      fireEvent.click(screen.getByLabelText(/Comprar o terreno/));
+      fireEvent.change(campoNome(), { target: { value: 'Lote 12' } });
+      escolherCidade('Belo Horizonte');
+      digitar(campoArea(), '1000');
+      digitar(campoPreco(), '1200000');
+      escolherFormato('Regular');
+
+      avancar();
+
+      expect(screen.queryByText('tela de produto')).toBeNull();
+      expect(screen.getByRole('button', { name: MENSAGENS_TERRENO.topografiaAusente })).toBeTruthy();
+      expect(screen.queryByRole('button', { name: MENSAGENS_TERRENO.formatoAusente })).toBeNull();
+
+      fireEvent.click(screen.getByRole('button', { name: MENSAGENS_TERRENO.topografiaAusente }));
+      expect(document.activeElement).toBe(within(grupo(/Topografia/)).getByRole('radio', { name: /^Plana/ }));
+
+      escolherTopografia('Plana');
+      avancar();
+      expect(screen.getByText('tela de produto')).toBeTruthy();
+    });
   });
 
   describe('área, preço e preço por m²', () => {

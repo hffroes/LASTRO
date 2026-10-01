@@ -2,6 +2,7 @@
 // módulo quando a API de análise existir (F13, junto com D-B1), para a regra não ser escrita duas vezes.
 import { buscarMunicipioPorCodigo } from '../../data/municipios-mg';
 import { OBJETIVOS_ANALISE, type Analise } from '../../types/analise';
+import { FORMATOS_LOTE, TOPOGRAFIAS } from '../../types/terreno';
 import { areaParaCentesimos, formatarArea, formatarMoeda } from '../motor/formatacao';
 import { somenteDigitos } from '../texto';
 
@@ -19,7 +20,17 @@ export const UF_COBERTA = 'MG';
 export const LIMITE_AREA_TERRENO_M2 = 10_000_000;
 export const LIMITE_PRECO_TERRENO_CENTAVOS = 1_000_000_000_000;
 
-export type CampoEtapaTerreno = 'objetivo' | 'nome' | 'cidade' | 'cep' | 'logradouro' | 'bairro' | 'area' | 'preco';
+export type CampoEtapaTerreno =
+  | 'objetivo'
+  | 'nome'
+  | 'cidade'
+  | 'cep'
+  | 'logradouro'
+  | 'bairro'
+  | 'area'
+  | 'preco'
+  | 'formato'
+  | 'topografia';
 
 export type ErrosEtapaTerreno = Partial<Record<CampoEtapaTerreno, string>>;
 
@@ -33,6 +44,8 @@ export const ORDEM_CAMPOS_TERRENO: readonly CampoEtapaTerreno[] = [
   'bairro',
   'area',
   'preco',
+  'formato',
+  'topografia',
 ];
 
 export const MENSAGENS_TERRENO = {
@@ -55,6 +68,8 @@ export const MENSAGENS_TERRENO = {
   precoIlegivel: 'Escreva o preço só com números e até 2 casas para os centavos. Ex.: 1.200.000,00',
   precoNaoPositivo: 'O preço precisa ser maior que zero.',
   precoAcimaDoLimite: `O preço passa de ${formatarMoeda(LIMITE_PRECO_TERRENO_CENTAVOS)}. Confira o valor digitado.`,
+  formatoAusente: 'Escolha o formato do lote.',
+  topografiaAusente: 'Escolha a topografia do terreno.',
 } as const;
 
 export function validarObjetivo(objetivo: unknown): string | undefined {
@@ -109,6 +124,16 @@ export function validarPrecoTerreno(precoCentavos: unknown): string | undefined 
   return undefined;
 }
 
+// Sem valor padrão (PRD 3.2): cada opção muda o aditivo do custo da obra, então a escolha é sempre
+// do usuário. Valor fora da tabela (vindo da API) conta como não escolhido.
+export function validarFormatoLote(formato: unknown): string | undefined {
+  return FORMATOS_LOTE.includes(formato as never) ? undefined : MENSAGENS_TERRENO.formatoAusente;
+}
+
+export function validarTopografia(topografia: unknown): string | undefined {
+  return TOPOGRAFIAS.includes(topografia as never) ? undefined : MENSAGENS_TERRENO.topografiaAusente;
+}
+
 export function validarEtapaTerreno(analise: Pick<Analise, 'objetivo' | 'terreno'>): ErrosEtapaTerreno {
   const { terreno } = analise;
   const resultados: ErrosEtapaTerreno = {
@@ -120,6 +145,8 @@ export function validarEtapaTerreno(analise: Pick<Analise, 'objetivo' | 'terreno
     bairro: validarTrechoEndereco(terreno.bairro, 'Bairro'),
     area: validarAreaTerreno(terreno.areaTotalM2),
     preco: validarPrecoTerreno(terreno.precoPedidoCentavos),
+    formato: validarFormatoLote(terreno.formatoLote),
+    topografia: validarTopografia(terreno.topografia),
   };
   const erros: ErrosEtapaTerreno = {};
   for (const campo of ORDEM_CAMPOS_TERRENO) {

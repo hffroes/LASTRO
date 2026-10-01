@@ -14,9 +14,12 @@ import {
   validarEtapaTerreno,
   validarNomeTerreno,
   validarAreaTerreno,
+  validarFormatoLote,
   validarObjetivo,
   validarPrecoTerreno,
+  validarTopografia,
 } from './terreno';
+import { FORMATOS_LOTE, TOPOGRAFIAS } from '../../types/terreno';
 
 describe('validarNomeTerreno', () => {
   it('recusa vazio', () => {
@@ -61,18 +64,20 @@ describe('validarObjetivo', () => {
 });
 
 describe('validarEtapaTerreno', () => {
-  it('uma análise vazia tem pendências só nos obrigatórios: objetivo, nome, cidade, área e preço', () => {
+  it('uma análise vazia tem pendências só nos obrigatórios: objetivo, nome, cidade, área, preço, formato e topografia', () => {
     expect(validarEtapaTerreno(criarAnaliseVazia())).toEqual({
       objetivo: MENSAGENS_TERRENO.objetivoAusente,
       nome: MENSAGENS_TERRENO.nomeVazio,
       cidade: MENSAGENS_TERRENO.cidadeAusente,
       area: MENSAGENS_TERRENO.areaAusente,
       preco: MENSAGENS_TERRENO.precoAusente,
+      formato: MENSAGENS_TERRENO.formatoAusente,
+      topografia: MENSAGENS_TERRENO.topografiaAusente,
     });
     expect(etapaTerrenoValida(criarAnaliseVazia())).toBe(false);
   });
 
-  it('fica válida com objetivo, nome, cidade, área e preço, sem CEP nem endereço', () => {
+  it('fica válida com todos os obrigatórios, sem CEP nem endereço', () => {
     const analise = {
       objetivo: 'comprarTerreno' as const,
       terreno: {
@@ -81,6 +86,8 @@ describe('validarEtapaTerreno', () => {
         codigoMunicipioIbge: 3106200,
         areaTotalM2: 1000,
         precoPedidoCentavos: 120_000_000,
+        formatoLote: 'regular' as const,
+        topografia: 'plana' as const,
       },
     };
     expect(validarEtapaTerreno(analise)).toEqual({});
@@ -177,5 +184,21 @@ describe('validarPrecoTerreno', () => {
   it('a mensagem do limite mostra o valor formatado', () => {
     expect(MENSAGENS_TERRENO.precoAcimaDoLimite).toContain('R$ 10.000.000.000,00');
     expect(MENSAGENS_TERRENO.areaAcimaDoLimite).toContain('10.000.000,00 m²');
+  });
+});
+
+describe('formato do lote e topografia', () => {
+  it('as opções são exatamente as linhas das tabelas D e C do PRD 3.2, nenhuma a mais', () => {
+    expect(FORMATOS_LOTE).toEqual(['regular', 'irregular']);
+    expect(TOPOGRAFIAS).toEqual(['plana', 'regular', 'irregular', 'acidentada']);
+  });
+
+  it('aceitam só valores da tabela; ausente ou desconhecido é pendência, sem valor padrão', () => {
+    for (const formato of FORMATOS_LOTE) expect(validarFormatoLote(formato)).toBeUndefined();
+    for (const topografia of TOPOGRAFIAS) expect(validarTopografia(topografia)).toBeUndefined();
+    expect(validarFormatoLote(null)).toBe(MENSAGENS_TERRENO.formatoAusente);
+    expect(validarFormatoLote('triangular')).toBe(MENSAGENS_TERRENO.formatoAusente);
+    expect(validarTopografia(undefined)).toBe(MENSAGENS_TERRENO.topografiaAusente);
+    expect(validarTopografia('ondulada')).toBe(MENSAGENS_TERRENO.topografiaAusente);
   });
 });

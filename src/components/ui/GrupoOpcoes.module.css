@@ -68,9 +68,17 @@
 }
 
 .textos {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--lastro-space-4);
+}
+
+/* O desenho ocupa a largura do texto e fica acima do rótulo: lê-se a figura, depois o nome. */
+.ilustracao {
+  display: block;
+  margin-bottom: var(--lastro-space-4);
 }
 
 .rotuloOpcao {

@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SeletorFormatoLote } from '../components/terreno/SeletorFormatoLote';
+import { SeletorTopografia } from '../components/terreno/SeletorTopografia';
 import { Botao } from '../components/ui/Botao';
 import { Campo, EntradaTexto } from '../components/ui/Campo';
 import { CampoCalculado } from '../components/ui/CampoCalculado';
@@ -323,7 +325,17 @@ export function Terreno() {
           <h2 id="secao-lote" className={estilos.tituloSecao}>
             {secoes.lote.titulo}
           </h2>
-          <p className={estilos.pendente}>{secoes.lote.pendente}</p>
+          <p className={estilos.descricaoSecao}>{secoes.lote.descricao}</p>
+          <SeletorFormatoLote
+            valor={analise.terreno.formatoLote}
+            aoMudar={(formatoLote) => atualizarTerreno({ formatoLote })}
+            erro={erroVisivel('formato')}
+          />
+          <SeletorTopografia
+            valor={analise.terreno.topografia}
+            aoMudar={(topografia) => atualizarTerreno({ topografia })}
+            erro={erroVisivel('topografia')}
+          />
         </section>
 
         {tentouAvancar && pendencias.length > 0 && (
