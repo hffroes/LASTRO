@@ -1,19 +1,14 @@
 modules = ["nodejs-24", "python-base-3.13"]
+run = "npm run dev"
 
-[[ports]]
-localPort = 3000
-externalPort = 3001
-
-[[ports]]
-localPort = 5173
-externalPort = 80
+[nix]
+channel = "stable-25_05"
 
 [workflows]
-runButton = "Run"
-
+runButton = "Start application"
 
 [[workflows.workflow]]
-name = "Run"
+name = "Start application"
 author = "agent"
 
 [[workflows.workflow.tasks]]
@@ -22,4 +17,18 @@ args = "npm run dev"
 waitForPort = 5173
 
 [workflows.workflow.metadata]
-outputType = "console"
+outputType = "webview"
+
+[[ports]]
+localPort = 3000
+externalPort = 3001
+
+[[ports]]
+localPort = 5173
+externalPort = 80
+exposeLocalhost = true
+
+[userenv]
+
+[userenv.development]
+__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS = "689f6ac1-acd9-4e62-a51b-1eaccff3671d-00-l2s6g2quktce.kirk.replit.dev"
