@@ -412,7 +412,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Opus** |
 | **25. Justificativa** | Fixa a convenção monetária e de arredondamento que todo o motor econômico vai herdar — erro aqui contamina o resultado inteiro. |
 | **26. Conclusão** | Preço unitário correto e testes de arredondamento passando. |
-| **27. Checkpoint** | `[ ]` Usuário aprova máscara, unidades e o valor calculado. |
+| **27. Checkpoint** | `[>]` Usuário aprova máscara, unidades e o valor calculado. Implementada; aguardando validação no Replit. Convenção fixada para o motor: dinheiro em centavos inteiros, área em m² com até 2 casas (centésimos inteiros na conta), arredondamento meio para cima em aritmética inteira exata. Área e preço passam a ser obrigatórios na Etapa 1. Diferenças do previsto: sem máscara durante a digitação (o texto é lido em pt-BR a cada tecla e formatado ao sair, para não atrapalhar edição nem colar); o cálculo do preço unitário ficou em `src/utils/motor/terreno.ts` (+ teste), separado da formatação; `CampoNumero`/`CampoMoeda` exportam `EntradaNumero`/`EntradaMoeda`, usados dentro do `Campo` como o `EntradaTexto`. Tetos técnicos provisórios (não regra de negócio): 10.000.000 m² e R$ 10 bilhões, em `src/utils/validacao/terreno.ts`. |
 
 ---
 

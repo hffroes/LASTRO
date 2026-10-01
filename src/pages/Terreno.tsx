@@ -2,6 +2,9 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Botao } from '../components/ui/Botao';
 import { Campo, EntradaTexto } from '../components/ui/Campo';
+import { CampoCalculado } from '../components/ui/CampoCalculado';
+import { EntradaMoeda } from '../components/ui/CampoMoeda';
+import { EntradaNumero } from '../components/ui/CampoNumero';
 import { Combobox } from '../components/ui/Combobox';
 import { GrupoOpcoes } from '../components/ui/GrupoOpcoes';
 import { ResumoPendencias } from '../components/ui/ResumoPendencias';
@@ -9,10 +12,13 @@ import { OPCOES_OBJETIVO, TEXTOS_TERRENO } from '../content/terreno';
 import { MUNICIPIOS_MG, buscarMunicipioPorCodigo } from '../data/municipios-mg';
 import { useAnalise } from '../hooks/useAnalise';
 import { useCep, type EnderecoConsultado, type EstadoCep } from '../hooks/useCep';
+import { areaParaCentesimos, formatarMoeda, type LeituraNumero } from '../utils/motor/formatacao';
+import { calcularPrecoUnitarioCentavos } from '../utils/motor/terreno';
 import { formatarCep, somenteDigitos } from '../utils/texto';
 import {
   DIGITOS_CEP,
   LIMITE_NOME_TERRENO,
+  MENSAGENS_TERRENO,
   ORDEM_CAMPOS_TERRENO,
   UF_COBERTA,
   validarEtapaTerreno,
@@ -21,6 +27,8 @@ import {
 import estilos from './Terreno.module.css';
 
 const OPCOES_MUNICIPIOS = MUNICIPIOS_MG.map((municipio) => ({ valor: municipio.codigoIbge, rotulo: municipio.nome }));
+
+type CampoNumerico = 'area' | 'preco';
 
 type TomStatusCep = 'neutro' | 'aviso' | 'sucesso';
 
@@ -44,6 +52,9 @@ export function Terreno() {
   const { analise, definirObjetivo, atualizarTerreno } = useAnalise();
   const [camposTocados, setCamposTocados] = useState<ReadonlySet<CampoEtapaTerreno>>(new Set());
   const [tentouAvancar, setTentouAvancar] = useState(false);
+  // Texto que não pôde ser lido como número: o estado da análise guarda só números, então a
+  // ilegibilidade fica aqui, para a mensagem dizer "formato" e não "campo vazio".
+  const [ilegiveis, setIlegiveis] = useState<ReadonlySet<CampoNumerico>>(new Set());
   const refResumo = useRef<HTMLDivElement>(null);
 
   // CEP de fora de MG não preenche nada (D-R15): só registra a UF, e a validação bloqueia.
@@ -81,7 +92,21 @@ export function Terreno() {
     }
   }
 
+  function registrarLeitura(campo: CampoNumerico, leitura: LeituraNumero): number | null {
+    setIlegiveis((atuais) => {
+      const ilegivel = leitura.tipo === 'invalido';
+      if (atuais.has(campo) === ilegivel) return atuais;
+      const proximos = new Set(atuais);
+      if (ilegivel) proximos.add(campo);
+      else proximos.delete(campo);
+      return proximos;
+    });
+    return leitura.tipo === 'valido' ? leitura.unidadesMenores : null;
+  }
+
   const erros = validarEtapaTerreno(analise);
+  if (ilegiveis.has('area')) erros.area = MENSAGENS_TERRENO.areaIlegivel;
+  if (ilegiveis.has('preco')) erros.preco = MENSAGENS_TERRENO.precoIlegivel;
   const pendencias = ORDEM_CAMPOS_TERRENO.flatMap((campo) => {
     const mensagem = erros[campo];
     return mensagem ? [{ campo, mensagem }] : [];
@@ -114,6 +139,10 @@ export function Terreno() {
   const { secoes, campos } = TEXTOS_TERRENO;
   const tamanhoNome = analise.terreno.nome.trim().length;
   const statusCep = statusDoCep(estadoCep, analise.terreno.enderecoPeloCep);
+  const { areaTotalM2, precoPedidoCentavos } = analise.terreno;
+  // Só com os dois insumos válidos: um preço por m² sobre área inválida seria um número sem base.
+  const precoUnitarioCentavos =
+    erros.area || erros.preco ? null : calcularPrecoUnitarioCentavos(precoPedidoCentavos, areaTotalM2);
 
   return (
     <div className={estilos.pagina}>
@@ -248,7 +277,46 @@ export function Terreno() {
           <h2 id="secao-fisicos" className={estilos.tituloSecao}>
             {secoes.fisicos.titulo}
           </h2>
-          <p className={estilos.pendente}>{secoes.fisicos.pendente}</p>
+          <p className={estilos.descricaoSecao}>{secoes.fisicos.descricao}</p>
+
+          <Campo id="campo-area" rotulo={campos.area} erro={erroVisivel('area')} dica={campos.dicaArea}>
+            {(controle) => (
+              <EntradaNumero
+                {...controle}
+                name="area"
+                sufixo="m²"
+                placeholder="0,00"
+                obrigatorio
+                valor={areaTotalM2 === null ? null : areaParaCentesimos(areaTotalM2)}
+                aoMudar={(leitura) => {
+                  const centesimos = registrarLeitura('area', leitura);
+                  atualizarTerreno({ areaTotalM2: centesimos === null ? null : centesimos / 100 });
+                }}
+                aoSair={() => marcarTocado('area')}
+              />
+            )}
+          </Campo>
+
+          <Campo id="campo-preco" rotulo={campos.preco} erro={erroVisivel('preco')} dica={campos.dicaPreco}>
+            {(controle) => (
+              <EntradaMoeda
+                {...controle}
+                name="preco"
+                obrigatorio
+                valor={precoPedidoCentavos}
+                aoMudar={(leitura) => atualizarTerreno({ precoPedidoCentavos: registrarLeitura('preco', leitura) })}
+                aoSair={() => marcarTocado('preco')}
+              />
+            )}
+          </Campo>
+
+          <CampoCalculado
+            id="campo-preco-unitario"
+            rotulo={campos.precoUnitario}
+            valor={precoUnitarioCentavos === null ? null : `${formatarMoeda(precoUnitarioCentavos)}/m²`}
+            formula={campos.formulaPrecoUnitario}
+            textoAguardando={campos.precoUnitarioAguardando}
+          />
         </section>
 
         <section className={estilos.secao} aria-labelledby="secao-lote">

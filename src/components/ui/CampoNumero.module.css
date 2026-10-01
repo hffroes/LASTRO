@@ -1,0 +1,52 @@
+/* Campo com unidade do guia (seção 05, "Área do lote"): número em Plex Mono e a unidade num afixo
+   cinza, separado por um filete. A borda fica no grupo, para o afixo fazer parte do controle. */
+.grupo {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: var(--lastro-altura-controle);
+  background: var(--lastro-surface-raised);
+  border: 1px solid var(--lastro-borda-campo);
+  border-radius: var(--lastro-radius-sm);
+  overflow: hidden;
+}
+
+.grupo:focus-within {
+  border-color: var(--lastro-action);
+  box-shadow: var(--lastro-anel-foco);
+}
+
+.grupo[data-invalido='true'] {
+  border-color: var(--lastro-danger-text);
+}
+
+.entrada {
+  flex: 1;
+  min-width: 0;
+  padding: 0 var(--lastro-space-12);
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-ui);
+  color: var(--lastro-text-primary);
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.afixo {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--lastro-space-12);
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-auxiliar);
+  color: var(--lastro-text-secondary);
+  background: var(--lastro-surface-base);
+  white-space: nowrap;
+}
+
+.prefixo {
+  border-right: 1px solid var(--lastro-border-default);
+}
+
+.sufixo {
+  border-left: 1px solid var(--lastro-border-default);
+}

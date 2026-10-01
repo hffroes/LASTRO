@@ -49,6 +49,8 @@ describe('useAnalise', () => {
         cep: '30130010',
         ufCep: 'MG',
         enderecoPeloCep: true,
+        areaTotalM2: 1250.5,
+        precoPedidoCentavos: 120_000_000,
       }),
     );
     primeira.unmount();
@@ -57,6 +59,7 @@ describe('useAnalise', () => {
 
     expect(segunda.result.current.analise).toEqual(primeira.result.current.analise);
     expect(segunda.result.current.analise.terreno.codigoMunicipioIbge).toBe(3106200);
+    expect(segunda.result.current.analise.terreno.precoPedidoCentavos).toBe(120_000_000);
   });
 
   it('descarta rascunho corrompido ou de outra versão', () => {
@@ -80,6 +83,23 @@ describe('useAnalise', () => {
     const { result } = renderUseAnalise();
 
     expect(result.current.analise).toEqual({ objetivo: null, terreno: { ...criarTerrenoVazio(), nome: 'Lote 12' } });
+  });
+
+  it('área e preço só voltam do rascunho como número; preço só em centavos inteiros', () => {
+    for (const [areaTotalM2, precoPedidoCentavos] of [
+      ['1000', '120000000'],
+      [null, 1200.5],
+      [Number.NaN, Number.MAX_SAFE_INTEGER + 2],
+    ]) {
+      window.sessionStorage.setItem(
+        CHAVE_RASCUNHO,
+        JSON.stringify({ versao: 1, analise: { objetivo: null, terreno: { areaTotalM2, precoPedidoCentavos } } }),
+      );
+      const { result, unmount } = renderUseAnalise();
+      expect(result.current.analise.terreno.areaTotalM2).toBeNull();
+      expect(result.current.analise.terreno.precoPedidoCentavos).toBeNull();
+      unmount();
+    }
   });
 
   it('rascunho da F05 (só com nome) continua valendo, com os campos novos vazios', () => {

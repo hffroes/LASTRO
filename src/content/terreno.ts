@@ -17,7 +17,7 @@ export const TEXTOS_TERRENO = {
     },
     fisicos: {
       titulo: 'Dados físicos e financeiros',
-      pendente: 'Área, preço pedido e preço por m² entram aqui nas próximas versões do formulário.',
+      descricao: 'A área e o preço pedido. O preço por m² é calculado a partir deles.',
     },
     lote: {
       titulo: 'Características do lote',
@@ -35,6 +35,14 @@ export const TEXTOS_TERRENO = {
     dicaCep: 'Com os 8 dígitos, a lastro preenche cidade, logradouro e bairro.',
     logradouro: 'Logradouro (opcional)',
     bairro: 'Bairro (opcional)',
+    // A unidade vai no rótulo, e não só no afixo visual, para o leitor de tela também a anunciar.
+    area: 'Área total do terreno (m²)',
+    dicaArea: 'A área do lote inteiro, como na matrícula ou no levantamento. Ex.: 1.250,50',
+    preco: 'Preço pedido pelo terreno (R$)',
+    dicaPreco: 'O valor total pedido pelo terreno, não o valor por m².',
+    precoUnitario: 'Preço por m² do terreno',
+    formulaPrecoUnitario: 'Calculado: preço pedido ÷ área total, arredondado ao centavo.',
+    precoUnitarioAguardando: 'Aparece quando a área e o preço estiverem preenchidos.',
   },
   // Situação da consulta do CEP (PRD 3.4): nenhuma delas impede avançar.
   statusCep: {

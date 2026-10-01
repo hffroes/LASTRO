@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { criarAnaliseVazia } from '../../types/analise';
 import { criarTerrenoVazio } from '../../types/terreno';
 import {
+  LIMITE_AREA_TERRENO_M2,
   LIMITE_ENDERECO,
+  LIMITE_PRECO_TERRENO_CENTAVOS,
   LIMITE_NOME_TERRENO,
   MENSAGENS_TERRENO,
   validarCep,
@@ -11,7 +13,9 @@ import {
   etapaTerrenoValida,
   validarEtapaTerreno,
   validarNomeTerreno,
+  validarAreaTerreno,
   validarObjetivo,
+  validarPrecoTerreno,
 } from './terreno';
 
 describe('validarNomeTerreno', () => {
@@ -57,19 +61,27 @@ describe('validarObjetivo', () => {
 });
 
 describe('validarEtapaTerreno', () => {
-  it('uma análise vazia tem pendências só nos obrigatórios: objetivo, nome e cidade', () => {
+  it('uma análise vazia tem pendências só nos obrigatórios: objetivo, nome, cidade, área e preço', () => {
     expect(validarEtapaTerreno(criarAnaliseVazia())).toEqual({
       objetivo: MENSAGENS_TERRENO.objetivoAusente,
       nome: MENSAGENS_TERRENO.nomeVazio,
       cidade: MENSAGENS_TERRENO.cidadeAusente,
+      area: MENSAGENS_TERRENO.areaAusente,
+      preco: MENSAGENS_TERRENO.precoAusente,
     });
     expect(etapaTerrenoValida(criarAnaliseVazia())).toBe(false);
   });
 
-  it('fica válida com objetivo, nome e cidade, sem CEP nem endereço', () => {
+  it('fica válida com objetivo, nome, cidade, área e preço, sem CEP nem endereço', () => {
     const analise = {
       objetivo: 'comprarTerreno' as const,
-      terreno: { ...criarTerrenoVazio(), nome: 'Lote da Rua Alagoas', codigoMunicipioIbge: 3106200 },
+      terreno: {
+        ...criarTerrenoVazio(),
+        nome: 'Lote da Rua Alagoas',
+        codigoMunicipioIbge: 3106200,
+        areaTotalM2: 1000,
+        precoPedidoCentavos: 120_000_000,
+      },
     };
     expect(validarEtapaTerreno(analise)).toEqual({});
     expect(etapaTerrenoValida(analise)).toBe(true);
@@ -116,5 +128,54 @@ describe('validarTrechoEndereco', () => {
     expect(validarTrechoEndereco('a'.repeat(LIMITE_ENDERECO + 1), 'Bairro')).toBe(
       MENSAGENS_TERRENO.enderecoLongo('Bairro', LIMITE_ENDERECO + 1),
     );
+  });
+});
+
+describe('validarAreaTerreno', () => {
+  it('exige número informado', () => {
+    expect(validarAreaTerreno(null)).toBe(MENSAGENS_TERRENO.areaAusente);
+    expect(validarAreaTerreno('1000')).toBe(MENSAGENS_TERRENO.areaAusente); // texto vindo da API
+    expect(validarAreaTerreno(Number.NaN)).toBe(MENSAGENS_TERRENO.areaAusente);
+    expect(validarAreaTerreno(Number.POSITIVE_INFINITY)).toBe(MENSAGENS_TERRENO.areaAusente);
+  });
+
+  it('recusa zero e negativo', () => {
+    expect(validarAreaTerreno(0)).toBe(MENSAGENS_TERRENO.areaNaoPositiva);
+    expect(validarAreaTerreno(-10)).toBe(MENSAGENS_TERRENO.areaNaoPositiva);
+  });
+
+  it('aceita até duas casas decimais e recusa mais', () => {
+    expect(validarAreaTerreno(1250.55)).toBeUndefined();
+    expect(validarAreaTerreno(0.01)).toBeUndefined();
+    expect(validarAreaTerreno(1250.555)).toBe(MENSAGENS_TERRENO.areaIlegivel);
+  });
+
+  it('aceita exatamente o limite técnico e recusa acima', () => {
+    expect(validarAreaTerreno(LIMITE_AREA_TERRENO_M2)).toBeUndefined();
+    expect(validarAreaTerreno(LIMITE_AREA_TERRENO_M2 + 0.01)).toBe(MENSAGENS_TERRENO.areaAcimaDoLimite);
+  });
+});
+
+describe('validarPrecoTerreno', () => {
+  it('exige número informado, em centavos inteiros', () => {
+    expect(validarPrecoTerreno(null)).toBe(MENSAGENS_TERRENO.precoAusente);
+    expect(validarPrecoTerreno('120000000')).toBe(MENSAGENS_TERRENO.precoAusente);
+    expect(validarPrecoTerreno(1200.5)).toBe(MENSAGENS_TERRENO.precoIlegivel);
+  });
+
+  it('recusa zero e negativo', () => {
+    expect(validarPrecoTerreno(0)).toBe(MENSAGENS_TERRENO.precoNaoPositivo);
+    expect(validarPrecoTerreno(-1)).toBe(MENSAGENS_TERRENO.precoNaoPositivo);
+  });
+
+  it('aceita de um centavo até o limite técnico', () => {
+    expect(validarPrecoTerreno(1)).toBeUndefined();
+    expect(validarPrecoTerreno(LIMITE_PRECO_TERRENO_CENTAVOS)).toBeUndefined();
+    expect(validarPrecoTerreno(LIMITE_PRECO_TERRENO_CENTAVOS + 1)).toBe(MENSAGENS_TERRENO.precoAcimaDoLimite);
+  });
+
+  it('a mensagem do limite mostra o valor formatado', () => {
+    expect(MENSAGENS_TERRENO.precoAcimaDoLimite).toContain('R$ 10.000.000.000,00');
+    expect(MENSAGENS_TERRENO.areaAcimaDoLimite).toContain('10.000.000,00 m²');
   });
 });

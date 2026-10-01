@@ -21,6 +21,10 @@ function texto(valor: unknown): string {
   return typeof valor === 'string' ? valor : '';
 }
 
+function numeroFinito(valor: unknown): number | null {
+  return typeof valor === 'number' && Number.isFinite(valor) ? valor : null;
+}
+
 function lerTerreno(bruto: Partial<Record<keyof DadosTerreno, unknown>> | undefined): DadosTerreno {
   const vazio = criarTerrenoVazio();
   if (!bruto || typeof bruto !== 'object') return vazio;
@@ -32,6 +36,8 @@ function lerTerreno(bruto: Partial<Record<keyof DadosTerreno, unknown>> | undefi
     bairro: texto(bruto.bairro),
     ufCep: typeof bruto.ufCep === 'string' ? bruto.ufCep : null,
     enderecoPeloCep: bruto.enderecoPeloCep === true,
+    areaTotalM2: numeroFinito(bruto.areaTotalM2),
+    precoPedidoCentavos: Number.isSafeInteger(bruto.precoPedidoCentavos) ? (bruto.precoPedidoCentavos as number) : null,
   };
 }
 
