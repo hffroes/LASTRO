@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { AlertCircle } from 'lucide-react';
 import estilos from './GrupoOpcoes.module.css';
 import estilosCampo from './Campo.module.css';
@@ -15,6 +16,8 @@ interface PropriedadesGrupoOpcoes<Valor extends string> {
   valor: Valor | null;
   aoMudar: (valor: Valor) => void;
   erro?: string;
+  /** Desenho de cada opção, acima do rótulo. Decorativo: o texto da opção tem que bastar sozinho. */
+  ilustracao?: (valor: Valor) => ReactNode;
 }
 
 // Escolha única em cartões, sobre radios nativos: setas, Tab e leitor de tela funcionam como o
@@ -26,6 +29,7 @@ export function GrupoOpcoes<Valor extends string>({
   valor,
   aoMudar,
   erro,
+  ilustracao,
 }: PropriedadesGrupoOpcoes<Valor>) {
   const idErro = erro ? `${nome}-erro` : undefined;
 
@@ -50,6 +54,11 @@ export function GrupoOpcoes<Valor extends string>({
                 className={estilos.radio}
               />
               <span className={estilos.textos}>
+                {ilustracao && (
+                  <span className={estilos.ilustracao} aria-hidden="true">
+                    {ilustracao(opcao.valor)}
+                  </span>
+                )}
                 <span className={estilos.rotuloOpcao}>{opcao.rotulo}</span>
                 {opcao.descricao && <span className={estilos.descricao}>{opcao.descricao}</span>}
               </span>

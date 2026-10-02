@@ -412,7 +412,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Opus** |
 | **25. Justificativa** | Fixa a convenção monetária e de arredondamento que todo o motor econômico vai herdar — erro aqui contamina o resultado inteiro. |
 | **26. Conclusão** | Preço unitário correto e testes de arredondamento passando. |
-| **27. Checkpoint** | `[ ]` Usuário aprova máscara, unidades e o valor calculado. |
+| **27. Checkpoint** | `[x]` Usuário aprova máscara, unidades e o valor calculado. Convenção fixada para o motor: dinheiro em centavos inteiros, área em m² com até 2 casas (centésimos inteiros na conta), arredondamento meio para cima em aritmética inteira exata. Área e preço passam a ser obrigatórios na Etapa 1. Diferenças do previsto: sem máscara durante a digitação (o texto é lido em pt-BR a cada tecla e formatado ao sair, para não atrapalhar edição nem colar); o cálculo do preço unitário ficou em `src/utils/motor/terreno.ts` (+ teste), separado da formatação; `CampoNumero`/`CampoMoeda` exportam `EntradaNumero`/`EntradaMoeda`, usados dentro do `Campo` como o `EntradaTexto`. Tetos técnicos provisórios (não regra de negócio): 10.000.000 m² e R$ 10 bilhões, em `src/utils/validacao/terreno.ts`. |
 
 ---
 
@@ -446,7 +446,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | SVG e componente de seleção; a regra por trás é tabela fixa do PRD. |
 | **26. Conclusão** | Etapa 1 do formulário completa e aprovada. |
-| **27. Checkpoint** | `[ ]` Usuário aprova as ilustrações e conclui a página de Terreno. |
+| **27. Checkpoint** | `[x]` Usuário aprova as ilustrações e conclui a página de Terreno. Formato e topografia obrigatórios e sem valor padrão; rótulos idênticos às tabelas C e D do `PRD` 3.2, sem os percentuais (que entram na F12). As frases explicativas são qualitativas, sem limiar de desnível ou ângulo, porque o PRD não define um — texto de cada opção validado com o usuário no Replit. Diferenças do previsto: em vez de `CartaoOpcao`, o `GrupoOpcoes` da F05 ganhou a ilustração por opção; os seletores são `SeletorFormatoLote.tsx` e `SeletorTopografia.tsx`; as ilustrações ficam em `ilustracoes/IlustracaoFormatoLote.tsx` e `IlustracaoTopografia.tsx`, só com geometria (cor e traço vêm de quatro tokens novos `--lastro-ilustracao-*` no `tokens.css`). Teste garante que o desnível desenhado cresce na mesma ordem dos aditivos. |
 
 ---
 
@@ -1435,8 +1435,8 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 5 | 1 | F04 Onboarding v2 | Diagramas, teclado, reabertura | Média | Sonnet | — | `[x]` |
 | 6 | 1 | F05 Estrutura do Terreno | Formulário com validação | Média | Sonnet | — | `[x]` |
 | 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[x]` |
-| 8 | 1 | F07 Dados físicos e financeiros | Preço em R$/m² calculado | Média | Opus | — | `[ ]` |
-| 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[ ]` |
+| 8 | 1 | F07 Dados físicos e financeiros | Preço em R$/m² calculado | Média | Opus | — | `[x]` |
+| 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[x]` |
 | 10 | 1 | F09 Tipo, tipologia e padrão | Classificação em cascata | Média | Opus | **D-B6** | `[ ]` |
 | 11 | 1 | F10 Pavimentos e unidades | Programa + preço por m² | Média | Sonnet | — | `[ ]` |
 | 12 | 1 | F11 Áreas e indicadores | Painel de áreas e CA | Média | Opus | — | `[ ]` |

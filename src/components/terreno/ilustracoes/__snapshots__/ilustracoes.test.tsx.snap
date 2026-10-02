@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ilustrações do terreno > formato irregular 1`] = `"<svg class="_ilustracao_114111" viewBox="0 0 120 56" preserveAspectRatio="xMidYMid meet" focusable="false"><polygon class="_lote_114111" points="26,46 96,46 88,22 64,6 36,14"></polygon><line class="_rua_114111" x1="8" y1="52" x2="112" y2="52" stroke-dasharray="4 3"></line></svg>"`;
+
+exports[`ilustrações do terreno > formato regular 1`] = `"<svg class="_ilustracao_114111" viewBox="0 0 120 56" preserveAspectRatio="xMidYMid meet" focusable="false"><polygon class="_lote_114111" points="32,8 88,8 88,46 32,46"></polygon><line class="_rua_114111" x1="8" y1="52" x2="112" y2="52" stroke-dasharray="4 3"></line></svg>"`;
+
+exports[`ilustrações do terreno > topografia acidentada 1`] = `"<svg class="_ilustracao_114111" viewBox="0 0 120 56" preserveAspectRatio="xMidYMid meet" focusable="false"><polygon class="_solo_114111" points="4,48 38,46 50,40 68,14 82,9 116,7 116,52 4,52"></polygon><polyline class="_perfil_114111" points="4,48 38,46 50,40 68,14 82,9 116,7"></polyline></svg>"`;
+
+exports[`ilustrações do terreno > topografia irregular 1`] = `"<svg class="_ilustracao_114111" viewBox="0 0 120 56" preserveAspectRatio="xMidYMid meet" focusable="false"><polygon class="_solo_114111" points="4,38 22,30 40,40 60,26 78,36 96,24 116,32 116,52 4,52"></polygon><polyline class="_perfil_114111" points="4,38 22,30 40,40 60,26 78,36 96,24 116,32"></polyline></svg>"`;
+
+exports[`ilustrações do terreno > topografia plana 1`] = `"<svg class="_ilustracao_114111" viewBox="0 0 120 56" preserveAspectRatio="xMidYMid meet" focusable="false"><polygon class="_solo_114111" points="4,34 116,34 116,52 4,52"></polygon><polyline class="_perfil_114111" points="4,34 116,34"></polyline></svg>"`;
+
+exports[`ilustrações do terreno > topografia regular 1`] = `"<svg class="_ilustracao_114111" viewBox="0 0 120 56" preserveAspectRatio="xMidYMid meet" focusable="false"><polygon class="_solo_114111" points="4,40 116,28 116,52 4,52"></polygon><polyline class="_perfil_114111" points="4,40 116,28"></polyline></svg>"`;

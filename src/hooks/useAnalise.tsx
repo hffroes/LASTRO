@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { OBJETIVOS_ANALISE, criarAnaliseVazia, type Analise, type ObjetivoAnalise } from '../types/analise';
-import { criarTerrenoVazio, type DadosTerreno } from '../types/terreno';
+import { FORMATOS_LOTE, TOPOGRAFIAS, criarTerrenoVazio, type DadosTerreno } from '../types/terreno';
 
 // D-A2 (decidido na F05): rascunho só nesta aba. Sobrevive a um F5 acidental e some ao fechar a
 // aba; nada vai ao servidor, coerente com "sem persistência para o usuário" (PRD 2.7).
@@ -21,6 +21,14 @@ function texto(valor: unknown): string {
   return typeof valor === 'string' ? valor : '';
 }
 
+function numeroFinito(valor: unknown): number | null {
+  return typeof valor === 'number' && Number.isFinite(valor) ? valor : null;
+}
+
+function umDe<Valor extends string>(valor: unknown, aceitos: readonly Valor[]): Valor | null {
+  return aceitos.includes(valor as Valor) ? (valor as Valor) : null;
+}
+
 function lerTerreno(bruto: Partial<Record<keyof DadosTerreno, unknown>> | undefined): DadosTerreno {
   const vazio = criarTerrenoVazio();
   if (!bruto || typeof bruto !== 'object') return vazio;
@@ -32,6 +40,10 @@ function lerTerreno(bruto: Partial<Record<keyof DadosTerreno, unknown>> | undefi
     bairro: texto(bruto.bairro),
     ufCep: typeof bruto.ufCep === 'string' ? bruto.ufCep : null,
     enderecoPeloCep: bruto.enderecoPeloCep === true,
+    areaTotalM2: numeroFinito(bruto.areaTotalM2),
+    precoPedidoCentavos: Number.isSafeInteger(bruto.precoPedidoCentavos) ? (bruto.precoPedidoCentavos as number) : null,
+    formatoLote: umDe(bruto.formatoLote, FORMATOS_LOTE),
+    topografia: umDe(bruto.topografia, TOPOGRAFIAS),
   };
 }
 

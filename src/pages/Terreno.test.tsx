@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AnaliseProvider } from '../hooks/useAnalise';
@@ -50,10 +50,44 @@ function escolherCidade(nome: string) {
   fireEvent.blur(campoCidade());
 }
 
+function campoArea() {
+  return screen.getByLabelText('Área total do terreno (m²)') as HTMLInputElement;
+}
+
+function campoPreco() {
+  return screen.getByLabelText('Preço pedido pelo terreno (R$)') as HTMLInputElement;
+}
+
+function precoUnitario() {
+  return screen.getByRole('status', { name: 'Preço por m² do terreno' });
+}
+
+function digitar(campo: HTMLInputElement, valor: string) {
+  fireEvent.focus(campo);
+  fireEvent.change(campo, { target: { value: valor } });
+  fireEvent.blur(campo);
+}
+
 function preencherEtapaValida() {
   fireEvent.click(screen.getByLabelText(/Comprar o terreno/));
   fireEvent.change(campoNome(), { target: { value: 'Lote da Rua Alagoas' } });
   escolherCidade('Belo Horizonte');
+  digitar(campoArea(), '1000');
+  digitar(campoPreco(), '1200000');
+  escolherFormato('Regular');
+  escolherTopografia('Plana');
+}
+
+function grupo(legenda: RegExp) {
+  return screen.getByRole('group', { name: legenda });
+}
+
+function escolherFormato(rotulo: string) {
+  fireEvent.click(within(grupo(/Formato do lote/)).getByRole('radio', { name: new RegExp(`^${rotulo}`) }));
+}
+
+function escolherTopografia(rotulo: string) {
+  fireEvent.click(within(grupo(/Topografia/)).getByRole('radio', { name: new RegExp(`^${rotulo}`) }));
 }
 
 function respostaJson(corpo: unknown, status = 200) {
@@ -160,6 +194,12 @@ describe('Terreno', () => {
 
     fireEvent.change(campoNome(), { target: { value: 'Lote 12' } });
     escolherCidade('Belo Horizonte');
+    digitar(campoArea(), '1000');
+    expect(screen.getByRole('button', { name: MENSAGENS_TERRENO.precoAusente })).toBeTruthy();
+    digitar(campoPreco(), '1200000');
+    escolherFormato('Irregular');
+    expect(screen.getByRole('button', { name: MENSAGENS_TERRENO.topografiaAusente })).toBeTruthy();
+    escolherTopografia('Acidentada');
     expect(screen.queryByText('Falta preencher para avançar')).toBeNull();
   });
 
@@ -182,6 +222,173 @@ describe('Terreno', () => {
     expect(campoNome().value).toBe('Lote da Rua Alagoas');
     expect(campoCidade().value).toBe('Belo Horizonte');
     expect((screen.getByLabelText(/Comprar o terreno/) as HTMLInputElement).checked).toBe(true);
+    expect(campoArea().value).toBe('1.000,00');
+    expect(campoPreco().value).toBe('1.200.000,00');
+    expect(precoUnitario().textContent).toBe('R$ 1.200,00/m²');
+    expect((within(grupo(/Formato do lote/)).getByRole('radio', { name: /^Regular/ }) as HTMLInputElement).checked).toBe(true);
+    expect((within(grupo(/Topografia/)).getByRole('radio', { name: /^Plana/ }) as HTMLInputElement).checked).toBe(true);
+  });
+
+  describe('formato do lote e topografia', () => {
+    it('oferece exatamente as opções do PRD 3.2, na ordem da tabela', () => {
+      renderTerreno();
+
+      const rotulos = (legenda: RegExp) =>
+        within(grupo(legenda))
+          .getAllByRole('radio')
+          .map((radio) => (radio as HTMLInputElement).value);
+      expect(rotulos(/Formato do lote/)).toEqual(['regular', 'irregular']);
+      expect(rotulos(/Topografia/)).toEqual(['plana', 'regular', 'irregular', 'acidentada']);
+    });
+
+    it('nada vem selecionado: não existe formato nem topografia padrão', () => {
+      renderTerreno();
+
+      for (const radio of screen.getAllByRole('radio')) {
+        expect((radio as HTMLInputElement).checked).toBe(false);
+      }
+    });
+
+    it('cada grupo é um conjunto de radios nativos com o mesmo nome, navegável por setas', () => {
+      renderTerreno();
+
+      const nomes = (legenda: RegExp) =>
+        new Set(within(grupo(legenda)).getAllByRole('radio').map((radio) => (radio as HTMLInputElement).name));
+      expect([...nomes(/Formato do lote/)]).toEqual(['formato']);
+      expect([...nomes(/Topografia/)]).toEqual(['topografia']);
+    });
+
+    it('a escolha troca dentro do grupo sem afetar o outro grupo', () => {
+      renderTerreno();
+
+      escolherTopografia('Regular');
+      escolherFormato('Regular');
+      escolherTopografia('Irregular');
+
+      const marcados = screen
+        .getAllByRole('radio')
+        .filter((radio) => (radio as HTMLInputElement).checked)
+        .map((radio) => (radio as HTMLInputElement).id);
+      expect(marcados.sort()).toEqual(['formato-regular', 'topografia-irregular']);
+    });
+
+    it('o nome acessível da opção traz a explicação, e o desenho fica fora da leitura', () => {
+      renderTerreno();
+
+      const acidentada = within(grupo(/Topografia/)).getByRole('radio', { name: /^Acidentada/ });
+      expect(acidentada.closest('label')?.textContent).toContain('encosta íngreme');
+      expect(acidentada.closest('label')?.querySelector('svg')?.closest('[aria-hidden="true"]')).toBeTruthy();
+    });
+
+    it('a Etapa 1 só conclui com formato e topografia escolhidos', () => {
+      renderTerreno();
+      fireEvent.click(screen.getByLabelText(/Comprar o terreno/));
+      fireEvent.change(campoNome(), { target: { value: 'Lote 12' } });
+      escolherCidade('Belo Horizonte');
+      digitar(campoArea(), '1000');
+      digitar(campoPreco(), '1200000');
+      escolherFormato('Regular');
+
+      avancar();
+
+      expect(screen.queryByText('tela de produto')).toBeNull();
+      expect(screen.getByRole('button', { name: MENSAGENS_TERRENO.topografiaAusente })).toBeTruthy();
+      expect(screen.queryByRole('button', { name: MENSAGENS_TERRENO.formatoAusente })).toBeNull();
+
+      fireEvent.click(screen.getByRole('button', { name: MENSAGENS_TERRENO.topografiaAusente }));
+      expect(document.activeElement).toBe(within(grupo(/Topografia/)).getByRole('radio', { name: /^Plana/ }));
+
+      escolherTopografia('Plana');
+      avancar();
+      expect(screen.getByText('tela de produto')).toBeTruthy();
+    });
+  });
+
+  describe('área, preço e preço por m²', () => {
+    it('caso de validação do plano: 1.000 m² e R$ 1.200.000 dão R$ 1.200,00/m²', () => {
+      renderTerreno();
+
+      expect(precoUnitario().textContent).toBe('—');
+      digitar(campoArea(), '1000');
+      expect(precoUnitario().textContent).toBe('—');
+      digitar(campoPreco(), '1200000');
+
+      expect(precoUnitario().textContent).toBe('R$ 1.200,00/m²');
+      expect(screen.getByText(/preço pedido ÷ área total/)).toBeTruthy();
+    });
+
+    it('recalcula a cada tecla, sem esperar sair do campo', () => {
+      renderTerreno();
+      digitar(campoArea(), '1000');
+      fireEvent.focus(campoPreco());
+
+      fireEvent.change(campoPreco(), { target: { value: '500000' } });
+      expect(precoUnitario().textContent).toBe('R$ 500,00/m²');
+      fireEvent.change(campoPreco(), { target: { value: '5000000' } });
+      expect(precoUnitario().textContent).toBe('R$ 5.000,00/m²');
+    });
+
+    it('não reescreve o texto durante a digitação e formata ao sair', () => {
+      renderTerreno();
+
+      fireEvent.focus(campoPreco());
+      fireEvent.change(campoPreco(), { target: { value: '1200000,5' } });
+      expect(campoPreco().value).toBe('1200000,5');
+
+      fireEvent.blur(campoPreco());
+      expect(campoPreco().value).toBe('1.200.000,50');
+    });
+
+    it('aceita valor colado já formatado, com "R$"', () => {
+      renderTerreno();
+      digitar(campoArea(), '1.250,50 m²');
+      digitar(campoPreco(), 'R$ 500.000,00');
+
+      expect(campoArea().value).toBe('1.250,50');
+      expect(precoUnitario().textContent).toBe('R$ 399,84/m²');
+    });
+
+    it('área zero ou negativa é recusada e não gera preço por m²', () => {
+      renderTerreno();
+      digitar(campoPreco(), '1200000');
+
+      digitar(campoArea(), '0');
+      expect(screen.getByText(MENSAGENS_TERRENO.areaNaoPositiva)).toBeTruthy();
+      expect(precoUnitario().textContent).toBe('—');
+
+      digitar(campoArea(), '-50');
+      expect(screen.getByText(MENSAGENS_TERRENO.areaNaoPositiva)).toBeTruthy();
+      expect(campoArea().getAttribute('aria-invalid')).toBe('true');
+    });
+
+    it('texto ilegível acusa o formato, mantém o que foi digitado e bloqueia o avançar', () => {
+      renderTerreno();
+      preencherEtapaValida();
+
+      digitar(campoPreco(), '1,2,3');
+
+      expect(campoPreco().value).toBe('1,2,3');
+      expect(screen.getByText(MENSAGENS_TERRENO.precoIlegivel)).toBeTruthy();
+      expect(precoUnitario().textContent).toBe('—');
+      avancar();
+      expect(screen.queryByText('tela de produto')).toBeNull();
+      expect(screen.getByRole('button', { name: MENSAGENS_TERRENO.precoIlegivel })).toBeTruthy();
+    });
+
+    it('a pendência de preço leva ao campo de preço', () => {
+      renderTerreno();
+      avancar();
+
+      fireEvent.click(screen.getByRole('button', { name: MENSAGENS_TERRENO.precoAusente }));
+      expect(document.activeElement).toBe(campoPreco());
+    });
+
+    it('a unidade fica no nome acessível e o teclado do celular é o numérico', () => {
+      renderTerreno();
+
+      expect(campoArea().getAttribute('inputmode')).toBe('decimal');
+      expect(campoPreco().getAttribute('aria-required')).toBe('true');
+    });
   });
 
   it('Voltar leva à página inicial sem validar', () => {

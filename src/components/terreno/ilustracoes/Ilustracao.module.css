@@ -1,0 +1,31 @@
+/* Desenhos esquemáticos das opções do terreno. Cor e espessura só daqui, pelos tokens: o SVG traz
+   apenas geometria. O traço não escala com o viewBox, para ter a mesma espessura em qualquer largura. */
+.ilustracao {
+  display: block;
+  width: 100%;
+  height: var(--lastro-ilustracao-altura);
+}
+
+.solo,
+.lote {
+  fill: var(--lastro-ilustracao-preenchimento);
+}
+
+.lote,
+.perfil,
+.rua {
+  stroke: var(--lastro-ilustracao-traco);
+  stroke-width: var(--lastro-ilustracao-traco-largura);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.solo {
+  stroke: none;
+}
+
+.perfil,
+.rua {
+  fill: none;
+}

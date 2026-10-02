@@ -1,0 +1,48 @@
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-gap-campo);
+}
+
+.rotulo {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-rotulo);
+  font-weight: 600;
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-rotulo);
+}
+
+.valor {
+  display: flex;
+  align-items: center;
+  min-height: var(--lastro-altura-controle);
+  padding: 0 var(--lastro-space-12);
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-mono);
+  font-weight: 500;
+  color: var(--lastro-text-primary);
+  background: var(--lastro-surface-sunken);
+  border: 1px dashed var(--lastro-border-strong);
+  border-radius: var(--lastro-radius-sm);
+}
+
+.valor[data-vazio='true'] {
+  color: var(--lastro-text-secondary);
+}
+
+.formula {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--lastro-gap-campo);
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  margin: 0;
+}
+
+/* Alinha o ícone à primeira linha do texto, como o ícone de erro do Campo. */
+.icone {
+  flex: none;
+  margin-top: calc(var(--lastro-space-4) / 2);
+}
