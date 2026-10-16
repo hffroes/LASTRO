@@ -1,3 +1,5 @@
+import { TAXA_OCUPACAO_PADRAO } from '../utils/motor/parametros';
+
 // Etapa 2 do PRD (2.2): classificação do empreendimento. Tipo + tipologia (+ faixa de pavimentos, na
 // F10) são a chave do projeto CUB; o padrão é a coluna da tabela (PRD 3.1). Nenhuma opção existe aqui
 // sem linha correspondente lá, e nenhum percentual mora aqui.
@@ -26,6 +28,10 @@ export interface DadosProduto {
   unidadesPorPavimento: number | null;
   areaUnidadeM2: number | null;
   precoUnidadeCentavos: number | null;
+  // Taxa de ocupação da análise, em pontos-base (6.000 = 60%). Nasce com o padrão da ferramenta
+  // (utils/motor/parametros.ts) e o usuário pode ajustá-la: o ajuste vale só nesta análise e nunca
+  // altera o padrão global (PRD 2.10). null = apagada ou ilegível, e a etapa pede que a informe.
+  taxaOcupacaoPontosBase: number | null;
 }
 
 export function criarProdutoVazio(): DadosProduto {
@@ -37,5 +43,6 @@ export function criarProdutoVazio(): DadosProduto {
     unidadesPorPavimento: null,
     areaUnidadeM2: null,
     precoUnidadeCentavos: null,
+    taxaOcupacaoPontosBase: TAXA_OCUPACAO_PADRAO.valor,
   };
 }

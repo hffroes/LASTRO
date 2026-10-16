@@ -13,6 +13,7 @@ import {
   validarPadrao,
   validarPavimentos,
   validarPrecoUnidade,
+  validarTaxaOcupacao,
   validarTipologia,
   validarTipoProjeto,
   validarUnidadesPorPavimento,
@@ -142,6 +143,28 @@ describe('validarPrecoUnidade', () => {
   });
 });
 
+describe('validarTaxaOcupacao', () => {
+  it('aceita de 0% exclusive até 100%, em pontos-base', () => {
+    for (const taxa of [1, 5_000, 6_000, 10_000]) expect(validarTaxaOcupacao(taxa)).toBeUndefined();
+  });
+
+  it('recusa apagada, zero, negativa e acima de 100%', () => {
+    expect(validarTaxaOcupacao(null)).toBe(MENSAGENS_PRODUTO.taxaOcupacaoAusente);
+    expect(validarTaxaOcupacao(0)).toBe(MENSAGENS_PRODUTO.taxaOcupacaoNaoPositiva);
+    expect(validarTaxaOcupacao(-500)).toBe(MENSAGENS_PRODUTO.taxaOcupacaoNaoPositiva);
+    expect(validarTaxaOcupacao(10_001)).toBe(MENSAGENS_PRODUTO.taxaOcupacaoAcimaDeCem);
+  });
+
+  it('recusa fração de ponto-base (vinda da API)', () => {
+    expect(validarTaxaOcupacao(6_000.5)).toBe(MENSAGENS_PRODUTO.taxaOcupacaoIlegivel);
+  });
+
+  it('apagar a taxa trava a etapa, mesmo com todo o resto válido', () => {
+    const produto = { ...criarProdutoVazio(), tipoProjeto: 'residencial', tipologia: 'predio', padrao: 'normal', pavimentos: 4, unidadesPorPavimento: 4, areaUnidadeM2: 68.5, precoUnidadeCentavos: 45_000_000, taxaOcupacaoPontosBase: null } as const;
+    expect(validarEtapaProduto({ produto })).toEqual({ taxaOcupacao: MENSAGENS_PRODUTO.taxaOcupacaoAusente });
+  });
+});
+
 describe('validarEtapaProduto', () => {
   const PREDIO_COMPLETO: DadosProduto = {
     tipoProjeto: 'residencial',
@@ -151,11 +174,13 @@ describe('validarEtapaProduto', () => {
     unidadesPorPavimento: 4,
     areaUnidadeM2: 68.5,
     precoUnidadeCentavos: 45_000_000,
+    taxaOcupacaoPontosBase: 6_000,
   };
 
   it('produto vazio: pede tudo na ordem da página, sem repetir a tipologia antes do tipo', () => {
     const erros = validarEtapaProduto({ produto: criarProdutoVazio() });
 
+    // A taxa de ocupação nasce preenchida com o padrão, então não aparece entre as pendências.
     expect(Object.keys(erros)).toEqual(['tipoProjeto', 'padrao', 'pavimentos', 'unidadesPorPavimento', 'areaUnidade', 'precoUnidade']);
     expect(etapaProdutoValida({ produto: criarProdutoVazio() })).toBe(false);
   });

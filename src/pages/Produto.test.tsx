@@ -82,6 +82,18 @@ function calculado(rotulo: string) {
   return screen.getByRole('status', { name: rotulo });
 }
 
+function indicador(id: string) {
+  return screen.getByTestId(id).textContent;
+}
+
+function preencherPredio4x4(area = '68,50') {
+  escolher(campos.tipoProjeto, 'Residencial');
+  escolher(campos.tipologia, 'Prédio');
+  digitar(campos.pavimentos, '4');
+  digitar(campos.unidadesPorPavimento, '4');
+  digitar(campos.areaUnidade, area);
+}
+
 function preencherUnidade(area = '68,50', preco = '450.000,00') {
   digitar(campos.areaUnidade, area);
   digitar(campos.precoUnidade, preco);
@@ -140,7 +152,7 @@ describe('Produto', () => {
       renderProduto();
 
       const secoes = screen.getAllByRole('heading', { level: 2 }).map((titulo) => titulo.textContent);
-      expect(secoes).toEqual(['Tipo e tipologia', 'Padrão de acabamento', 'Programa do empreendimento']);
+      expect(secoes).toEqual(['Tipo e tipologia', 'Padrão de acabamento', 'Programa do empreendimento', 'Áreas e indicadores urbanísticos']);
     });
 
     it('as tipologias só aparecem depois do tipo, e são só as dele', () => {
@@ -268,6 +280,132 @@ describe('Produto', () => {
       expect(entrada(campos.pavimentos).value).toBe('12');
       expect(entrada(campos.areaUnidade).value).toBe('400,00');
       expect(entrada(campos.precoUnidade).value).toBe('2.000.000,00');
+    });
+
+    describe('áreas e indicadores urbanísticos (F11)', () => {
+      it('caso do plano: 1.000 m², taxa 60%, 4 pavimentos → utilizada 600, construída 2.400, CA 2,40', () => {
+        renderProduto();
+
+        preencherPredio4x4();
+
+        expect(entrada(campos.taxaOcupacao).value).toBe('60,00');
+        expect(indicador('area-utilizada')).toBe('600,00 m²');
+        expect(indicador('area-construida')).toBe('2.400,00 m²');
+        expect(indicador('coeficiente-aproveitamento')).toBe('2,40');
+      });
+
+      it('área comercializável é distinta da construída: 16 unidades × 68,50 m²', () => {
+        renderProduto();
+
+        preencherPredio4x4();
+
+        expect(indicador('area-comercializavel')).toBe('1.096,00 m²');
+        expect(indicador('area-construida')).not.toBe(indicador('area-comercializavel'));
+      });
+
+      it('o coeficiente soma todas as unidades do pavimento: 4 × 68,50 ÷ 600 = 45,67%', () => {
+        renderProduto();
+
+        preencherPredio4x4();
+
+        expect(indicador('coeficiente-unidades')).toBe('45,67%');
+      });
+
+      it('mexer na taxa reage em tudo, e "Voltar ao padrão" restaura os 60%', () => {
+        renderProduto();
+        preencherPredio4x4();
+
+        digitar(campos.taxaOcupacao, '50');
+        expect(indicador('area-utilizada')).toBe('500,00 m²');
+        expect(indicador('area-construida')).toBe('2.000,00 m²');
+        expect(indicador('coeficiente-aproveitamento')).toBe('2,00');
+
+        fireEvent.click(screen.getByRole('button', { name: TEXTOS_PRODUTO.campos.restaurarTaxa }));
+        expect(entrada(campos.taxaOcupacao).value).toBe('60,00');
+        expect(indicador('area-utilizada')).toBe('600,00 m²');
+        expect(screen.queryByRole('button', { name: TEXTOS_PRODUTO.campos.restaurarTaxa })).toBeNull();
+      });
+
+      it('mostra a conta com os dados do usuário, dentro da fórmula expansível', () => {
+        renderProduto();
+        preencherPredio4x4();
+
+        expect(screen.getByText('1.000,00 m² × 60,00% = 600,00 m²')).toBeTruthy();
+        expect(screen.getByText('600,00 m² × 4 pavimentos = 2.400,00 m²')).toBeTruthy();
+        expect(screen.getAllByText('Como é calculado').length).toBeGreaterThanOrEqual(4);
+      });
+
+      it('sem os insumos, o indicador mostra "—" e diz o que falta, sem inventar número', () => {
+        renderProduto();
+
+        expect(indicador('area-utilizada')).toBe('600,00 m²'); // só depende do terreno e da taxa
+        expect(indicador('area-construida')).toBe('—');
+        expect(screen.getByText(TEXTOS_PRODUTO.indicadores.areaConstruida.aguardando)).toBeTruthy();
+        expect(indicador('area-comercializavel')).toBe('—');
+      });
+
+      it('casa: o coeficiente das unidades some (PRD 3.3), e as demais áreas seguem', () => {
+        renderProduto();
+
+        escolher(campos.tipoProjeto, 'Residencial');
+        escolher(campos.tipologia, 'Casa');
+        digitar(campos.pavimentos, '2');
+        digitar(campos.areaUnidade, '180');
+
+        expect(screen.queryByTestId('coeficiente-unidades')).toBeNull();
+        expect(indicador('area-construida')).toBe('1.200,00 m²');
+        expect(indicador('area-comercializavel')).toBe('180,00 m²');
+      });
+
+      it('taxa fora de 0–100% é acusada e o painel não calcula sobre ela', () => {
+        renderProduto();
+        preencherPredio4x4();
+
+        digitar(campos.taxaOcupacao, '0,6');
+        expect(indicador('area-utilizada')).toBe('6,00 m²'); // 0,60% é válido: o usuário vê o efeito
+
+        digitar(campos.taxaOcupacao, '150');
+        expect(screen.getByText(MENSAGENS_PRODUTO.taxaOcupacaoAcimaDeCem)).toBeTruthy();
+        expect(indicador('area-utilizada')).toBe('—');
+        expect(indicador('coeficiente-aproveitamento')).toBe('—');
+
+        digitar(campos.taxaOcupacao, '0');
+        expect(screen.getByText(MENSAGENS_PRODUTO.taxaOcupacaoNaoPositiva)).toBeTruthy();
+      });
+
+      it('taxa apagada trava o Avançar e leva ao campo pelo resumo', () => {
+        renderProduto();
+        escolher(campos.tipoProjeto, 'Residencial');
+        escolher(campos.tipologia, 'Prédio');
+        escolher(campos.padrao, 'Normal');
+        digitar(campos.pavimentos, '4');
+        digitar(campos.unidadesPorPavimento, '4');
+        preencherUnidade();
+        digitar(campos.taxaOcupacao, '');
+        avancar();
+
+        expect(itensDoResumo()).toEqual([MENSAGENS_PRODUTO.taxaOcupacaoAusente]);
+        fireEvent.click(within(resumo()).getByRole('button', { name: MENSAGENS_PRODUTO.taxaOcupacaoAusente }));
+        expect(document.activeElement).toBe(entrada(campos.taxaOcupacao));
+      });
+
+      it('texto ilegível na taxa é acusado como formato, não como campo vazio', () => {
+        renderProduto();
+
+        digitar(campos.taxaOcupacao, 'sessenta');
+
+        expect(screen.getByText(MENSAGENS_PRODUTO.taxaOcupacaoIlegivel)).toBeTruthy();
+      });
+
+      it('a taxa ajustada sobrevive a voltar ao Terreno e retornar', () => {
+        renderProduto();
+
+        digitar(campos.taxaOcupacao, '55');
+        fireEvent.click(screen.getByRole('button', { name: 'Voltar' }));
+        fireEvent.click(screen.getByRole('button', { name: 'ir ao produto' }));
+
+        expect(entrada(campos.taxaOcupacao).value).toBe('55,00');
+      });
     });
 
     describe('programa do empreendimento (F10)', () => {

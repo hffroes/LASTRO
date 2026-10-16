@@ -42,6 +42,7 @@
 | D-R17 | D-A1 e D-A10 — municípios e cache do CEP | **Lista estática** de 853 municípios da API de localidades do IBGE, com o SHA-256 conferido no teste. **Cache em memória no servidor** por 24h, até 1.000 CEPs, só de respostas definitivas (encontrado/inexistente) | F06 |
 | D-R18 | D-B6 — como Uso Misto aparece enquanto não tem projeto CUB | **Desabilitado com aviso**: 4º tipo de projeto, visível mas não escolhível, com o motivo ("Em definição: ainda não há tabela de custo (CUB) para uso misto"). Fica fora dos tipos aceitos pela validação, então não chega ao cálculo. O **mapeamento** CUB segue pendente em D-B6 | F09 |
 | D-R19 | Pavimentos de galpão — o `PRD` 2.2 trava só as unidades, mas o `PRD` 3.1 só liga galpão a projeto CUB (GI) com 1 pavimento | **Travado em 1 pavimento**, como as unidades: o campo mostra 1, com o motivo. Nenhuma análise de galpão chega ao cálculo sem projeto CUB | F10 |
+| D-R20 | Convenção única de percentual no motor (`CLAUDE.md`: "percentuais em convenção única") e como a taxa de ocupação aparece | **Inteiro em pontos-base**: 10.000 = 100%, 6.000 = 60,00% — na linha de centavos e centésimos de m², em inteiros exatos. A F12 herda: 8% = 800, 1,5% = 150, 0,5% = 50. A taxa de ocupação é digitada **em porcentagem** ("60", não "0,6"; a dica avisa) e **nasce preenchida com o padrão** (60%), obrigatória, de 0% exclusive a 100%; o botão "Voltar ao padrão" a restaura. O ajuste vale só na análise e nunca altera o padrão (`PRD` 2.10) | F11 |
 
 ### B. Decisões bloqueantes
 
@@ -550,7 +551,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Opus** |
 | **25. Justificativa** | Primeira peça do motor de cálculo; a distinção entre as quatro áreas é regra crítica de domínio do `CLAUDE.md`. |
 | **26. Conclusão** | Áreas e coeficientes corretos, testes verdes, painel aprovado. |
-| **27. Checkpoint** | `[ ]` Usuário confere os números contra um caso conhecido e aprova. |
+| **27. Checkpoint** | `[>]` Usuário confere os números contra um caso conhecido e aprova. Implementada; aguardando validação no Replit. O painel entra como a quarta seção da página de Produto, conforme D-R20. Conferido com o caso do plano: 1.000 m² × 60% × 4 pavimentos → utilizada 600,00 m², construída 2.400,00 m², CA 2,40; Prédio 4 × 4 de 68,50 m² → comercializável 1.096,00 m² e coeficiente das unidades 45,67%. O coeficiente soma todas as unidades do pavimento (testado contra o cálculo com uma unidade só) e some para Casa. A construída parte da utilizada **já arredondada**, a mesma que o usuário vê, para ele refazer a conta à mão; arredondamento meio para cima ao centésimo, em inteiros. Cada indicador mostra a fórmula expansível e, calculado, a conta com os números dele; sem insumo mostra "—" e o que falta. Insumo inválido (zero, fração, taxa fora de 0–100%) não gera número. A faixa 80–85% aparece só como referência de texto: o **alerta** é da F18. **Validar**: a taxa em porcentagem (60) em vez de fração (0,6) como no `PRD` 3.3, e os textos dos indicadores. Diferenças do previsto: `PainelAreas` inclui o campo da taxa; entraram `montarEntradaAreas`/`calcularAreasDoProduto`, que unem a Etapa 1 e o programa efetivo (a F13 usará a mesma entrada); `aplicaCoeficienteUnidades` em `data/tipologias.ts`; `PONTOS_BASE_CEM_POR_CENTO` e o tipo `Parametro` (valor, provisório, fonte) em `types/parametros.ts`, que a F12 estende. Nos tetos técnicos somados (10 milhões de m² × 1.000 unidades), o coeficiente das unidades sai nulo em vez de impreciso. |
 
 ---
 
@@ -1441,7 +1442,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[x]` |
 | 10 | 1 | F09 Tipo, tipologia e padrão | Classificação em cascata | Média | Opus | D-R18 | `[>]` |
 | 11 | 1 | F10 Pavimentos e unidades | Programa + preço por m² | Média | Sonnet | D-R19 | `[>]` |
-| 12 | 1 | F11 Áreas e indicadores | Painel de áreas e CA | Média | Opus | — | `[ ]` |
+| 12 | 1 | F11 Áreas e indicadores | Painel de áreas e CA | Média | Opus | D-R20 | `[>]` |
 | 13 | 1 | F12 Parâmetros e CUB | CUB Ajustado discriminado | Alta | Opus | **D-B4, D-B5** | `[ ]` |
 | 14 | 1 | F13 Motor econômico e API | Resultado cru completo | Alta | Opus | **D-B1, D-B2, D-B3** | `[ ]` |
 | 15 | 1 | F14 Resultado v1 | Resumo e preço máximo | Média | Sonnet | — | `[ ]` |

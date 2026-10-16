@@ -3,6 +3,7 @@
 import { ehTipologia, ehTipoProjeto, ehUnidadeUnica, pavimentosFixos, tipologiaPertenceAoTipo } from '../../data/tipologias';
 import type { Analise } from '../../types/analise';
 import { PADROES_ACABAMENTO, type DadosProduto } from '../../types/produto';
+import { PONTOS_BASE_CEM_POR_CENTO } from '../../types/parametros';
 import { areaParaCentesimos, formatarArea, formatarInteiroBr, formatarMoeda } from '../motor/formatacao';
 import { LIMITE_AREA_TERRENO_M2, LIMITE_PRECO_TERRENO_CENTAVOS } from './terreno';
 
@@ -23,7 +24,8 @@ export type CampoEtapaProduto =
   | 'pavimentos'
   | 'unidadesPorPavimento'
   | 'areaUnidade'
-  | 'precoUnidade';
+  | 'precoUnidade'
+  | 'taxaOcupacao';
 
 export type ErrosEtapaProduto = Partial<Record<CampoEtapaProduto, string>>;
 
@@ -36,6 +38,7 @@ export const ORDEM_CAMPOS_PRODUTO: readonly CampoEtapaProduto[] = [
   'unidadesPorPavimento',
   'areaUnidade',
   'precoUnidade',
+  'taxaOcupacao',
 ];
 
 export const MENSAGENS_PRODUTO = {
@@ -60,6 +63,11 @@ export const MENSAGENS_PRODUTO = {
   precoUnidadeAusente: 'Informe o preço de venda da unidade, em reais.',
   precoUnidadeIlegivel: 'Escreva o preço só com números e até 2 casas para os centavos. Ex.: 450.000,00',
   precoUnidadeNaoPositivo: 'O preço de venda precisa ser maior que zero.',
+  taxaOcupacaoAusente: 'Informe a taxa de ocupação, em porcentagem. Ex.: 60',
+  // Também usada pela tela quando o texto não pôde ser lido como número.
+  taxaOcupacaoIlegivel: 'Escreva a taxa só com números e até 2 casas decimais, em porcentagem. Ex.: 60',
+  taxaOcupacaoNaoPositiva: 'A taxa de ocupação precisa ser maior que 0%.',
+  taxaOcupacaoAcimaDeCem: 'A taxa de ocupação não pode passar de 100%. Para 0,6, escreva 60.',
   precoUnidadeAcimaDoLimite: `O preço da unidade passa de ${formatarMoeda(LIMITE_PRECO_UNIDADE_CENTAVOS)}. Confira o valor digitado.`,
 } as const;
 
@@ -140,6 +148,17 @@ export function validarPrecoUnidade(precoCentavos: unknown): string | undefined 
   return undefined;
 }
 
+// Em pontos-base (6.000 = 60%); nasce preenchida com o padrão, então só falta se o usuário a apagar.
+// De 0% exclusive a 100%: com 0% não existe área utilizada, e acima de
+// 100% a edificação ocuparia mais que o terreno. Não há teto por zona (PRD 3.3: fora do MVP).
+export function validarTaxaOcupacao(taxaPontosBase: unknown): string | undefined {
+  if (typeof taxaPontosBase !== 'number' || !Number.isFinite(taxaPontosBase)) return MENSAGENS_PRODUTO.taxaOcupacaoAusente;
+  if (!Number.isInteger(taxaPontosBase)) return MENSAGENS_PRODUTO.taxaOcupacaoIlegivel;
+  if (taxaPontosBase <= 0) return MENSAGENS_PRODUTO.taxaOcupacaoNaoPositiva;
+  if (taxaPontosBase > PONTOS_BASE_CEM_POR_CENTO) return MENSAGENS_PRODUTO.taxaOcupacaoAcimaDeCem;
+  return undefined;
+}
+
 export function validarEtapaProduto(analise: Pick<Analise, 'produto'>): ErrosEtapaProduto {
   const { produto } = analise;
   const resultados: ErrosEtapaProduto = {
@@ -150,6 +169,7 @@ export function validarEtapaProduto(analise: Pick<Analise, 'produto'>): ErrosEta
     unidadesPorPavimento: validarUnidadesPorPavimento(produto),
     areaUnidade: validarAreaUnidade(produto.areaUnidadeM2),
     precoUnidade: validarPrecoUnidade(produto.precoUnidadeCentavos),
+    taxaOcupacao: validarTaxaOcupacao(produto.taxaOcupacaoPontosBase),
   };
   const erros: ErrosEtapaProduto = {};
   for (const campo of ORDEM_CAMPOS_PRODUTO) {

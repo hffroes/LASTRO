@@ -9,6 +9,7 @@ import {
   type DadosProduto,
   type TipoProjeto,
 } from '../types/produto';
+import { TAXA_OCUPACAO_PADRAO } from '../utils/motor/parametros';
 import { FORMATOS_LOTE, TOPOGRAFIAS, criarTerrenoVazio, type DadosTerreno } from '../types/terreno';
 
 // D-A2 (decidido na F05): rascunho só nesta aba. Sobrevive a um F5 acidental e some ao fechar a
@@ -75,6 +76,10 @@ function lerProduto(bruto: Partial<Record<keyof DadosProduto, unknown>> | undefi
     unidadesPorPavimento: inteiroSeguro(bruto.unidadesPorPavimento),
     areaUnidadeM2: numeroFinito(bruto.areaUnidadeM2),
     precoUnidadeCentavos: inteiroSeguro(bruto.precoUnidadeCentavos),
+    // Rascunho anterior à F11 não tem o campo: volta ao padrão. Já o null guardado (taxa apagada)
+    // continua null, para o usuário não ver um valor que ele tirou reaparecer.
+    taxaOcupacaoPontosBase:
+      bruto.taxaOcupacaoPontosBase === undefined ? TAXA_OCUPACAO_PADRAO.valor : inteiroSeguro(bruto.taxaOcupacaoPontosBase),
   };
 }
 

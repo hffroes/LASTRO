@@ -50,3 +50,11 @@ export function ehUnidadeUnica(tipologia: Tipologia | null): boolean {
 export function pavimentosFixos(tipologia: Tipologia | null): number | null {
   return tipologia === null ? null : PAVIMENTOS_FIXOS[tipologia] ?? null;
 }
+
+// PRD 3.3: o coeficiente da soma das unidades por pavimento mede hall, corredores, escadas e
+// elevadores; casa unifamiliar não os tem, então o coeficiente não se aplica a ela.
+export const TIPOLOGIAS_SEM_COEFICIENTE_UNIDADES: readonly Tipologia[] = ['casa'];
+
+export function aplicaCoeficienteUnidades(tipologia: Tipologia | null): boolean {
+  return !(tipologia !== null && TIPOLOGIAS_SEM_COEFICIENTE_UNIDADES.includes(tipologia));
+}

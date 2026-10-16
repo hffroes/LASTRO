@@ -190,6 +190,35 @@ describe('useAnalise', () => {
     expect(result.current.analise.produto).toEqual(criarProdutoVazio());
   });
 
+  it('rascunho anterior à F11 (sem a taxa) volta com o padrão; a taxa apagada continua apagada', () => {
+    window.sessionStorage.setItem(
+      CHAVE_RASCUNHO,
+      JSON.stringify({ versao: 1, analise: { objetivo: null, terreno: {}, produto: { padrao: 'alto' } } }),
+    );
+    const antigo = renderUseAnalise();
+    expect(antigo.result.current.analise.produto.taxaOcupacaoPontosBase).toBe(6_000);
+    antigo.unmount();
+
+    window.sessionStorage.setItem(
+      CHAVE_RASCUNHO,
+      JSON.stringify({ versao: 1, analise: { objetivo: null, terreno: {}, produto: { taxaOcupacaoPontosBase: null } } }),
+    );
+    const apagada = renderUseAnalise();
+    expect(apagada.result.current.analise.produto.taxaOcupacaoPontosBase).toBeNull();
+  });
+
+  it('a taxa ajustada volta do rascunho só como inteiro', () => {
+    for (const [taxa, esperado] of [[5_500, 5_500], [55.5, null], ['55', null]] as const) {
+      window.sessionStorage.setItem(
+        CHAVE_RASCUNHO,
+        JSON.stringify({ versao: 1, analise: { objetivo: null, terreno: {}, produto: { taxaOcupacaoPontosBase: taxa } } }),
+      );
+      const { result, unmount } = renderUseAnalise();
+      expect(result.current.analise.produto.taxaOcupacaoPontosBase).toBe(esperado);
+      unmount();
+    }
+  });
+
   it('do rascunho, o produto só volta com opções e combinações da tabela', () => {
     for (const [produto, esperado] of [
       [{ tipoProjeto: 'usoMisto', tipologia: 'casa', padrao: 'medio' }, criarProdutoVazio()],

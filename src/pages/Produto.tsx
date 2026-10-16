@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { PainelAreas } from '../components/produto/PainelAreas';
 import { ProgramaEmpreendimento, type CampoNumericoProduto } from '../components/produto/ProgramaEmpreendimento';
 import { SeletorPadrao } from '../components/produto/SeletorPadrao';
 import { SeletorTipologia } from '../components/produto/SeletorTipologia';
@@ -9,6 +10,7 @@ import { TEXTOS_PRODUTO } from '../content/produto';
 import { ehUnidadeUnica, pavimentosFixos } from '../data/tipologias';
 import { useAnalise } from '../hooks/useAnalise';
 import type { LeituraNumero } from '../utils/motor/formatacao';
+import { calcularAreas, montarEntradaAreas } from '../utils/motor/areas';
 import { calcularPrecoM2VendidoCentavos, calcularProgramaEfetivo } from '../utils/motor/produto';
 import {
   MENSAGENS_PRODUTO,
@@ -26,7 +28,7 @@ export function Produto() {
   const [tentouAvancar, setTentouAvancar] = useState(false);
   // Texto que não pôde ser lido como número: o estado da análise guarda só números, então a
   // ilegibilidade fica aqui, para a mensagem dizer "formato" e não "campo vazio".
-  const [ilegiveis, setIlegiveis] = useState<ReadonlySet<CampoNumericoProduto>>(new Set());
+  const [ilegiveis, setIlegiveis] = useState<ReadonlySet<CampoNumericoProduto | 'taxaOcupacao'>>(new Set());
   const refResumo = useRef<HTMLDivElement>(null);
 
   // D-R11: só se chega aqui com a Etapa 1 válida. Pela URL direta (ou com o rascunho incompleto),
@@ -36,7 +38,7 @@ export function Produto() {
     return <Navigate to="/terreno" replace />;
   }
 
-  function registrarLeitura(campo: CampoNumericoProduto, leitura: LeituraNumero): number | null {
+  function registrarLeitura(campo: CampoNumericoProduto | 'taxaOcupacao', leitura: LeituraNumero): number | null {
     setIlegiveis((atuais) => {
       const ilegivel = leitura.tipo === 'invalido';
       if (atuais.has(campo) === ilegivel) return atuais;
@@ -60,6 +62,7 @@ export function Produto() {
   }
   if (ilegiveis.has('areaUnidade')) erros.areaUnidade = MENSAGENS_PRODUTO.areaUnidadeIlegivel;
   if (ilegiveis.has('precoUnidade')) erros.precoUnidade = MENSAGENS_PRODUTO.precoUnidadeIlegivel;
+  if (ilegiveis.has('taxaOcupacao')) erros.taxaOcupacao = MENSAGENS_PRODUTO.taxaOcupacaoIlegivel;
   const pendencias = ORDEM_CAMPOS_PRODUTO.flatMap((campo) => {
     const mensagem = erros[campo];
     return mensagem ? [{ campo, mensagem }] : [];
@@ -93,6 +96,10 @@ export function Produto() {
   // Derivados só com os insumos válidos: um número sobre insumo inválido seria um número sem base.
   const { totalUnidades } = calcularProgramaEfetivo(produto);
   const totalUnidadesExibido = erros.pavimentos || erros.unidadesPorPavimento ? null : totalUnidades;
+  // O motor recusa por conta própria insumo inválido (zero, fração, taxa fora de 0–100%), então o
+  // painel só mostra o que tem base; mesma entrada que o motor econômico usará na F13.
+  const entradaAreas = montarEntradaAreas(analise.terreno.areaTotalM2, produto);
+  const resultadoAreas = calcularAreas(entradaAreas);
   const precoM2VendidoCentavos =
     erros.areaUnidade || erros.precoUnidade
       ? null
@@ -148,6 +155,22 @@ export function Produto() {
             produto={produto}
             totalUnidades={totalUnidadesExibido}
             precoM2VendidoCentavos={precoM2VendidoCentavos}
+            erroVisivel={erroVisivel}
+            aoMudar={atualizarProduto}
+            aoLer={registrarLeitura}
+            aoSair={marcarTocado}
+          />
+        </section>
+
+        <section className={estilosEtapa.secao} aria-labelledby="secao-areas">
+          <h2 id="secao-areas" className={estilosEtapa.tituloSecao}>
+            {secoes.areas.titulo}
+          </h2>
+          <p className={estilosEtapa.descricaoSecao}>{secoes.areas.descricao}</p>
+          <PainelAreas
+            produto={produto}
+            entrada={entradaAreas}
+            resultado={resultadoAreas}
             erroVisivel={erroVisivel}
             aoMudar={atualizarProduto}
             aoLer={registrarLeitura}

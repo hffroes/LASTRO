@@ -22,6 +22,11 @@ export const TEXTOS_PRODUTO = {
       titulo: 'Programa do empreendimento',
       descricao: 'Quantas unidades, de que tamanho e a que preço. O VGV sai daqui: unidades × preço de venda de cada uma.',
     },
+    areas: {
+      titulo: 'Áreas e indicadores urbanísticos',
+      descricao:
+        'Calculados a partir do que você informou, para conferir com o plano diretor e a lei de uso e ocupação do solo do seu município. A lastro não traz os limites de cada zona: valide estes números na legislação local.',
+    },
   },
   campos: {
     tipoProjeto: 'Tipo de projeto',
@@ -46,6 +51,44 @@ export const TEXTOS_PRODUTO = {
     formulaPrecoM2Vendido:
       'Calculado: preço da unidade ÷ área da unidade, arredondado ao centavo. Compare com o mercado da região: a lastro não consulta base de preços.',
     precoM2VendidoAguardando: 'Aparece quando a área e o preço da unidade estiverem preenchidos.',
+    taxaOcupacao: 'Taxa de ocupação (%)',
+    dicaTaxaOcupacao:
+      'Quanto do terreno a construção ocupa. O padrão da lastro é 60% (0,6) e é provisório: confira o do seu município. Escreva em porcentagem: 60, e não 0,6.',
+    restaurarTaxa: 'Voltar ao padrão (60%)',
+  },
+  // PRD 3.3: as quatro áreas são distintas. Cada indicador traz a fórmula e, calculado, os números do usuário.
+  indicadores: {
+    areaUtilizada: {
+      rotulo: 'Área utilizada do terreno',
+      formula: 'Área total do terreno × taxa de ocupação',
+      aguardando: 'Aparece com a taxa de ocupação válida.',
+    },
+    areaConstruida: {
+      rotulo: 'Área total construída',
+      formula: 'Área utilizada × número de pavimentos',
+      aguardando: 'Aparece quando os pavimentos estiverem preenchidos.',
+      nota: 'É nela que incide o custo de obra: inclui hall, corredores, escadas e elevadores.',
+    },
+    areaComercializavel: {
+      rotulo: 'Área comercializável',
+      formula: 'Total de unidades × área da unidade vendida',
+      aguardando: 'Aparece quando as unidades e a área da unidade estiverem preenchidas.',
+      nota: 'É a área que gera o VGV. Não é a área construída.',
+    },
+    coeficienteAproveitamento: {
+      rotulo: 'Coeficiente de aproveitamento (CA) atingido',
+      formula: 'Área total construída ÷ área total do terreno',
+      aguardando: 'Aparece quando a área construída estiver calculada.',
+      nota: 'Compare com o CA máximo que o plano diretor permite para a zona do terreno.',
+    },
+    coeficienteUnidades: {
+      rotulo: 'Soma das unidades por pavimento ÷ área utilizada',
+      formula: '(unidades por pavimento × área da unidade) ÷ área utilizada',
+      aguardando: 'Aparece quando as unidades por pavimento e a área da unidade estiverem preenchidas.',
+      nota: 'Soma a área de todas as unidades do pavimento, não de uma só. A referência é de 80% a 85%; o restante é hall, corredores, escadas e elevadores.',
+    },
+    comoCalculado: 'Como é calculado',
+    comSeusDados: 'Com os seus dados:',
   },
 } as const;
 
