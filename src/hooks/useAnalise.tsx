@@ -1,5 +1,14 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { escolherTipoProjeto, tipologiaPertenceAoTipo } from '../data/tipologias';
 import { OBJETIVOS_ANALISE, criarAnaliseVazia, type Analise, type ObjetivoAnalise } from '../types/analise';
+import {
+  PADROES_ACABAMENTO,
+  TIPOLOGIAS,
+  TIPOS_PROJETO,
+  criarProdutoVazio,
+  type DadosProduto,
+  type TipoProjeto,
+} from '../types/produto';
 import { FORMATOS_LOTE, TOPOGRAFIAS, criarTerrenoVazio, type DadosTerreno } from '../types/terreno';
 
 // D-A2 (decidido na F05): rascunho só nesta aba. Sobrevive a um F5 acidental e some ao fechar a
@@ -47,6 +56,19 @@ function lerTerreno(bruto: Partial<Record<keyof DadosTerreno, unknown>> | undefi
   };
 }
 
+function lerProduto(bruto: Partial<Record<keyof DadosProduto, unknown>> | undefined): DadosProduto {
+  if (!bruto || typeof bruto !== 'object') return criarProdutoVazio();
+  const tipoProjeto = umDe(bruto.tipoProjeto, TIPOS_PROJETO);
+  const tipologia = umDe(bruto.tipologia, TIPOLOGIAS);
+  return {
+    tipoProjeto,
+    // Combinação fora do PRD 3.1 (rascunho editado à mão) não volta: a tipologia seria lida como
+    // de outro tipo e levaria ao projeto CUB errado.
+    tipologia: tipoProjeto && tipologia && tipologiaPertenceAoTipo(tipoProjeto, tipologia) ? tipologia : null,
+    padrao: umDe(bruto.padrao, PADROES_ACABAMENTO),
+  };
+}
+
 function lerRascunho(): Analise {
   try {
     const bruto = window.sessionStorage.getItem(CHAVE_RASCUNHO);
@@ -57,7 +79,7 @@ function lerRascunho(): Analise {
       return criarAnaliseVazia();
     }
     const objetivo = OBJETIVOS_ANALISE.includes(analise.objetivo as ObjetivoAnalise) ? analise.objetivo : null;
-    return { objetivo, terreno: lerTerreno(analise.terreno) };
+    return { objetivo, terreno: lerTerreno(analise.terreno), produto: lerProduto(analise.produto) };
   } catch {
     // sessionStorage bloqueado ou JSON corrompido: começa do zero em vez de quebrar a página.
     return criarAnaliseVazia();
@@ -77,6 +99,9 @@ interface ContextoAnalise {
   analise: Analise;
   definirObjetivo: (objetivo: ObjetivoAnalise) => void;
   atualizarTerreno: (dados: Partial<DadosTerreno>) => void;
+  // O tipo tem setter próprio porque arrasta a tipologia (cascata do PRD 3.1).
+  definirTipoProjeto: (tipoProjeto: TipoProjeto) => void;
+  atualizarProduto: (dados: Partial<Omit<DadosProduto, 'tipoProjeto'>>) => void;
 }
 
 const Contexto = createContext<ContextoAnalise | null>(null);
@@ -97,9 +122,17 @@ export function AnaliseProvider({ children }: { children: ReactNode }) {
     setAnalise((atual) => ({ ...atual, terreno: { ...atual.terreno, ...dados } }));
   }, []);
 
+  const definirTipoProjeto = useCallback((tipoProjeto: TipoProjeto) => {
+    setAnalise((atual) => ({ ...atual, produto: escolherTipoProjeto(atual.produto, tipoProjeto) }));
+  }, []);
+
+  const atualizarProduto = useCallback((dados: Partial<Omit<DadosProduto, 'tipoProjeto'>>) => {
+    setAnalise((atual) => ({ ...atual, produto: { ...atual.produto, ...dados } }));
+  }, []);
+
   const valor = useMemo(
-    () => ({ analise, definirObjetivo, atualizarTerreno }),
-    [analise, definirObjetivo, atualizarTerreno],
+    () => ({ analise, definirObjetivo, atualizarTerreno, definirTipoProjeto, atualizarProduto }),
+    [analise, definirObjetivo, atualizarTerreno, definirTipoProjeto, atualizarProduto],
   );
 
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>;

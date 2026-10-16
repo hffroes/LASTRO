@@ -1,6 +1,8 @@
 import { act, renderHook } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { criarAnaliseVazia } from '../types/analise';
+import { criarProdutoVazio } from '../types/produto';
 import { criarTerrenoVazio } from '../types/terreno';
 import { AnaliseProvider, CHAVE_RASCUNHO, useAnalise } from './useAnalise';
 
@@ -24,7 +26,7 @@ describe('useAnalise', () => {
   it('começa vazia e sem objetivo padrão', () => {
     const { result } = renderUseAnalise();
 
-    expect(result.current.analise).toEqual({ objetivo: null, terreno: criarTerrenoVazio() });
+    expect(result.current.analise).toEqual(criarAnaliseVazia());
   });
 
   it('registra o objetivo e os dados do terreno', () => {
@@ -36,6 +38,7 @@ describe('useAnalise', () => {
     expect(result.current.analise).toEqual({
       objetivo: 'executarEmpreendimento',
       terreno: { ...criarTerrenoVazio(), nome: 'Lote da Rua Alagoas' },
+      produto: criarProdutoVazio(),
     });
   });
 
@@ -68,7 +71,7 @@ describe('useAnalise', () => {
     for (const bruto of ['{não é json', JSON.stringify({ versao: 99, analise: { objetivo: null, terreno: { nome: 'x' } } })]) {
       window.sessionStorage.setItem(CHAVE_RASCUNHO, bruto);
       const { result, unmount } = renderUseAnalise();
-      expect(result.current.analise).toEqual({ objetivo: null, terreno: criarTerrenoVazio() });
+      expect(result.current.analise).toEqual(criarAnaliseVazia());
       unmount();
     }
   });
@@ -84,7 +87,10 @@ describe('useAnalise', () => {
 
     const { result } = renderUseAnalise();
 
-    expect(result.current.analise).toEqual({ objetivo: null, terreno: { ...criarTerrenoVazio(), nome: 'Lote 12' } });
+    expect(result.current.analise).toEqual({
+      ...criarAnaliseVazia(),
+      terreno: { ...criarTerrenoVazio(), nome: 'Lote 12' },
+    });
   });
 
   it('formato e topografia só voltam do rascunho se forem opções da tabela', () => {
@@ -127,7 +133,46 @@ describe('useAnalise', () => {
     expect(result.current.analise).toEqual({
       objetivo: 'comprarTerreno',
       terreno: { ...criarTerrenoVazio(), nome: 'Lote 12' },
+      produto: criarProdutoVazio(),
     });
+  });
+
+  it('trocar o tipo de projeto apaga a tipologia e mantém o padrão (cascata do PRD 3.1)', () => {
+    const { result } = renderUseAnalise();
+
+    act(() => result.current.definirTipoProjeto('residencial'));
+    act(() => result.current.atualizarProduto({ tipologia: 'predio', padrao: 'alto' }));
+    act(() => result.current.definirTipoProjeto('comercial'));
+
+    expect(result.current.analise.produto).toEqual({ tipoProjeto: 'comercial', tipologia: null, padrao: 'alto' });
+  });
+
+  it('guarda o produto no rascunho e o recupera numa nova montagem (F5)', () => {
+    const primeira = renderUseAnalise();
+    act(() => primeira.result.current.definirTipoProjeto('galpoes'));
+    act(() => primeira.result.current.atualizarProduto({ padrao: 'baixo' }));
+    primeira.unmount();
+
+    const segunda = renderUseAnalise();
+
+    expect(segunda.result.current.analise.produto).toEqual({ tipoProjeto: 'galpoes', tipologia: 'galpao', padrao: 'baixo' });
+  });
+
+  it('do rascunho, o produto só volta com opções e combinações da tabela', () => {
+    for (const [produto, esperado] of [
+      [{ tipoProjeto: 'usoMisto', tipologia: 'casa', padrao: 'medio' }, criarProdutoVazio()],
+      [{ tipoProjeto: 'residencial', tipologia: 'galpao', padrao: 'alto' }, { tipoProjeto: 'residencial', tipologia: null, padrao: 'alto' }],
+      [{ tipoProjeto: null, tipologia: 'casa', padrao: null }, criarProdutoVazio()],
+      ['nada', criarProdutoVazio()],
+    ]) {
+      window.sessionStorage.setItem(
+        CHAVE_RASCUNHO,
+        JSON.stringify({ versao: 1, analise: { objetivo: null, terreno: {}, produto } }),
+      );
+      const { result, unmount } = renderUseAnalise();
+      expect(result.current.analise.produto).toEqual(esperado);
+      unmount();
+    }
   });
 
   it('segue funcionando em memória se o sessionStorage estiver bloqueado', () => {

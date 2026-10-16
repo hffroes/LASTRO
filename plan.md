@@ -40,6 +40,7 @@
 | D-R15 | CEP de outro estado | **Erro no campo**, que bloqueia o avançar até corrigir ou apagar o CEP; o endereço não é preenchido. Com a consulta fora do ar a UF é desconhecida e nada bloqueia | F06 |
 | D-R16 | Provedor de CEP | **Só ViaCEP**, via proxy `GET /api/v1/cep/:cep`. Verificado em 29/09/2026 (a partir do Replit): gratuito, sem chave, ~0,3–0,7s; pede validar os 8 dígitos antes e bloqueia uso massivo. BrasilAPI descartada: devolveu endereço real para o CEP inexistente 99999999 e levou 2,4s | F06 |
 | D-R17 | D-A1 e D-A10 — municípios e cache do CEP | **Lista estática** de 853 municípios da API de localidades do IBGE, com o SHA-256 conferido no teste. **Cache em memória no servidor** por 24h, até 1.000 CEPs, só de respostas definitivas (encontrado/inexistente) | F06 |
+| D-R18 | D-B6 — como Uso Misto aparece enquanto não tem projeto CUB | **Desabilitado com aviso**: 4º tipo de projeto, visível mas não escolhível, com o motivo ("Em definição: ainda não há tabela de custo (CUB) para uso misto"). Fica fora dos tipos aceitos pela validação, então não chega ao cálculo. O **mapeamento** CUB segue pendente em D-B6 | F09 |
 
 ### B. Decisões bloqueantes
 
@@ -52,7 +53,7 @@ Cada uma impede o início da fase indicada. **Não resolver por conta própria.*
 | D-B3 | **Divergência de lucro:** exemplo da planilha "Escopo MVP" aplica 20% a padrão **Normal** (tabelado 22%). Qual prevalece? | `PRD` 3.1 (nota de divergência) | F13 |
 | D-B4 | **Fallback do CUB para padrão Baixo** nas combinações sem valor publicado (R-16, CSL-8, CSL-16, CAL-8). Não inventar valor. | `PRD` 3.1 (lacunas) | F12 |
 | D-B5 | **CAL-16 não existe** na tabela CUB Sinduscon-MG Ago/2026. Definir fallback ou remover a faixa 8+ de Andares Livres do MVP. | `PRD` 3.1 (lacunas) | F12 |
-| D-B6 | **Mapeamento CUB de Uso Misto** — sem correspondência em nenhuma fonte. Definir mapeamento, ou remover a opção do MVP, ou exibi-la desabilitada com aviso. | `PRD` 3.1 e 2.2 | F09 |
+| D-B6 | **Mapeamento CUB de Uso Misto** — sem correspondência em nenhuma fonte. Definir mapeamento, ou remover a opção do MVP, ou exibi-la desabilitada com aviso. A exibição foi resolvida na F09 (D-R18: desabilitada com aviso); **falta o mapeamento**, sem o qual a opção não pode ser habilitada. | `PRD` 3.1 e 2.2 | Habilitar Uso Misto |
 | D-B7 | **Metodologia detalhada do LASTRO Score** — como pontuar Margem de viabilidade (40), Conformidade de percentuais (30) e Risco técnico/regulatório (20). Pesos e limiares (4.4) não podem mudar sem aprovação. | `PRD` 4.3 | F19 |
 | D-B8 | **Potencial de mercado (10 pontos)** ficou sem fonte após a retirada da FipeZap. Pontuar por critério qualitativo, por outro indicador, ou redistribuir os 10 pontos? Exige aprovação explícita. | `PRD` 4.3 (pendência 1.2) | F19 |
 | D-B9 | **Biblioteca e estratégia de exportação PDF** (client-side vs render no servidor; qual lib). Envolve dependência principal. | `PRD` 2.8, 6.2 | F20 |
@@ -480,7 +481,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Opus** |
 | **25. Justificativa** | A taxonomia é a chave de consulta do CUB; erro de modelagem aqui é sistêmico e caro de reverter. |
 | **26. Conclusão** | Classificação correta e fiel ao PRD 3.1. |
-| **27. Checkpoint** | `[ ]` Usuário aprova a taxonomia e decide sobre Uso Misto. |
+| **27. Checkpoint** | `[>]` Usuário aprova a taxonomia e decide sobre Uso Misto. Implementada; aguardando validação no Replit. Uso Misto conforme D-R18. Tipo, tipologia e padrão obrigatórios e sem valor padrão; a cascata é a tabela de mapeamento do `PRD` 3.1, testada combinação a combinação, e trocar o tipo apaga a tipologia mas mantém o padrão. Galpões, que só tem uma tipologia, já a traz marcada — **validar** se preferir que o usuário clique mesmo assim. As frases dos padrões são a coluna "Escopo coberto" do `PRD` 3.2 B, sem os percentuais (que entram na F12) — **validar o texto de cada opção**. Inclui a trava de URL de `/produto` (D-R11): sem a Etapa 1 válida, volta ao Terreno. Diferenças do previsto: a taxonomia (`src/data/tipologias.ts`) traz também a regra da cascata em função pura; entraram `src/content/produto.ts` (copy, como no Terreno) e `SeletorTipologia.module.css` (texto de espera das tipologias); o `GrupoOpcoes` ganhou opção desabilitada (radio nativo `disabled`, borda tracejada sobre a superfície rebaixada, motivo legível: 5,89:1 no claro e 7,96:1 no escuro); a estrutura de página comum às etapas saiu do `Terreno.module.css` para `src/pages/EtapaAnalise.module.css`, sem mudar valor algum, em vez de um `Produto.module.css` que a duplicaria. A validação do backend usa o mesmo `src/utils/validacao/produto.ts`, mas só ganha endpoint na F13 (D-B1). |
 
 ---
 
@@ -1437,7 +1438,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 7 | 1 | F06 Localização e CEP | Município + autopreenchimento | Média | Sonnet | — | `[x]` |
 | 8 | 1 | F07 Dados físicos e financeiros | Preço em R$/m² calculado | Média | Opus | — | `[x]` |
 | 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[x]` |
-| 10 | 1 | F09 Tipo, tipologia e padrão | Classificação em cascata | Média | Opus | **D-B6** | `[ ]` |
+| 10 | 1 | F09 Tipo, tipologia e padrão | Classificação em cascata | Média | Opus | D-R18 | `[>]` |
 | 11 | 1 | F10 Pavimentos e unidades | Programa + preço por m² | Média | Sonnet | — | `[ ]` |
 | 12 | 1 | F11 Áreas e indicadores | Painel de áreas e CA | Média | Opus | — | `[ ]` |
 | 13 | 1 | F12 Parâmetros e CUB | CUB Ajustado discriminado | Alta | Opus | **D-B4, D-B5** | `[ ]` |

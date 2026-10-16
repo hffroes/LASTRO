@@ -55,6 +55,15 @@
   border-color: var(--lastro-danger-text);
 }
 
+/* Desabilitada: fundo rebaixado e borda tracejada, sem opacidade, para o motivo seguir legível
+   (texto secundário sobre a superfície rebaixada: 5,89:1 no claro, 7,96:1 no escuro). */
+.opcao[data-desabilitada='true'] {
+  background: var(--lastro-surface-sunken);
+  border-style: dashed;
+  border-color: var(--lastro-border-strong);
+  cursor: not-allowed;
+}
+
 .radio {
   flex: none;
   width: var(--lastro-space-16);

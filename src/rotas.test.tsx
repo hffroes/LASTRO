@@ -25,13 +25,19 @@ describe('rotas', () => {
     ['/', 'Devo adquirir este terreno?'],
     ['/onboarding', PASSOS_ONBOARDING[0].titulo],
     ['/terreno', 'Terreno'],
-    ['/produto', 'Produto'],
     ['/resultado', 'Resultado'],
   ])('renderiza a página correta para %s', (caminho, titulo) => {
     renderEm(caminho);
 
     const cabecalho = screen.getByRole('heading', { name: titulo });
     expect(cabecalho.tagName).toBe('H1');
+  });
+
+  it('/produto sem a Etapa 1 preenchida leva ao Terreno (D-R11)', () => {
+    window.sessionStorage.clear();
+    renderEm('/produto');
+
+    expect(screen.getByRole('heading', { level: 1, name: 'Terreno' })).toBeTruthy();
   });
 
   it('cai na página 404 para uma rota inexistente', () => {

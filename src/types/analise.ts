@@ -1,3 +1,4 @@
+import { criarProdutoVazio, type DadosProduto } from './produto';
 import { criarTerrenoVazio, type DadosTerreno } from './terreno';
 
 // PRD 2.6 e D-R6: escolha explícita do usuário, nunca inferida. Decide a perspectiva padrão (F16)
@@ -10,8 +11,9 @@ export interface Analise {
   // null até o usuário escolher: não existe objetivo padrão.
   objetivo: ObjetivoAnalise | null;
   terreno: DadosTerreno;
+  produto: DadosProduto;
 }
 
 export function criarAnaliseVazia(): Analise {
-  return { objetivo: null, terreno: criarTerrenoVazio() };
+  return { objetivo: null, terreno: criarTerrenoVazio(), produto: criarProdutoVazio() };
 }

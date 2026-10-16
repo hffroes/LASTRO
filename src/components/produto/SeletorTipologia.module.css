@@ -1,0 +1,8 @@
+/* Ocupa o lugar das tipologias até haver tipo: diz o que destrava a escolha, no tom de texto auxiliar. */
+.aguardando {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  margin: 0;
+}
