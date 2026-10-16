@@ -99,8 +99,9 @@ function preencherUnidade(area = '68,50', preco = '450.000,00') {
   digitar(campos.precoUnidade, preco);
 }
 
+// Na Etapa 2 o botão de avançar gera a análise (F13).
 function avancar() {
-  fireEvent.click(screen.getByRole('button', { name: 'Avançar' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Gerar análise' }));
 }
 
 function resumo() {
@@ -391,7 +392,7 @@ describe('Produto', () => {
         expect(screen.queryByTestId('cub-ajustado')).toBeNull();
       });
 
-      it('a pendência de CUB não trava o Avançar: o resultado decidirá o que fazer com ela (F13)', () => {
+      it('a pendência de CUB não trava o "Gerar análise": o servidor devolve a pendência, e o resultado a explica', () => {
         renderProduto();
 
         escolher(campos.tipoProjeto, 'Comercial');
@@ -510,7 +511,7 @@ describe('Produto', () => {
         expect(screen.getByText(MENSAGENS_PRODUTO.taxaOcupacaoNaoPositiva)).toBeTruthy();
       });
 
-      it('taxa apagada trava o Avançar e leva ao campo pelo resumo', () => {
+      it('taxa apagada trava o "Gerar análise" e leva ao campo pelo resumo', () => {
         renderProduto();
         escolher(campos.tipoProjeto, 'Residencial');
         escolher(campos.tipologia, 'Prédio');

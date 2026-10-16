@@ -58,3 +58,43 @@ export const ADITIVO_FORMATO: Parametro<Readonly<Record<FormatoLote, number>>> =
   fonte: 'PRD 3.2 D',
   versao: 'v1',
 };
+
+// ——— Economia (PRD 3.1 e 4.1), em pontos-base ———
+
+// Lucro do incorporador, % do VGV, definido pelo PADRÃO e nunca pela tipologia (PRD 3.1). D-R23: vale a
+// tabela (Normal 22%), e não o 20% que o exemplo da planilha "Escopo MVP" aplica a um projeto Normal. Os
+// valores seguem provisórios e centralizados: serão refinados com estudos de mercado.
+export const LUCRO_INCORPORADOR_POR_PADRAO: Parametro<Readonly<Record<PadraoAcabamento, number>>> = {
+  valor: { baixo: 2_000, normal: 2_200, alto: 2_500 },
+  provisorio: true,
+  fonte: 'PRD 3.1 — tabela por padrão; D-R23 (Normal = 22%, e não o 20% do exemplo da planilha)',
+  versao: 'v1',
+};
+
+// Itemização das despesas gerais como aparece na fonte (PRD 4.1). Ela soma 12,0%, mas a planilha aplica
+// 11,0%: a divergência é o D-B2, que o usuário resolveu em D-R24 (vale o total de 11,0%). Nenhum
+// componente foi alterado por conta própria; a itemização fica só para o snapshot e a auditoria.
+export const DESPESAS_GERAIS_ITEMIZACAO_DA_FONTE = {
+  vendaEMarketing: 100,
+  comissoes: 500,
+  impostosETaxas: 450,
+  despesasFinanceiras: 150,
+} as const;
+
+export const SOMA_ITEMIZACAO_DESPESAS_GERAIS = Object.values(DESPESAS_GERAIS_ITEMIZACAO_DA_FONTE).reduce(
+  (soma, componente) => soma + componente,
+  0,
+);
+
+// Total aplicado sobre o VGV no MVP (PRD 4.1): 11,0%. Provisório até a validação adicional que o PRD
+// pede (pode variar por tipologia ou padrão).
+export const DESPESAS_GERAIS_TOTAL: Parametro<number> = {
+  valor: 1_100,
+  provisorio: true,
+  fonte: 'PRD 4.1 — total da planilha de referência; D-R24 (11,0% adotado; a itemização da fonte soma 12,0%)',
+  versao: 'v1',
+};
+
+// Versão do conjunto de regras e parâmetros do motor, para o snapshot (PRD 10.5). Sobe a cada mudança de
+// fórmula ou de parâmetro; a F24 passa a gravá-la junto do registro.
+export const VERSAO_MOTOR = 'motor-v1';

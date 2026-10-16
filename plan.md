@@ -45,6 +45,9 @@
 | D-R20 | Convenção única de percentual no motor (`CLAUDE.md`: "percentuais em convenção única") e como a taxa de ocupação aparece | **Inteiro em pontos-base**: 10.000 = 100%, 6.000 = 60,00% — na linha de centavos e centésimos de m², em inteiros exatos. A F12 herda: 8% = 800, 1,5% = 150, 0,5% = 50. A taxa de ocupação é digitada **em porcentagem** ("60", não "0,6"; a dica avisa) e **nasce preenchida com o padrão** (60%), obrigatória, de 0% exclusive a 100%; o botão "Voltar ao padrão" a restaura. O ajuste vale só na análise e nunca altera o padrão (`PRD` 2.10) | F11 |
 | D-R21 | Faixas de pavimentos do aditivo de fundação (`PRD` 3.2 A), que se sobrepõem em 8 e 16 ("até 8" e "entre 8 e 16") | **"Até N" inclui N: 1–4 / 5–8 / 9–16 / 17 ou mais** (7% / 10% / 15% / 20%). Casa e galpão usam as linhas "1" (4%) e "2+" (5%) da mesma tabela, e os edifícios (prédio, salas e lojas, andares livres), as quatro faixas. É a leitura que fecha com o caso de referência do `PRD` (4 pavimentos = "até 4" = 7%) e com R-16 sendo o projeto de 16 pavimentos | F12 |
 | D-R22 | D-B4 e D-B5 — combinação sem CUB publicado (padrão Baixo de R-16, CSL-8, CSL-16 e CAL-8; andares livres com 9+ pavimentos, CAL-16) | **Pendência explícita, nenhum valor estimado**: o painel diz que a tabela não traz o valor, que isso não é erro do usuário, e não mostra CUB base nem ajustado. Os aditivos continuam discriminados, e o padrão Normal ou Alto do mesmo projeto calcula. Não trava o "Avançar". A F17 (premissas ajustáveis) pode vir a permitir que o usuário informe o CUB que conhece | F12 |
+| D-R23 | D-B3 — lucro do incorporador no padrão Normal: 22% (tabela do `PRD` 3.1) ou 20% (o que o exemplo da planilha "Escopo MVP" aplica) | **22%, o da tabela**: vale para toda análise, e o 20% do exemplo é tratado como o valor do Baixo aplicado por engano. Ao comparar com a planilha original, o Resultado do terreno sai **2% do VGV menor** que o dela. O parâmetro segue provisório e centralizado | F13 |
+| D-R24 | D-B2 — despesas gerais sobre o VGV: 11,0% (planilha) ou 12,0% (soma da itemização do `PRD` 4.1) | **11,0%, provisório**: um parâmetro total único. A itemização da fonte (1,0% + 5,0% + 4,5% + 1,5%) soma 12,0% e fica **registrada, nunca aplicada**, no snapshot e na tela, como divergência. Nenhum componente foi alterado | F13 |
+| D-R25 | D-B1 — onde fica o motor de cálculo único | **Um motor puro em `src/utils/motor/`, usado por front e back.** O Express o importa (`server/domain/motorAdapter.ts` só liga o pedido ao motor) e **recalcula tudo**; as regras de validação também são as mesmas da tela (`src/utils/validacao/`). Para isso o `tsconfig.server.json` passa a verificar também o que o servidor importa de `src/`, sem tipos de DOM: nenhum módulo do motor pode tocar o navegador | F13 |
 
 ### B. Decisões bloqueantes
 
@@ -52,9 +55,9 @@ Cada uma impede o início da fase indicada. **Não resolver por conta própria.*
 
 | ID | Decisão pendente | Origem | Bloqueia |
 |----|------------------|--------|----------|
-| D-B1 | Localização do motor único de cálculo. Proposta: motor puro em `src/utils/motor/`, importado tanto pelo React quanto pelo Express (`server/domain/` só adapta), para não duplicar regra de negócio. Exige aprovação por ser decisão arquitetural. | `CLAUDE.md` regras 2 e 11 | F13 |
-| D-B2 | **Despesas gerais: 11% ou 12%?** A itemização soma 12,0% mas a planilha aplica 11,0%. O MVP adota 11,0% para reproduzir o exemplo; confirmar. Não ajustar componente algum por conta própria. | `PRD` 4.1 (divergência aritmética) | F13 |
-| D-B3 | **Divergência de lucro:** exemplo da planilha "Escopo MVP" aplica 20% a padrão **Normal** (tabelado 22%). Qual prevalece? | `PRD` 3.1 (nota de divergência) | F13 |
+| D-B1 | ~~Localização do motor único de cálculo. Proposta: motor puro em `src/utils/motor/`, importado tanto pelo React quanto pelo Express (`server/domain/` só adapta), para não duplicar regra de negócio. Exige aprovação por ser decisão arquitetural.~~ **Resolvida na F13** — ver D-R25. | `CLAUDE.md` regras 2 e 11 | — |
+| D-B2 | ~~**Despesas gerais: 11% ou 12%?** A itemização soma 12,0% mas a planilha aplica 11,0%. O MVP adota 11,0% para reproduzir o exemplo; confirmar. Não ajustar componente algum por conta própria.~~ **Resolvida na F13** — ver D-R24. | `PRD` 4.1 (divergência aritmética) | — |
+| D-B3 | ~~**Divergência de lucro:** exemplo da planilha "Escopo MVP" aplica 20% a padrão **Normal** (tabelado 22%). Qual prevalece?~~ **Resolvida na F13** — ver D-R23. | `PRD` 3.1 (nota de divergência) | — |
 | D-B4 | ~~**Fallback do CUB para padrão Baixo** nas combinações sem valor publicado (R-16, CSL-8, CSL-16, CAL-8).~~ **Resolvida na F12** — ver D-R22. O **valor** do padrão Baixo segue sem fonte: nenhuma regra de estimativa foi adotada. | `PRD` 3.1 (lacunas) | — |
 | D-B5 | ~~**CAL-16 não existe** na tabela CUB Sinduscon-MG Ago/2026.~~ **Resolvida na F12** — ver D-R22: andares livres com 9+ pavimentos ficam como pendência. | `PRD` 3.1 (lacunas) | — |
 | D-B6 | **Mapeamento CUB de Uso Misto** — sem correspondência em nenhuma fonte. Definir mapeamento, ou remover a opção do MVP, ou exibi-la desabilitada com aviso. A exibição foi resolvida na F09 (D-R18: desabilitada com aviso); **falta o mapeamento**, sem o qual a opção não pode ser habilitada. | `PRD` 3.1 e 2.2 | Habilitar Uso Misto |
@@ -621,7 +624,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Opus** |
 | **25. Justificativa** | Coração econômico do produto, contrato de API e decisão arquitetural — a fase de maior risco da Macroetapa 1. |
 | **26. Conclusão** | Motor reproduz o cenário de referência, API validando, testes verdes. |
-| **27. Checkpoint** | `[ ]` Usuário confere os números contra sua própria planilha e decide D-B1, D-B2 e D-B3. |
+| **27. Checkpoint** | `[>]` Usuário confere os números contra sua própria planilha e decide D-B1, D-B2 e D-B3. Implementada; aguardando validação no Replit. Decisões: D-R25 (motor único), D-R24 (despesas gerais 11,0%) e D-R23 (lucro Normal 22%). **Cenário conferido à mão**, que você pode refazer: prédio Normal, 4 pavimentos, topografia e formato Regulares, terreno de 1.000 m² a 60%, 16 unidades a R$ 900.000, preço pedido R$ 1.200.000 → VGV R$ 14.400.000,00 · obra R$ 7.571.784,00 (CUB ajustado R$ 3.154,91 × 2.400 m²) · despesas R$ 1.584.000,00 · lucro R$ 3.168.000,00 · **Resultado do terreno R$ 2.076.216,00** · **Resultado líquido R$ 876.216,00** · viável. Com a unidade a R$ 450.000 o resultado do terreno é −R$ 2.747.784,00 (inviável). **Atenção ao comparar com a sua planilha**: pelo D-R23 o lucro Normal é 22%, não os 20% do exemplo dela, e a diferença é de 2% do VGV. Cada parcela é arredondada ao centavo (meio para cima) e o resultado soma parcelas já arredondadas, então a conta fecha ao centavo. `POST /api/v1/analises` valida tudo de novo no servidor (os mesmos validadores e mensagens da tela; só lê campos conhecidos, recusa tipo errado em vez de coagir, ignora o resto), devolve `{ dados }` ou `{ erro: { codigo, mensagem, detalhes } }` e leva **2,7 ms** para calcular (meta: 500 ms); falha interna responde mensagem genérica, sem vazar o motivo. **CUB sem valor publicado (D-R22) não é erro**: a API responde 200 com `situacao: "cubPendente"` e a tela explica. O snapshot (versão do motor, base de CUB com competência, aditivos, taxa, lucro, despesas, cada um com versão, fonte e se é provisório) acompanha a resposta e aparece em "Premissas e versão de dados usadas". **Pendências e escolhas minhas**: (1) a trava de URL de `/resultado` (D-R11) entrou aqui, e não na F14 — sem as duas etapas válidas, volta ao que falta; (2) "Viável pelo método do resíduo" aparece como Sim/Não só porque a fórmula do `PRD` 4.1 o define: veredito, score e recomendação seguem na F19; (3) o VGV tem **teto técnico de cerca de R$ 9 bilhões** (o produto por pontos-base precisa caber nos inteiros exatos), validado na etapa, resolvendo o aviso que a F10 deixou; (4) o botão da Etapa 2 passou a "Gerar análise"; (5) a tela de erro de validação do Resultado só aparece se a API recusar algo que a tela deixou passar, o que não deveria ocorrer. Diferenças do previsto: `server/domain/motorAdapter.ts` é fino por desenho (o motor já é puro); entraram `src/utils/motor/analise.ts` (orquestra áreas + CUB + economia + snapshot), `src/utils/validacao/analise.ts` (leitura e validação do payload, compartilhadas) e `src/content/resultado.ts`; o contrato da API vive em `src/types/analise.ts`; o servidor ganhou 404 em JSON para rotas de `/api/v1` inexistentes, limite de corpo de 50 KB e tratamento de JSON malformado, tipo de conteúdo e corpo grande. |
 
 ---
 
@@ -1344,7 +1347,7 @@ Vale para **toda** sessão futura de implementação.
 | Requisito / seção do PRD | Macro | Fase | Critério de aceite | Teste | Status |
 |---|---|---|---|---|---|
 | 1 — Duas perguntas do produto | 1 | F02, F16 | Ambas respondidas pelas duas perspectivas | Teste de perspectiva | `[ ]` |
-| 2.1 — Análise econômica completa | 1 | F13 | Fórmulas do 4.1 corretas | `economia.test.ts` | `[ ]` |
+| 2.1 — Análise econômica completa | 1 | F13 | Fórmulas do 4.1 corretas | `economia.test.ts` | `[>]` |
 | 2.1 — Percentuais por padrão | 1 | F12, F13 | 8/9/10% e 20/22/25% por padrão | `parametros`/`economia` | `[ ]` |
 | 2.1 — Preço máximo recomendado | 1 | F14 | = Resultado Terreno | Teste de componente | `[ ]` |
 | 2.2 — Etapa 1 terreno | 1 | F05–F08 | Todos os campos do PRD | Validação + componentes | `[ ]` |
@@ -1380,7 +1383,7 @@ Vale para **toda** sessão futura de implementação.
 | 3.4 — API de CEP | 1 | F06 | Sem chave, falha não bloqueia | `useCep` | `[ ]` |
 | 3.4 — CUB sem API | 1 | F24 | Importação manual versionada | Teste de importação | `[ ]` |
 | 3.5 — Só Minas Gerais | 1 | F06 | Lista restrita a MG | Teste da lista | `[ ]` |
-| 4.1 — Método do resíduo | 1 | F13 | Fórmula exata | `economia.test.ts` | `[ ]` |
+| 4.1 — Método do resíduo | 1 | F13 | Fórmula exata | `economia.test.ts` | `[>]` |
 | 4.1 — Despesas gerais (11% × 12%) | 1 | F13 | Conforme D-B2 | Teste parametrizado | `[?]` |
 | 4.2 — Normalidade dos KPIs | 1 | F18 | Cinco indicadores | `kpis.test.ts` | `[ ]` |
 | 4.3 — LASTRO Score | 1 | F19 | Metodologia aprovada | `score.test.ts` | `[?]` |
@@ -1392,7 +1395,7 @@ Vale para **toda** sessão futura de implementação.
 | 6.1 — Stack e design system | 1 | F00 | Tokens sem hardcode | Lint de tokens | `[ ]` |
 | 6.1 — Tabelas do MVP | 1/2 | F24, F27, F28, F31 | Cinco tabelas, sem `users` | Testes de repositório | `[ ]` |
 | 6.2 — Performance | 1 | F13, F17, F20 | < 500ms e < 3s | Testes de tempo | `[ ]` |
-| 6.3 — Validação no backend | 1 | F13 | Obrigatória | Teste de integração | `[ ]` |
+| 6.3 — Validação no backend | 1 | F13 | Obrigatória | Teste de integração | `[>]` |
 | 6.3 — Token de acesso | 2 | F27 | Alta entropia, validade, revogação | Testes de segurança | `[?]` |
 | 6.3 — Webhook assinado e idempotente | 2 | F28 | Sem duplicação | Testes de idempotência | `[ ]` |
 | 6.3 — LGPD | 2 | F31 | Conforme D-B15 | Teste de retenção | `[?]` |
@@ -1446,7 +1449,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 11 | 1 | F10 Pavimentos e unidades | Programa + preço por m² | Média | Sonnet | D-R19 | `[>]` |
 | 12 | 1 | F11 Áreas e indicadores | Painel de áreas e CA | Média | Opus | D-R20 | `[>]` |
 | 13 | 1 | F12 Parâmetros e CUB | CUB Ajustado discriminado | Alta | Opus | D-R21, D-R22 | `[>]` |
-| 14 | 1 | F13 Motor econômico e API | Resultado cru completo | Alta | Opus | **D-B1, D-B2, D-B3** | `[ ]` |
+| 14 | 1 | F13 Motor econômico e API | Resultado cru completo | Alta | Opus | D-R23, D-R24, D-R25 | `[>]` |
 | 15 | 1 | F14 Resultado v1 | Resumo e preço máximo | Média | Sonnet | — | `[ ]` |
 | 16 | 1 | F15 Composição econômica | Tabela de custos | Média | Sonnet | — | `[ ]` |
 | 17 | 1 | F16 Terrenista × Incorporador | Toggle de perspectiva | Média | Opus | — | `[ ]` |

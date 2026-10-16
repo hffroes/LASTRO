@@ -5,6 +5,7 @@ import {
   formatarArea,
   formatarMoeda,
   formatarInteiroBr,
+  formatarMoedaComSinal,
   formatarNumeroBr,
   interpretarInteiroBr,
   interpretarNumeroBr,
@@ -170,5 +171,14 @@ describe('formatarInteiroBr', () => {
     expect(formatarInteiroBr(4)).toBe('4');
     expect(formatarInteiroBr(1000)).toBe('1.000');
     expect(formatarInteiroBr(200_000)).toBe('200.000');
+  });
+});
+
+describe('formatarMoedaComSinal', () => {
+  it('positivo e zero como a moeda comum; negativo com o sinal antes do símbolo', () => {
+    expect(formatarMoedaComSinal(207_621_600)).toBe('R$ 2.076.216,00');
+    expect(formatarMoedaComSinal(0)).toBe('R$ 0,00');
+    expect(formatarMoedaComSinal(-274_778_400)).toBe('-R$ 2.747.784,00');
+    expect(formatarMoedaComSinal(-1)).toBe('-R$ 0,01');
   });
 });

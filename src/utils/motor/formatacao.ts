@@ -110,3 +110,9 @@ export function interpretarInteiroBr(texto: string): LeituraNumero {
 export function formatarInteiroBr(valor: number): string {
   return formatarNumeroBr(valor * FATOR_CASAS).split(',')[0] as string;
 }
+
+// Resultado do terreno e líquido podem ser negativos: o sinal vem antes do símbolo ("-R$ 10,00"), como
+// se escreve um saldo, e não no meio ("R$ -10,00").
+export function formatarMoedaComSinal(centavos: number): string {
+  return centavos < 0 ? `-${formatarMoeda(-centavos)}` : formatarMoeda(centavos);
+}

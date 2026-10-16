@@ -25,7 +25,6 @@ describe('rotas', () => {
     ['/', 'Devo adquirir este terreno?'],
     ['/onboarding', PASSOS_ONBOARDING[0].titulo],
     ['/terreno', 'Terreno'],
-    ['/resultado', 'Resultado'],
   ])('renderiza a página correta para %s', (caminho, titulo) => {
     renderEm(caminho);
 
@@ -33,11 +32,13 @@ describe('rotas', () => {
     expect(cabecalho.tagName).toBe('H1');
   });
 
-  it('/produto sem a Etapa 1 preenchida leva ao Terreno (D-R11)', () => {
-    window.sessionStorage.clear();
-    renderEm('/produto');
-
-    expect(screen.getByRole('heading', { level: 1, name: 'Terreno' })).toBeTruthy();
+  it('/produto e /resultado sem as etapas preenchidas levam ao Terreno (D-R11)', () => {
+    for (const caminho of ['/produto', '/resultado']) {
+      window.sessionStorage.clear();
+      const { unmount } = renderEm(caminho);
+      expect(screen.getByRole('heading', { level: 1, name: 'Terreno' })).toBeTruthy();
+      unmount();
+    }
   });
 
   it('cai na página 404 para uma rota inexistente', () => {

@@ -17,3 +17,104 @@ export interface Analise {
 export function criarAnaliseVazia(): Analise {
   return { objetivo: null, terreno: criarTerrenoVazio(), produto: criarProdutoVazio() };
 }
+
+// ——— Contrato da API de análise (POST /api/v1/analises) ———
+// Vive junto da Analise porque é o formato que o front e o back compartilham (D-B1).
+
+// Um problema encontrado na validação do backend, no mesmo vocabulário da tela: a etapa e o campo são
+// os que o formulário usa, e a mensagem é a mesma de utils/validacao.
+export interface ErroValidacao {
+  etapa: 'corpo' | 'objetivo' | 'terreno' | 'produto';
+  campo: string;
+  mensagem: string;
+}
+
+// Parâmetro de negócio como valeram na conta, com a versão e a origem: o snapshot que acompanha o
+// resultado (PRD 2.10 e 10.5). "provisorio" vem do próprio parâmetro (TBD aguardando validação).
+export interface ParametroUsado {
+  pontosBase: number;
+  provisorio: boolean;
+  fonte: string;
+  versao: string;
+}
+
+// Premissas e versão de dados usadas no cálculo, preservadas junto do resultado.
+export interface SnapshotPremissas {
+  versaoMotor: string;
+  cub: {
+    versaoBase: { id: string; competencia: { ano: number; mes: number }; dataEmissao: string | null; origem: string };
+    projeto: string;
+    padrao: string;
+    cubBaseCentavos: number;
+    cubAjustadoCentavos: number;
+    aditivos: {
+      fundacaoPontosBase: number;
+      faixaFundacao: string;
+      padraoPontosBase: number;
+      topografiaPontosBase: number;
+      formatoPontosBase: number;
+      somaPontosBase: number;
+    };
+  };
+  taxaOcupacao: ParametroUsado & { padraoPontosBase: number; ajustadaPeloUsuario: boolean };
+  lucroIncorporador: ParametroUsado & { padrao: string };
+  despesasGerais: ParametroUsado & {
+    // A itemização da fonte soma mais que o total adotado (D-B2): fica registrada, nunca aplicada.
+    itemizacaoDaFonte: Record<string, number>;
+    somaItemizacaoPontosBase: number;
+  };
+}
+
+export interface ResultadoEconomiaDto {
+  vgvCentavos: number;
+  custoObraCentavos: number;
+  despesasGeraisCentavos: number;
+  lucroIncorporadorCentavos: number;
+  precoPedidoCentavos: number;
+  resultadoTerrenoCentavos: number;
+  resultadoLiquidoCentavos: number;
+  viavel: boolean;
+}
+
+export interface AreasDto {
+  areaUtilizadaCentesimos: number | null;
+  areaConstruidaCentesimos: number | null;
+  areaComercializavelCentesimos: number | null;
+  coeficienteAproveitamentoCentesimos: number | null;
+  coeficienteUnidadesPontosBase: number | null;
+}
+
+// Pedido válido que o cálculo não conclui. Não é erro de validação nem de servidor: é um estado do
+// resultado (D-R22: a lacuna do CUB é pendência, nunca um valor estimado).
+export type RespostaAnalise =
+  | {
+      situacao: 'calculado';
+      areas: AreasDto;
+      economia: ResultadoEconomiaDto;
+      premissas: SnapshotPremissas;
+    }
+  | {
+      situacao: 'cubPendente';
+      motivo: 'padraoSemValorPublicado' | 'projetoSemTabela';
+      projeto: string;
+      areas: AreasDto;
+    }
+  // Valores que passam do que o cálculo representa com exatidão (tetos somados).
+  | { situacao: 'foraDoLimite' };
+
+export type CodigoErroApi =
+  | 'VALIDACAO_FALHOU'
+  | 'CORPO_INVALIDO'
+  | 'TIPO_NAO_SUPORTADO'
+  | 'PAYLOAD_GRANDE_DEMAIS'
+  | 'ROTA_NAO_ENCONTRADA'
+  | 'ERRO_INTERNO';
+
+export interface ErroApi {
+  codigo: CodigoErroApi;
+  mensagem: string;
+  detalhes?: ErroValidacao[];
+}
+
+// Formato único das respostas da API: { dados } no sucesso, { erro } na falha.
+export type CorpoApi<Dados> = { dados: Dados } | { erro: ErroApi };

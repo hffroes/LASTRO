@@ -197,7 +197,7 @@ export function Produto() {
           <Botao variante="contorno" onClick={() => navegar('/terreno')}>
             Voltar
           </Botao>
-          <Botao type="submit">Avançar</Botao>
+          <Botao type="submit">Gerar análise</Botao>
         </div>
       </form>
     </div>

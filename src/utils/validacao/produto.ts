@@ -4,7 +4,9 @@ import { ehTipologia, ehTipoProjeto, ehUnidadeUnica, pavimentosFixos, tipologiaP
 import type { Analise } from '../../types/analise';
 import { PADROES_ACABAMENTO, type DadosProduto } from '../../types/produto';
 import { PONTOS_BASE_CEM_POR_CENTO } from '../../types/parametros';
+import { calcularVgvCentavos, LIMITE_VGV_CENTAVOS } from '../motor/economia';
 import { areaParaCentesimos, formatarArea, formatarInteiroBr, formatarMoeda } from '../motor/formatacao';
+import { calcularProgramaEfetivo } from '../motor/produto';
 import { LIMITE_AREA_TERRENO_M2, LIMITE_PRECO_TERRENO_CENTAVOS } from './terreno';
 
 // Tetos técnicos provisórios, não regra de negócio (como os do terreno, F07): barram erro de
@@ -68,6 +70,8 @@ export const MENSAGENS_PRODUTO = {
   taxaOcupacaoIlegivel: 'Escreva a taxa só com números e até 2 casas decimais, em porcentagem. Ex.: 60',
   taxaOcupacaoNaoPositiva: 'A taxa de ocupação precisa ser maior que 0%.',
   taxaOcupacaoAcimaDeCem: 'A taxa de ocupação não pode passar de 100%. Para 0,6, escreva 60.',
+  // Cruza unidades e preço: cada um passa no seu teto, mas o produto pode passar do que o cálculo representa.
+  vgvAcimaDoLimite: `O VGV (unidades × preço) passa de ${formatarMoeda(LIMITE_VGV_CENTAVOS)}. Confira o número de unidades e o preço de venda.`,
   precoUnidadeAcimaDoLimite: `O preço da unidade passa de ${formatarMoeda(LIMITE_PRECO_UNIDADE_CENTAVOS)}. Confira o valor digitado.`,
 } as const;
 
@@ -171,6 +175,15 @@ export function validarEtapaProduto(analise: Pick<Analise, 'produto'>): ErrosEta
     precoUnidade: validarPrecoUnidade(produto.precoUnidadeCentavos),
     taxaOcupacao: validarTaxaOcupacao(produto.taxaOcupacaoPontosBase),
   };
+  // O teto do VGV só vale depois que unidades e preço são válidos, para não somar um segundo erro ao primeiro.
+  if (!resultados.pavimentos && !resultados.unidadesPorPavimento && !resultados.precoUnidade) {
+    const { totalUnidades } = calcularProgramaEfetivo(produto);
+    if (totalUnidades !== null && produto.precoUnidadeCentavos !== null) {
+      if (calcularVgvCentavos(totalUnidades, produto.precoUnidadeCentavos) === null) {
+        resultados.precoUnidade = MENSAGENS_PRODUTO.vgvAcimaDoLimite;
+      }
+    }
+  }
   const erros: ErrosEtapaProduto = {};
   for (const campo of ORDEM_CAMPOS_PRODUTO) {
     const mensagem = resultados[campo];
