@@ -48,6 +48,8 @@ export function gerarAnalise(analise: Analise, opcoes: OpcoesGerarAnalise = {}):
     return { situacao: 'foraDoLimite' };
   }
 
+  if (programa.pavimentos === null || programa.unidadesPorPavimento === null) return { situacao: 'foraDoLimite' };
+
   const economia = calcularEconomia(
     {
       totalUnidades: programa.totalUnidades,
@@ -106,5 +108,15 @@ export function gerarAnalise(analise: Analise, opcoes: OpcoesGerarAnalise = {}):
     },
   };
 
-  return { situacao: 'calculado', areas, economia: economiaDto, premissas };
+  return {
+    situacao: 'calculado',
+    programa: {
+      pavimentos: programa.pavimentos,
+      unidadesPorPavimento: programa.unidadesPorPavimento,
+      totalUnidades: programa.totalUnidades,
+    },
+    areas,
+    economia: economiaDto,
+    premissas,
+  };
 }

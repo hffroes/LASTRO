@@ -87,6 +87,19 @@ describe('POST /api/v1/analises — payload válido', () => {
     expect(dados.areas.areaConstruidaCentesimos).toBe(240_000);
   });
 
+  it('devolve o programa efetivo, com as travas da tipologia: casa de 2 pavimentos tem 1 unidade', async () => {
+    const base = await subir();
+    const payload = payloadValido();
+    Object.assign(payload.produto, { tipoProjeto: 'residencial', tipologia: 'casa', pavimentos: 2, unidadesPorPavimento: 9 });
+    const corpo = (await (await postar(base, payload)).json()) as { dados: RespostaAnalise };
+    if (corpo.dados.situacao !== 'calculado') throw new Error('esperava calculado');
+    expect(corpo.dados.programa).toEqual({ pavimentos: 2, unidadesPorPavimento: 1, totalUnidades: 1 });
+
+    const predio = (await (await postar(base, payloadValido())).json()) as { dados: RespostaAnalise };
+    if (predio.dados.situacao !== 'calculado') throw new Error('esperava calculado');
+    expect(predio.dados.programa).toEqual({ pavimentos: 4, unidadesPorPavimento: 4, totalUnidades: 16 });
+  });
+
   it('o snapshot das premissas e da versão de dados acompanha a resposta', async () => {
     const base = await subir();
     const corpo = (await (await postar(base, payloadValido())).json()) as { dados: RespostaAnalise };

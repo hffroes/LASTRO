@@ -136,6 +136,103 @@ describe('Resultado (F13, versão crua)', () => {
     });
   });
 
+  describe('primeira leitura (F14): o essencial primeiro', () => {
+    beforeEach(() => vi.stubGlobal('fetch', servidorQueCalcula()));
+
+    it('o preço máximo recomendado é exatamente o Resultado do terreno, e a sobra é o Resultado líquido', async () => {
+      renderResultado();
+      await screen.findByTestId('preco-maximo');
+
+      expect(screen.getByTestId('preco-maximo').textContent).toBe(valorDe('resultado-terreno'));
+      expect(screen.getByTestId('preco-maximo').textContent).toBe('R$ 2.076.216,00');
+      expect(screen.getByTestId('leitura-rotulo').textContent).toBe('Sobra');
+      expect(screen.getByTestId('leitura-valor').textContent).toBe('R$ 876.216,00');
+      expect(screen.getByTestId('preco-pedido').textContent).toBe('R$ 1.200.000,00');
+    });
+
+    it('a ordem é: preço máximo, o que o projeto entrega, projeto analisado, e só então a conta', async () => {
+      renderResultado();
+      await screen.findByTestId('preco-maximo');
+
+      const titulos = screen.getAllByRole('heading', { level: 2 }).map((titulo) => titulo.textContent);
+      expect(titulos).toEqual([
+        'Preço máximo recomendado para o terreno',
+        'O que o projeto entrega',
+        'Projeto analisado',
+        'Método do resíduo do terreno',
+      ]);
+    });
+
+    it('a primeira dobra não usa os termos técnicos: VGV, CUB e resíduo só aparecem na conta completa', async () => {
+      renderResultado();
+      await screen.findByTestId('preco-maximo');
+
+      for (const regiao of ['Preço máximo recomendado para o terreno', 'O que o projeto entrega', 'Projeto analisado']) {
+        const texto = screen.getByRole('region', { name: regiao }).textContent ?? '';
+        expect(texto, regiao).not.toMatch(/\bVGV\b|\bCUB\b|resíduo/i);
+      }
+    });
+
+    it('mostra o potencial vindo do servidor: 2.400 m² construídos, 1.096 m² para vender, 16 unidades', async () => {
+      renderResultado();
+      await screen.findByTestId('preco-maximo');
+
+      expect(screen.getByTestId('potencial-area-construida').textContent).toBe('2.400,00 m²');
+      expect(screen.getByTestId('potencial-area-comercializavel').textContent).toBe('1.096,00 m²');
+      expect(screen.getByTestId('potencial-unidades').textContent).toBe('16');
+    });
+
+    it('a conta completa e as premissas vêm recolhidas, mas continuam ali para conferir', async () => {
+      renderResultado();
+      await screen.findByTestId('preco-maximo');
+
+      const detalhes = screen.getByText(TEXTOS_RESULTADO.contaCompleta).closest('details') as HTMLDetailsElement;
+      expect(detalhes.open).toBe(false);
+      expect(within(detalhes).getByTestId('resultado-vgv').textContent).toBe('R$ 14.400.000,00');
+      expect(within(detalhes).getByText(TEXTOS_RESULTADO.premissas.titulo)).toBeTruthy();
+    });
+
+    it('cenário inviável: déficit com o valor, e o preço máximo negativo explicado', async () => {
+      const analise = analiseValida();
+      analise.produto.precoUnidadeCentavos = 45_000_000;
+      salvarRascunho(analise);
+      renderResultado();
+      await screen.findByTestId('preco-maximo');
+
+      expect(screen.getByTestId('preco-maximo').textContent).toBe('-R$ 2.747.784,00');
+      expect(screen.getByTestId('leitura-rotulo').textContent).toBe('Déficit');
+      expect(screen.getByTestId('leitura-valor').textContent).toBe('R$ 3.947.784,00');
+      expect(screen.getByText(TEXTOS_RESULTADO.precoMaximo.semMargem)).toBeTruthy();
+    });
+
+    it('cenário viável e inviável dão leituras diferentes na mesma tela', async () => {
+      const viavel = renderResultado();
+      await screen.findByTestId('preco-maximo');
+      const leituraViavel = screen.getByTestId('leitura-rotulo').textContent;
+      viavel.unmount();
+
+      const analise = analiseValida();
+      analise.produto.precoUnidadeCentavos = 45_000_000;
+      salvarRascunho(analise);
+      renderResultado();
+      await screen.findByTestId('preco-maximo');
+
+      expect(leituraViavel).toBe('Sobra');
+      expect(screen.getByTestId('leitura-rotulo').textContent).toBe('Déficit');
+    });
+
+    it('com pendência de CUB não há preço máximo nem potencial: nada de número sem base', async () => {
+      const analise = analiseValida();
+      Object.assign(analise.produto, { padrao: 'baixo', pavimentos: 10 });
+      salvarRascunho(analise);
+      renderResultado();
+
+      await screen.findByText(TEXTOS_CUB.tituloPendencia);
+      expect(screen.queryByTestId('preco-maximo')).toBeNull();
+      expect(screen.queryByTestId('potencial-unidades')).toBeNull();
+    });
+  });
+
   describe('sucesso: os números do servidor, linha a linha', () => {
     beforeEach(() => vi.stubGlobal('fetch', servidorQueCalcula()));
 

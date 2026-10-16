@@ -3,9 +3,49 @@
 export const TEXTOS_RESULTADO = {
   sobretitulo: 'Etapa 3 de 3',
   titulo: 'Resultado',
-  introducao: 'Os números do cálculo, ainda sem apresentação final. Confira cada linha com a sua planilha.',
+  introducao: 'Uma primeira leitura, calculada com o que você informou.',
   carregando: 'Calculando a análise…',
   secaoNumeros: 'Método do resíduo do terreno',
+  // F14: primeira dobra. Palavras do dia a dia; os termos técnicos (VGV, CUB, resíduo) ficam na conta completa.
+  precoMaximo: {
+    titulo: 'Preço máximo recomendado para o terreno',
+    explicacao: 'Quanto você pode pagar pelo terreno, depois da obra, das despesas e do lucro de quem constrói.',
+    preco: 'Preço pedido pelo terreno',
+    // Quando o resultado do terreno é negativo, o projeto não se paga nem com o terreno de graça.
+    semMargem: 'Mesmo sem pagar nada pelo terreno, este projeto não cobre o seu custo e o lucro esperado.',
+    leitura: {
+      sobra: 'Sobra',
+      deficit: 'Déficit',
+      empate: 'Empate',
+    },
+    // Descritivas e neutras: ainda não existem nota nem alertas (F18 e F19), então nada aqui é veredito.
+    frase: {
+      sobra: (valor: string) => `O preço pedido está ${valor} abaixo do máximo que este cenário comporta.`,
+      deficit: (valor: string) => `O preço pedido está ${valor} acima do máximo que este cenário comporta.`,
+      empate: 'O preço pedido é igual ao máximo que este cenário comporta.',
+    },
+    preliminar: 'Resultado preliminar: ainda não considera a nota da análise nem os alertas, que chegam depois.',
+  },
+  potencial: {
+    titulo: 'O que o projeto entrega',
+    construida: { rotulo: 'Área construída', nota: 'Tudo o que se constrói, incluindo hall, corredores e escadas.' },
+    comercializavel: { rotulo: 'Área para vender', nota: 'A soma da área de todas as unidades vendidas.' },
+    unidades: { rotulo: 'Unidades', nota: 'Quantas unidades serão vendidas.' },
+  },
+  projeto: {
+    titulo: 'Projeto analisado',
+    objetivo: 'O que você quer decidir',
+    terreno: 'Terreno',
+    cidade: 'Cidade',
+    areaTerreno: 'Área do terreno',
+    tipologia: 'Tipologia',
+    padrao: 'Padrão de acabamento',
+    pavimentos: 'Pavimentos',
+    unidades: 'Unidades',
+    areaUnidade: 'Área de cada unidade',
+    precoUnidade: 'Preço de venda de cada unidade',
+  },
+  contaCompleta: 'Ver a conta completa',
   linhas: {
     vgv: { rotulo: 'VGV (valor geral de vendas)', formula: 'Total de unidades × preço de venda da unidade' },
     custoObra: { rotulo: 'Custo de obra', formula: 'CUB ajustado × área total construída' },

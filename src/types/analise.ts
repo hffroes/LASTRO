@@ -76,6 +76,13 @@ export interface ResultadoEconomiaDto {
   viavel: boolean;
 }
 
+// Programa efetivo do empreendimento, com as travas da tipologia já aplicadas (casa e galpão: 1 unidade).
+export interface ProgramaDto {
+  pavimentos: number;
+  unidadesPorPavimento: number;
+  totalUnidades: number;
+}
+
 export interface AreasDto {
   areaUtilizadaCentesimos: number | null;
   areaConstruidaCentesimos: number | null;
@@ -89,6 +96,7 @@ export interface AreasDto {
 export type RespostaAnalise =
   | {
       situacao: 'calculado';
+      programa: ProgramaDto;
       areas: AreasDto;
       economia: ResultadoEconomiaDto;
       premissas: SnapshotPremissas;

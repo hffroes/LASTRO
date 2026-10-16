@@ -1,0 +1,74 @@
+.secao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-16);
+  padding: var(--lastro-space-24);
+  background: var(--lastro-surface-raised);
+  border: 1px solid var(--lastro-border-default);
+  border-radius: var(--lastro-radius-md);
+}
+
+@media (max-width: 480px) {
+  .secao {
+    padding: var(--lastro-space-16);
+  }
+}
+
+.titulo {
+  font-family: var(--lastro-font-display);
+  font-size: var(--lastro-font-size-h2);
+  font-weight: 600;
+  line-height: var(--lastro-leading-h2);
+  letter-spacing: var(--lastro-tracking-h2);
+  margin: 0;
+}
+
+/* Uma coluna no mobile; três lado a lado só onde cabem os números sem quebrar. */
+.lista {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--lastro-space-12);
+  margin: 0;
+}
+
+@media (min-width: 640px) {
+  .lista {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-gap-campo);
+  min-width: 0;
+  padding: var(--lastro-space-12) var(--lastro-space-16);
+  background: var(--lastro-surface-sunken);
+  border: 1px solid var(--lastro-border-default);
+  border-radius: var(--lastro-radius-sm);
+}
+
+.rotulo {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-rotulo);
+  font-weight: 600;
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-rotulo);
+}
+
+.valor {
+  margin: 0;
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-body);
+  font-weight: 600;
+  color: var(--lastro-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.nota {
+  margin: 0;
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+}

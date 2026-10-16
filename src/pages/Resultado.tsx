@@ -1,141 +1,24 @@
 import { useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { ContaCompleta } from '../components/resultado/ContaCompleta';
+import { PotencialPreliminar } from '../components/resultado/PotencialPreliminar';
+import { PrecoMaximo } from '../components/resultado/PrecoMaximo';
+import { PremissasUsadas } from '../components/resultado/PremissasUsadas';
+import { ResumoProjeto } from '../components/resultado/ResumoProjeto';
 import { Alerta } from '../components/ui/Alerta';
 import { Botao } from '../components/ui/Botao';
 import { TEXTOS_CUB } from '../content/produto';
 import { TEXTOS_RESULTADO } from '../content/resultado';
 import { useAnaliseRemota } from '../hooks/useAnaliseRemota';
 import { useAnalise } from '../hooks/useAnalise';
-import type { RespostaAnalise } from '../types/analise';
-import { formatarMoedaComSinal, formatarNumeroBr } from '../utils/motor/formatacao';
 import { etapaProdutoValida } from '../utils/validacao/produto';
 import { etapaTerrenoValida } from '../utils/validacao/terreno';
 import estilosEtapa from './EtapaAnalise.module.css';
 import estilos from './Resultado.module.css';
 
-const percentual = (pontosBase: number) => `${formatarNumeroBr(pontosBase)}%`;
-const MESES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-
-type Calculado = Extract<RespostaAnalise, { situacao: 'calculado' }>;
-
-function NumerosDoResultado({ dados }: { dados: Calculado }) {
-  const { linhas, provisorio, sim, nao } = TEXTOS_RESULTADO;
-  const { economia, premissas } = dados;
-  const itens = [
-    { id: 'vgv', ...linhas.vgv, valor: formatarMoedaComSinal(economia.vgvCentavos) },
-    { id: 'custo-obra', ...linhas.custoObra, valor: formatarMoedaComSinal(economia.custoObraCentavos) },
-    {
-      id: 'despesas-gerais',
-      ...linhas.despesasGerais,
-      rotulo: `${linhas.despesasGerais.rotulo} (${percentual(premissas.despesasGerais.pontosBase)})`,
-      nota: premissas.despesasGerais.provisorio ? provisorio : null,
-      valor: formatarMoedaComSinal(economia.despesasGeraisCentavos),
-    },
-    {
-      id: 'lucro',
-      ...linhas.lucro,
-      rotulo: `${linhas.lucro.rotulo} (${percentual(premissas.lucroIncorporador.pontosBase)})`,
-      nota: premissas.lucroIncorporador.provisorio ? provisorio : null,
-      valor: formatarMoedaComSinal(economia.lucroIncorporadorCentavos),
-    },
-    {
-      id: 'resultado-terreno',
-      ...linhas.resultadoTerreno,
-      destaque: true,
-      negativo: economia.resultadoTerrenoCentavos < 0,
-      valor: formatarMoedaComSinal(economia.resultadoTerrenoCentavos),
-    },
-    { id: 'preco-pedido', ...linhas.precoPedido, valor: formatarMoedaComSinal(economia.precoPedidoCentavos) },
-    {
-      id: 'resultado-liquido',
-      ...linhas.resultadoLiquido,
-      destaque: true,
-      negativo: economia.resultadoLiquidoCentavos < 0,
-      valor: formatarMoedaComSinal(economia.resultadoLiquidoCentavos),
-    },
-    { id: 'viavel', ...linhas.viavel, valor: economia.viavel ? sim : nao },
-  ];
-  return (
-    <dl className={estilos.linhas}>
-      {itens.map((item) => (
-        <div key={item.id} className={estilos.linha} data-destaque={'destaque' in item && item.destaque ? 'true' : undefined}>
-          <dt className={estilos.rotulo}>
-            {item.rotulo}
-            {'nota' in item && item.nota && <span className={estilos.provisorio}> · {item.nota}</span>}
-          </dt>
-          <dd className={estilos.valor} data-testid={`resultado-${item.id}`} data-negativo={'negativo' in item && item.negativo ? 'true' : undefined}>
-            {item.valor}
-          </dd>
-          <dd className={estilos.formula}>{item.formula}</dd>
-        </div>
-      ))}
-    </dl>
-  );
-}
-
-function PremissasUsadas({ dados }: { dados: Calculado }) {
-  const { premissas: texto, provisorio } = TEXTOS_RESULTADO;
-  const { premissas } = dados;
-  const { versaoBase } = premissas.cub;
-  return (
-    <details className={estilos.premissas}>
-      <summary>{texto.titulo}</summary>
-      <dl className={estilos.listaPremissas}>
-        <div>
-          <dt>{texto.baseCub}</dt>
-          <dd>
-            Sinduscon-MG, competência {MESES[versaoBase.competencia.mes - 1]}/{versaoBase.competencia.ano} · versão {versaoBase.id}
-            {versaoBase.dataEmissao === null && ` · ${TEXTOS_CUB.emissaoNaoInformada}`}
-          </dd>
-        </div>
-        <div>
-          <dt>{texto.projetoCub}</dt>
-          <dd>{premissas.cub.projeto}</dd>
-        </div>
-        <div>
-          <dt>{texto.cubBase}</dt>
-          <dd>{formatarMoedaComSinal(premissas.cub.cubBaseCentavos)}/m²</dd>
-        </div>
-        <div>
-          <dt>{texto.somaAditivos}</dt>
-          <dd>{percentual(premissas.cub.aditivos.somaPontosBase)}</dd>
-        </div>
-        <div>
-          <dt>{texto.cubAjustado}</dt>
-          <dd>{formatarMoedaComSinal(premissas.cub.cubAjustadoCentavos)}/m²</dd>
-        </div>
-        <div>
-          <dt>{texto.taxaOcupacao}</dt>
-          <dd>
-            {percentual(premissas.taxaOcupacao.pontosBase)} ({premissas.taxaOcupacao.ajustadaPeloUsuario ? texto.taxaAjustada : texto.taxaPadrao}
-            {premissas.taxaOcupacao.provisorio && !premissas.taxaOcupacao.ajustadaPeloUsuario ? `, ${provisorio}` : ''})
-          </dd>
-        </div>
-        <div>
-          <dt>{texto.lucro}</dt>
-          <dd>
-            {percentual(premissas.lucroIncorporador.pontosBase)} do VGV, padrão {premissas.lucroIncorporador.padrao}
-            {premissas.lucroIncorporador.provisorio ? ` (${provisorio})` : ''}
-          </dd>
-        </div>
-        <div>
-          <dt>{texto.despesas}</dt>
-          <dd>
-            {percentual(premissas.despesasGerais.pontosBase)} do VGV{premissas.despesasGerais.provisorio ? ` (${provisorio})` : ''}.{' '}
-            {texto.itemizacao.replace('{soma}', percentual(premissas.despesasGerais.somaItemizacaoPontosBase))}
-          </dd>
-        </div>
-        <div>
-          <dt>{texto.versaoMotor}</dt>
-          <dd>{premissas.versaoMotor}</dd>
-        </div>
-      </dl>
-    </details>
-  );
-}
-
-// Resultado cru da F13: os números do método do resíduo vindos do servidor, que valida e calcula. A
-// apresentação (veredito, hierarquia, composição) é da F14 em diante.
+// Resultado (F14): a primeira leitura, com o essencial na primeira dobra — o preço máximo recomendado e
+// como o preço pedido se compara — e o que está por trás recolhido. Os números vêm do servidor, que valida
+// e calcula. Nota, recomendação e alertas ainda não existem (F18 e F19), então nada aqui é veredito.
 export function Resultado() {
   const navegar = useNavigate();
   const { analise } = useAnalise();
@@ -173,13 +56,23 @@ export function Resultado() {
         )}
 
         {estado.situacao === 'sucesso' && estado.resposta.situacao === 'calculado' && (
-          <section className={estilosEtapa.secao} aria-labelledby="secao-residuo">
-            <h2 id="secao-residuo" className={estilosEtapa.tituloSecao}>
-              {textos.secaoNumeros}
-            </h2>
-            <NumerosDoResultado dados={estado.resposta} />
-            <PremissasUsadas dados={estado.resposta} />
-          </section>
+          <>
+            <PrecoMaximo economia={estado.resposta.economia} />
+            <PotencialPreliminar areas={estado.resposta.areas} programa={estado.resposta.programa} />
+            <ResumoProjeto analise={analise} programa={estado.resposta.programa} />
+            <section className={estilosEtapa.secao} aria-labelledby="secao-conta">
+              <h2 id="secao-conta" className={estilosEtapa.tituloSecao}>
+                {textos.secaoNumeros}
+              </h2>
+              <details className={estilos.detalhes}>
+                <summary>{textos.contaCompleta}</summary>
+                <div className={estilos.corpoDetalhes}>
+                  <ContaCompleta dados={estado.resposta} />
+                  <PremissasUsadas dados={estado.resposta} />
+                </div>
+              </details>
+            </section>
+          </>
         )}
 
         {estado.situacao === 'sucesso' && estado.resposta.situacao === 'cubPendente' && (

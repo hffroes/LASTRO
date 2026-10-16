@@ -1,0 +1,152 @@
+/* A primeira dobra: um cartão só, com o número que responde à pergunta no maior tamanho da página. */
+.bloco {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-8);
+  padding: var(--lastro-space-24);
+  background: var(--lastro-surface-raised);
+  border: 1px solid var(--lastro-border-default);
+  border-radius: var(--lastro-radius-md);
+  box-shadow: var(--lastro-shadow-sm);
+}
+
+@media (max-width: 480px) {
+  .bloco {
+    padding: var(--lastro-space-16);
+  }
+}
+
+.titulo {
+  font-family: var(--lastro-font-display);
+  font-size: var(--lastro-font-size-h2);
+  font-weight: 600;
+  line-height: var(--lastro-leading-h2);
+  letter-spacing: var(--lastro-tracking-h2);
+  margin: 0;
+}
+
+.explicacao {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  margin: 0;
+}
+
+/* O maior texto da página. O tamanho do h1 já encolhe no mobile; a quebra em qualquer ponto é a última
+   rede para um valor de nove dígitos não estourar a largura. */
+.valorMaximo {
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-h1);
+  font-weight: 600;
+  line-height: var(--lastro-leading-h1);
+  letter-spacing: var(--lastro-tracking-h1);
+  color: var(--lastro-text-primary);
+  overflow-wrap: anywhere;
+  margin: var(--lastro-space-4) 0 0;
+}
+
+.valorMaximo[data-negativo='true'] {
+  color: var(--lastro-danger-text);
+}
+
+.semMargem {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  margin: 0;
+}
+
+/* Rótulo e valor na mesma linha (quebram só se não couberem): poupa uma linha na primeira dobra do celular. */
+.comparacao {
+  margin: 0;
+  padding-top: var(--lastro-space-12);
+  border-top: 1px solid var(--lastro-border-default);
+  font-family: var(--lastro-font-body);
+}
+
+.comparacao div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--lastro-space-4) var(--lastro-space-12);
+}
+
+.comparacao dt {
+  font-size: var(--lastro-font-size-rotulo);
+  font-weight: 600;
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-rotulo);
+}
+
+.comparacao dd {
+  margin: 0;
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-body);
+  font-weight: 500;
+  color: var(--lastro-text-primary);
+  overflow-wrap: anywhere;
+}
+
+/* Sobra, déficit e empate: palavra, ícone e cor juntos. Os tons vêm dos tokens semânticos, que já têm o par escuro. */
+.leitura {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--lastro-space-12);
+  padding: var(--lastro-space-12) var(--lastro-space-16);
+  border: 1px solid var(--lastro-border-strong);
+  border-radius: var(--lastro-radius-sm);
+  background: var(--lastro-surface-sunken);
+  color: var(--lastro-text-primary);
+}
+
+.bloco[data-leitura='sobra'] .leitura {
+  background: var(--lastro-success-bg);
+  border-color: var(--lastro-success-border);
+  color: var(--lastro-success-text);
+}
+
+.bloco[data-leitura='deficit'] .leitura {
+  background: var(--lastro-danger-bg);
+  border-color: var(--lastro-danger-border);
+  color: var(--lastro-danger-text);
+}
+
+.icone {
+  flex: none;
+  margin-top: var(--lastro-space-4);
+}
+
+.textosLeitura {
+  min-width: 0;
+}
+
+.rotuloLeitura {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-body);
+  line-height: var(--lastro-leading-body);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.valorLeitura {
+  font-family: var(--lastro-font-mono);
+  font-weight: 600;
+}
+
+.fraseLeitura {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  margin: var(--lastro-space-4) 0 0;
+}
+
+.preliminar {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  margin: 0;
+}
