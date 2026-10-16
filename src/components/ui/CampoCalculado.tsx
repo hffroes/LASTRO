@@ -1,4 +1,4 @@
-import { Calculator } from 'lucide-react';
+import { Calculator, Lock } from 'lucide-react';
 import estilos from './CampoCalculado.module.css';
 
 interface PropriedadesCampoCalculado {
@@ -8,11 +8,15 @@ interface PropriedadesCampoCalculado {
   valor: string | null;
   formula: string;
   textoAguardando: string;
+  /** Valor fixado por regra (ex.: 1 unidade por casa), não calculado: troca o ícone pelo cadeado. */
+  travado?: boolean;
 }
 
 // Somente leitura e com aparência de resultado, não de campo: fundo rebaixado, borda tracejada e
-// sem cursor de edição. A fórmula fica à vista, para o número nunca parecer surgido do nada.
-export function CampoCalculado({ id, rotulo, valor, formula, textoAguardando }: PropriedadesCampoCalculado) {
+// sem cursor de edição. A fórmula (ou o motivo da trava) fica à vista, para o número nunca parecer
+// surgido do nada.
+export function CampoCalculado({ id, rotulo, valor, formula, textoAguardando, travado }: PropriedadesCampoCalculado) {
+  const Icone = travado ? Lock : Calculator;
   const idRotulo = `${id}-rotulo`;
   const idFormula = `${id}-formula`;
   return (
@@ -32,7 +36,7 @@ export function CampoCalculado({ id, rotulo, valor, formula, textoAguardando }: 
         {valor ?? '—'}
       </output>
       <p id={idFormula} className={estilos.formula}>
-        <Calculator size={14} strokeWidth={1.75} aria-hidden="true" className={estilos.icone} />
+        <Icone size={14} strokeWidth={1.75} aria-hidden="true" className={estilos.icone} />
         {valor === null ? textoAguardando : formula}
       </p>
     </div>

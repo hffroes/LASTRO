@@ -33,3 +33,20 @@ export function escolherTipoProjeto(produto: DadosProduto, tipoProjeto: TipoProj
   const tipologias = TIPOLOGIAS_POR_TIPO[tipoProjeto];
   return { ...produto, tipoProjeto, tipologia: tipologias.length === 1 ? tipologias[0] : null };
 }
+
+// PRD 2.2: Casa e Galpões são uma unidade só — 1 por pavimento e 1 no total, qualquer que seja o
+// número de pavimentos (um sobrado continua sendo uma casa). Conjuntos de edificações no mesmo
+// terreno ficam fora do MVP (PRD 2, OUT).
+export const TIPOLOGIAS_UNIDADE_UNICA: readonly Tipologia[] = ['casa', 'galpao'];
+
+// D-R19 (F10): o PRD 3.1 só liga galpão a projeto CUB (GI) com 1 pavimento; com mais, não haveria
+// custo de obra. Travado aqui, nenhuma análise de galpão chega ao cálculo sem CUB.
+export const PAVIMENTOS_FIXOS: Readonly<Partial<Record<Tipologia, number>>> = { galpao: 1 };
+
+export function ehUnidadeUnica(tipologia: Tipologia | null): boolean {
+  return tipologia !== null && TIPOLOGIAS_UNIDADE_UNICA.includes(tipologia);
+}
+
+export function pavimentosFixos(tipologia: Tipologia | null): number | null {
+  return tipologia === null ? null : PAVIMENTOS_FIXOS[tipologia] ?? null;
+}

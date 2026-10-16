@@ -4,7 +4,9 @@ import {
   TIPOLOGIAS_POR_TIPO,
   TIPO_PROJETO_PENDENTE,
   ehTipoProjeto,
+  ehUnidadeUnica,
   escolherTipoProjeto,
+  pavimentosFixos,
   tipologiaPertenceAoTipo,
 } from './tipologias';
 
@@ -36,13 +38,20 @@ describe('taxonomia (PRD 3.1)', () => {
 });
 
 describe('escolherTipoProjeto', () => {
-  const prontoResidencial: DadosProduto = { tipoProjeto: 'residencial', tipologia: 'predio', padrao: 'alto' };
+  const prontoResidencial: DadosProduto = {
+    ...criarProdutoVazio(),
+    tipoProjeto: 'residencial',
+    tipologia: 'predio',
+    padrao: 'alto',
+    pavimentos: 4,
+    unidadesPorPavimento: 4,
+  };
 
-  it('trocar o tipo apaga a tipologia e preserva o padrão', () => {
+  it('trocar o tipo apaga a tipologia e preserva o padrão e o programa', () => {
     expect(escolherTipoProjeto(prontoResidencial, 'comercial')).toEqual({
+      ...prontoResidencial,
       tipoProjeto: 'comercial',
       tipologia: null,
-      padrao: 'alto',
     });
   });
 
@@ -52,14 +61,32 @@ describe('escolherTipoProjeto', () => {
 
   it('Galpões já vem com a única tipologia do tipo', () => {
     expect(escolherTipoProjeto(criarProdutoVazio(), 'galpoes')).toEqual({
+      ...criarProdutoVazio(),
       tipoProjeto: 'galpoes',
       tipologia: 'galpao',
-      padrao: null,
     });
   });
 
   it('sair de Galpões apaga a tipologia que veio junto', () => {
     const galpao = escolherTipoProjeto(criarProdutoVazio(), 'galpoes');
     expect(escolherTipoProjeto(galpao, 'residencial').tipologia).toBeNull();
+  });
+});
+
+describe('travas do programa por tipologia', () => {
+  it('Casa e Galpões são unidade única (PRD 2.2); as demais, não', () => {
+    expect(TIPOLOGIAS.filter(ehUnidadeUnica)).toEqual(['casa', 'galpao']);
+    expect(ehUnidadeUnica(null)).toBe(false);
+  });
+
+  it('só Galpões trava os pavimentos, em 1 (D-R19: única faixa com CUB)', () => {
+    expect(Object.fromEntries(TIPOLOGIAS.map((tipologia) => [tipologia, pavimentosFixos(tipologia)]))).toEqual({
+      casa: null,
+      predio: null,
+      salasLojas: null,
+      andaresLivres: null,
+      galpao: 1,
+    });
+    expect(pavimentosFixos(null)).toBeNull();
   });
 });

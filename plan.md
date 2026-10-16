@@ -41,6 +41,7 @@
 | D-R16 | Provedor de CEP | **Só ViaCEP**, via proxy `GET /api/v1/cep/:cep`. Verificado em 29/09/2026 (a partir do Replit): gratuito, sem chave, ~0,3–0,7s; pede validar os 8 dígitos antes e bloqueia uso massivo. BrasilAPI descartada: devolveu endereço real para o CEP inexistente 99999999 e levou 2,4s | F06 |
 | D-R17 | D-A1 e D-A10 — municípios e cache do CEP | **Lista estática** de 853 municípios da API de localidades do IBGE, com o SHA-256 conferido no teste. **Cache em memória no servidor** por 24h, até 1.000 CEPs, só de respostas definitivas (encontrado/inexistente) | F06 |
 | D-R18 | D-B6 — como Uso Misto aparece enquanto não tem projeto CUB | **Desabilitado com aviso**: 4º tipo de projeto, visível mas não escolhível, com o motivo ("Em definição: ainda não há tabela de custo (CUB) para uso misto"). Fica fora dos tipos aceitos pela validação, então não chega ao cálculo. O **mapeamento** CUB segue pendente em D-B6 | F09 |
+| D-R19 | Pavimentos de galpão — o `PRD` 2.2 trava só as unidades, mas o `PRD` 3.1 só liga galpão a projeto CUB (GI) com 1 pavimento | **Travado em 1 pavimento**, como as unidades: o campo mostra 1, com o motivo. Nenhuma análise de galpão chega ao cálculo sem projeto CUB | F10 |
 
 ### B. Decisões bloqueantes
 
@@ -515,7 +516,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Sonnet** |
 | **25. Justificativa** | Formulário com regras condicionais claras já especificadas no PRD. |
 | **26. Conclusão** | Programa do empreendimento completo e derivados corretos. |
-| **27. Checkpoint** | `[ ]` Usuário aprova campos, travas e o preço por m². |
+| **27. Checkpoint** | `[>]` Usuário aprova campos, travas e o preço por m². Implementada; aguardando validação no Replit. Casa e Galpões com 1 unidade por pavimento e 1 no total (`PRD` 2.2), mesmo com mais de um pavimento — a regra do PRD prevalece sobre pavimentos × unidades, e uma casa de 2 pavimentos continua sendo 1 unidade; Galpões também com 1 pavimento (D-R19). Os campos travados mostram o valor fixo com cadeado e o motivo, em vez de um campo desabilitado. A trava não apaga o que o usuário digitou: voltar de Casa para Prédio recupera os valores (o valor efetivo vem de `calcularProgramaEfetivo`, que o motor da F13 também usará). Pavimentos e unidades são inteiros: "4,5" é recusado, nunca arredondado. Preço por m² vendido usa a mesma conta e o mesmo arredondamento do preço por m² do terreno, com a nota de que a lastro não consulta base de preços. Tetos técnicos provisórios (não regra de negócio), em `src/utils/validacao/produto.ts`: 200 pavimentos, 1.000 unidades por pavimento, e área e preço da unidade com os tetos do terreno — **atenção para a F13**: no teto, unidades × preço passa de 2^53, e o VGV precisa conferir o limite. **Validar**: a dica "Contando o térreo" do número de pavimentos (convenção dos projetos-padrão da NBR 12.721, como o R-8) e o texto das travas. Diferenças do previsto: sem `ProgramaEmpreendimento.module.css` (só reaproveita `Campo` e `CampoCalculado`); entraram `src/utils/motor/produto.ts` (+ teste), com o programa efetivo e o preço por m² vendido; o `EntradaNumero` ganhou o modo inteiro (`interpretarInteiroBr`/`formatarInteiroBr` no motor); o `CampoCalculado` ganhou a variante travada (ícone de cadeado). |
 
 ---
 
@@ -1439,7 +1440,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 8 | 1 | F07 Dados físicos e financeiros | Preço em R$/m² calculado | Média | Opus | — | `[x]` |
 | 9 | 1 | F08 Formato e topografia | Seleção ilustrada | Média | Sonnet | — | `[x]` |
 | 10 | 1 | F09 Tipo, tipologia e padrão | Classificação em cascata | Média | Opus | D-R18 | `[>]` |
-| 11 | 1 | F10 Pavimentos e unidades | Programa + preço por m² | Média | Sonnet | — | `[ ]` |
+| 11 | 1 | F10 Pavimentos e unidades | Programa + preço por m² | Média | Sonnet | D-R19 | `[>]` |
 | 12 | 1 | F11 Áreas e indicadores | Painel de áreas e CA | Média | Opus | — | `[ ]` |
 | 13 | 1 | F12 Parâmetros e CUB | CUB Ajustado discriminado | Alta | Opus | **D-B4, D-B5** | `[ ]` |
 | 14 | 1 | F13 Motor econômico e API | Resultado cru completo | Alta | Opus | **D-B1, D-B2, D-B3** | `[ ]` |

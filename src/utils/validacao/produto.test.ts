@@ -1,13 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import { criarProdutoVazio, PADROES_ACABAMENTO, TIPOS_PROJETO } from '../../types/produto';
+import { criarProdutoVazio, PADROES_ACABAMENTO, TIPOS_PROJETO, type DadosProduto } from '../../types/produto';
 import { TIPOLOGIAS_POR_TIPO } from '../../data/tipologias';
 import {
+  LIMITE_AREA_UNIDADE_M2,
+  LIMITE_PAVIMENTOS,
+  LIMITE_PRECO_UNIDADE_CENTAVOS,
+  LIMITE_UNIDADES_POR_PAVIMENTO,
   MENSAGENS_PRODUTO,
   etapaProdutoValida,
+  validarAreaUnidade,
   validarEtapaProduto,
   validarPadrao,
+  validarPavimentos,
+  validarPrecoUnidade,
   validarTipologia,
   validarTipoProjeto,
+  validarUnidadesPorPavimento,
 } from './produto';
 
 describe('validarTipoProjeto', () => {
@@ -57,24 +65,120 @@ describe('validarPadrao', () => {
   });
 });
 
+describe('validarPavimentos', () => {
+  const predio = (pavimentos: unknown) => ({ tipologia: 'predio' as const, pavimentos: pavimentos as number | null });
+
+  it('aceita inteiros de 1 até o teto', () => {
+    expect(validarPavimentos(predio(1))).toBeUndefined();
+    expect(validarPavimentos(predio(LIMITE_PAVIMENTOS))).toBeUndefined();
+  });
+
+  it('recusa vazio, fração, zero, negativo e acima do teto', () => {
+    expect(validarPavimentos(predio(null))).toBe(MENSAGENS_PRODUTO.pavimentosAusente);
+    expect(validarPavimentos(predio('4'))).toBe(MENSAGENS_PRODUTO.pavimentosAusente);
+    expect(validarPavimentos(predio(4.5))).toBe(MENSAGENS_PRODUTO.pavimentosNaoInteiro);
+    expect(validarPavimentos(predio(0))).toBe(MENSAGENS_PRODUTO.pavimentosNaoPositivo);
+    expect(validarPavimentos(predio(-2))).toBe(MENSAGENS_PRODUTO.pavimentosNaoPositivo);
+    expect(validarPavimentos(predio(LIMITE_PAVIMENTOS + 1))).toBe(MENSAGENS_PRODUTO.pavimentosAcimaDoLimite);
+  });
+
+  it('galpão não pede pavimentos: são fixos em 1 (D-R19)', () => {
+    expect(validarPavimentos({ tipologia: 'galpao', pavimentos: null })).toBeUndefined();
+    expect(validarPavimentos({ tipologia: 'galpao', pavimentos: 7 })).toBeUndefined();
+  });
+
+  it('casa pede pavimentos: térrea ou sobrado continuam sendo uma casa', () => {
+    expect(validarPavimentos({ tipologia: 'casa', pavimentos: null })).toBe(MENSAGENS_PRODUTO.pavimentosAusente);
+    expect(validarPavimentos({ tipologia: 'casa', pavimentos: 2 })).toBeUndefined();
+  });
+});
+
+describe('validarUnidadesPorPavimento', () => {
+  it('aceita inteiros de 1 até o teto e recusa o resto', () => {
+    const salas = (unidadesPorPavimento: number | null) => ({ tipologia: 'salasLojas' as const, unidadesPorPavimento });
+    expect(validarUnidadesPorPavimento(salas(12))).toBeUndefined();
+    expect(validarUnidadesPorPavimento(salas(LIMITE_UNIDADES_POR_PAVIMENTO))).toBeUndefined();
+    expect(validarUnidadesPorPavimento(salas(null))).toBe(MENSAGENS_PRODUTO.unidadesAusente);
+    expect(validarUnidadesPorPavimento(salas(2.5))).toBe(MENSAGENS_PRODUTO.unidadesNaoInteiro);
+    expect(validarUnidadesPorPavimento(salas(0))).toBe(MENSAGENS_PRODUTO.unidadesNaoPositivo);
+    expect(validarUnidadesPorPavimento(salas(LIMITE_UNIDADES_POR_PAVIMENTO + 1))).toBe(
+      MENSAGENS_PRODUTO.unidadesAcimaDoLimite,
+    );
+  });
+
+  it('Casa e Galpões não pedem: é 1 unidade fixa (PRD 2.2)', () => {
+    for (const tipologia of ['casa', 'galpao'] as const) {
+      expect(validarUnidadesPorPavimento({ tipologia, unidadesPorPavimento: null })).toBeUndefined();
+      expect(validarUnidadesPorPavimento({ tipologia, unidadesPorPavimento: 9 })).toBeUndefined();
+    }
+  });
+});
+
+describe('validarAreaUnidade', () => {
+  it('aceita área positiva com até duas casas', () => {
+    expect(validarAreaUnidade(68.5)).toBeUndefined();
+    expect(validarAreaUnidade(LIMITE_AREA_UNIDADE_M2)).toBeUndefined();
+  });
+
+  it('recusa vazio, zero, acima do teto e mais de duas casas', () => {
+    expect(validarAreaUnidade(null)).toBe(MENSAGENS_PRODUTO.areaUnidadeAusente);
+    expect(validarAreaUnidade(0)).toBe(MENSAGENS_PRODUTO.areaUnidadeNaoPositiva);
+    expect(validarAreaUnidade(LIMITE_AREA_UNIDADE_M2 + 1)).toBe(MENSAGENS_PRODUTO.areaUnidadeAcimaDoLimite);
+    expect(validarAreaUnidade(68.555)).toBe(MENSAGENS_PRODUTO.areaUnidadeIlegivel);
+  });
+});
+
+describe('validarPrecoUnidade', () => {
+  it('aceita centavos inteiros positivos até o teto', () => {
+    expect(validarPrecoUnidade(45_000_000)).toBeUndefined();
+    expect(validarPrecoUnidade(LIMITE_PRECO_UNIDADE_CENTAVOS)).toBeUndefined();
+  });
+
+  it('recusa vazio, fração de centavo, zero e acima do teto', () => {
+    expect(validarPrecoUnidade(undefined)).toBe(MENSAGENS_PRODUTO.precoUnidadeAusente);
+    expect(validarPrecoUnidade(4500.5)).toBe(MENSAGENS_PRODUTO.precoUnidadeIlegivel);
+    expect(validarPrecoUnidade(0)).toBe(MENSAGENS_PRODUTO.precoUnidadeNaoPositivo);
+    expect(validarPrecoUnidade(LIMITE_PRECO_UNIDADE_CENTAVOS + 1)).toBe(MENSAGENS_PRODUTO.precoUnidadeAcimaDoLimite);
+  });
+});
+
 describe('validarEtapaProduto', () => {
-  it('produto vazio: pede tipo e padrão, nessa ordem, sem repetir a tipologia', () => {
+  const PREDIO_COMPLETO: DadosProduto = {
+    tipoProjeto: 'residencial',
+    tipologia: 'predio',
+    padrao: 'normal',
+    pavimentos: 4,
+    unidadesPorPavimento: 4,
+    areaUnidadeM2: 68.5,
+    precoUnidadeCentavos: 45_000_000,
+  };
+
+  it('produto vazio: pede tudo na ordem da página, sem repetir a tipologia antes do tipo', () => {
     const erros = validarEtapaProduto({ produto: criarProdutoVazio() });
 
-    expect(Object.keys(erros)).toEqual(['tipoProjeto', 'padrao']);
+    expect(Object.keys(erros)).toEqual(['tipoProjeto', 'padrao', 'pavimentos', 'unidadesPorPavimento', 'areaUnidade', 'precoUnidade']);
     expect(etapaProdutoValida({ produto: criarProdutoVazio() })).toBe(false);
   });
 
   it('com tipo, passa a pedir a tipologia', () => {
-    const erros = validarEtapaProduto({ produto: { tipoProjeto: 'comercial', tipologia: null, padrao: 'normal' } });
+    const erros = validarEtapaProduto({ produto: { ...PREDIO_COMPLETO, tipoProjeto: 'comercial', tipologia: null } });
 
     expect(erros).toEqual({ tipologia: MENSAGENS_PRODUTO.tipologiaAusente });
   });
 
   it('completo e coerente com o PRD 3.1: etapa válida', () => {
-    const produto = { tipoProjeto: 'residencial', tipologia: 'predio', padrao: 'normal' } as const;
+    expect(validarEtapaProduto({ produto: PREDIO_COMPLETO })).toEqual({});
+    expect(etapaProdutoValida({ produto: PREDIO_COMPLETO })).toBe(true);
+  });
 
-    expect(validarEtapaProduto({ produto })).toEqual({});
-    expect(etapaProdutoValida({ produto })).toBe(true);
+  it('galpão completo sem pavimentos nem unidades informados: válido, pelas travas', () => {
+    const galpao: DadosProduto = {
+      ...PREDIO_COMPLETO,
+      tipoProjeto: 'galpoes',
+      tipologia: 'galpao',
+      pavimentos: null,
+      unidadesPorPavimento: null,
+    };
+    expect(etapaProdutoValida({ produto: galpao })).toBe(true);
   });
 });

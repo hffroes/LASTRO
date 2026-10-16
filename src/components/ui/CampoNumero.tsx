@@ -1,11 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import { formatarNumeroBr, interpretarNumeroBr, type LeituraNumero } from '../../utils/motor/formatacao';
+import {
+  formatarInteiroBr,
+  formatarNumeroBr,
+  interpretarInteiroBr,
+  interpretarNumeroBr,
+  type LeituraNumero,
+} from '../../utils/motor/formatacao';
 import type { PropriedadesAcessiveisControle } from './Campo';
 import estilos from './CampoNumero.module.css';
 
 export interface PropriedadesEntradaNumero extends PropriedadesAcessiveisControle {
   name: string;
-  /** Em unidades menores (centavos, centésimos de m²); null = vazio. */
+  /** Em unidades menores (centavos, centésimos de m²), ou a própria contagem se `inteiro`; null = vazio. */
   valor: number | null;
   aoMudar: (leitura: LeituraNumero) => void;
   aoSair?: () => void;
@@ -13,10 +19,8 @@ export interface PropriedadesEntradaNumero extends PropriedadesAcessiveisControl
   sufixo?: string;
   placeholder?: string;
   obrigatorio?: boolean;
-}
-
-function textoDoValor(valor: number | null): string {
-  return valor === null ? '' : formatarNumeroBr(valor);
+  /** Contagem (pavimentos, unidades): sem casas decimais na leitura nem na apresentação. */
+  inteiro?: boolean;
 }
 
 // Sem máscara durante a digitação: o texto fica como o usuário escreveu (ou colou), e a leitura em
@@ -29,8 +33,12 @@ export function EntradaNumero({
   prefixo,
   sufixo,
   obrigatorio,
+  inteiro,
   ...controle
 }: PropriedadesEntradaNumero) {
+  const ler = inteiro ? interpretarInteiroBr : interpretarNumeroBr;
+  const formatar = inteiro ? formatarInteiroBr : formatarNumeroBr;
+  const textoDoValor = (numero: number | null) => (numero === null ? '' : formatar(numero));
   const [texto, setTexto] = useState(() => textoDoValor(valor));
   const focado = useRef(false);
 
@@ -39,10 +47,11 @@ export function EntradaNumero({
   useEffect(() => {
     if (focado.current) return;
     setTexto((atual) => {
-      const leitura = interpretarNumeroBr(atual);
+      const leitura = ler(atual);
       const valorDoTexto = leitura.tipo === 'valido' ? leitura.unidadesMenores : null;
       return valorDoTexto === valor ? atual : textoDoValor(valor);
     });
+    // ler e formatar ficam de fora: só mudam com `inteiro`, que é fixo por campo.
   }, [valor]);
 
   return (
@@ -55,7 +64,7 @@ export function EntradaNumero({
       <input
         {...controle}
         type="text"
-        inputMode="decimal"
+        inputMode={inteiro ? 'numeric' : 'decimal'}
         autoComplete="off"
         aria-required={obrigatorio ? 'true' : undefined}
         className={estilos.entrada}
@@ -65,12 +74,12 @@ export function EntradaNumero({
         }}
         onChange={(evento) => {
           setTexto(evento.target.value);
-          aoMudar(interpretarNumeroBr(evento.target.value));
+          aoMudar(ler(evento.target.value));
         }}
         onBlur={() => {
           focado.current = false;
-          const leitura = interpretarNumeroBr(texto);
-          if (leitura.tipo === 'valido') setTexto(formatarNumeroBr(leitura.unidadesMenores));
+          const leitura = ler(texto);
+          if (leitura.tipo === 'valido') setTexto(formatar(leitura.unidadesMenores));
           aoSair?.();
         }}
       />

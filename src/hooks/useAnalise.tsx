@@ -34,6 +34,11 @@ function numeroFinito(valor: unknown): number | null {
   return typeof valor === 'number' && Number.isFinite(valor) ? valor : null;
 }
 
+// Contagens e centavos: só inteiro exato volta; o resto vira "não informado".
+function inteiroSeguro(valor: unknown): number | null {
+  return Number.isSafeInteger(valor) ? (valor as number) : null;
+}
+
 function umDe<Valor extends string>(valor: unknown, aceitos: readonly Valor[]): Valor | null {
   return aceitos.includes(valor as Valor) ? (valor as Valor) : null;
 }
@@ -66,6 +71,10 @@ function lerProduto(bruto: Partial<Record<keyof DadosProduto, unknown>> | undefi
     // de outro tipo e levaria ao projeto CUB errado.
     tipologia: tipoProjeto && tipologia && tipologiaPertenceAoTipo(tipoProjeto, tipologia) ? tipologia : null,
     padrao: umDe(bruto.padrao, PADROES_ACABAMENTO),
+    pavimentos: inteiroSeguro(bruto.pavimentos),
+    unidadesPorPavimento: inteiroSeguro(bruto.unidadesPorPavimento),
+    areaUnidadeM2: numeroFinito(bruto.areaUnidadeM2),
+    precoUnidadeCentavos: inteiroSeguro(bruto.precoUnidadeCentavos),
   };
 }
 

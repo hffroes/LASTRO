@@ -95,3 +95,18 @@ export function dividirArredondando(numerador: number, denominador: number): num
   }
   return 2 * resto >= denominador ? quociente + 1 : quociente;
 }
+
+// Contagens (pavimentos, unidades) são inteiras: a mesma leitura pt-BR, mas com casas decimais
+// recusadas em vez de arredondadas — "4,5 pavimentos" é erro de digitação, não 5. "4,00" vale 4.
+// Na leitura válida, unidadesMenores é a própria contagem.
+export function interpretarInteiroBr(texto: string): LeituraNumero {
+  const leitura = interpretarNumeroBr(texto);
+  if (leitura.tipo !== 'valido') return leitura;
+  if (leitura.unidadesMenores % FATOR_CASAS !== 0) return { tipo: 'invalido' };
+  return { tipo: 'valido', unidadesMenores: leitura.unidadesMenores / FATOR_CASAS };
+}
+
+// Contagem com separador de milhar e sem casas: "1.000", nunca "1.000,00".
+export function formatarInteiroBr(valor: number): string {
+  return formatarNumeroBr(valor * FATOR_CASAS).split(',')[0] as string;
+}

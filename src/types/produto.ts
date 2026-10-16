@@ -18,8 +18,24 @@ export interface DadosProduto {
   // Só vale se pertencer ao tipo (data/tipologias.ts); trocar o tipo a apaga.
   tipologia: Tipologia | null;
   padrao: PadraoAcabamento | null;
+  // Programa do empreendimento (F10). Contagens inteiras; área em m² com até duas casas; dinheiro em
+  // centavos inteiros, como no terreno. null = não informado (ou digitado num formato ilegível).
+  // O que a tipologia trava (unidades da casa, pavimentos do galpão) não é lido daqui: vem de
+  // utils/motor/produto.ts, e o que o usuário digitou antes da trava fica guardado para quando ela sair.
+  pavimentos: number | null;
+  unidadesPorPavimento: number | null;
+  areaUnidadeM2: number | null;
+  precoUnidadeCentavos: number | null;
 }
 
 export function criarProdutoVazio(): DadosProduto {
-  return { tipoProjeto: null, tipologia: null, padrao: null };
+  return {
+    tipoProjeto: null,
+    tipologia: null,
+    padrao: null,
+    pavimentos: null,
+    unidadesPorPavimento: null,
+    areaUnidadeM2: null,
+    precoUnidadeCentavos: null,
+  };
 }

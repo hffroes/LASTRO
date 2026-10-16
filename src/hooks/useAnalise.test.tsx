@@ -144,24 +144,59 @@ describe('useAnalise', () => {
     act(() => result.current.atualizarProduto({ tipologia: 'predio', padrao: 'alto' }));
     act(() => result.current.definirTipoProjeto('comercial'));
 
-    expect(result.current.analise.produto).toEqual({ tipoProjeto: 'comercial', tipologia: null, padrao: 'alto' });
+    expect(result.current.analise.produto).toEqual({
+      ...criarProdutoVazio(),
+      tipoProjeto: 'comercial',
+      tipologia: null,
+      padrao: 'alto',
+    });
   });
 
   it('guarda o produto no rascunho e o recupera numa nova montagem (F5)', () => {
     const primeira = renderUseAnalise();
     act(() => primeira.result.current.definirTipoProjeto('galpoes'));
-    act(() => primeira.result.current.atualizarProduto({ padrao: 'baixo' }));
+    act(() =>
+      primeira.result.current.atualizarProduto({ padrao: 'baixo', areaUnidadeM2: 3000.5, precoUnidadeCentavos: 900_000_000 }),
+    );
     primeira.unmount();
 
     const segunda = renderUseAnalise();
 
-    expect(segunda.result.current.analise.produto).toEqual({ tipoProjeto: 'galpoes', tipologia: 'galpao', padrao: 'baixo' });
+    expect(segunda.result.current.analise.produto).toEqual({
+      ...criarProdutoVazio(),
+      tipoProjeto: 'galpoes',
+      tipologia: 'galpao',
+      padrao: 'baixo',
+      areaUnidadeM2: 3000.5,
+      precoUnidadeCentavos: 900_000_000,
+    });
+  });
+
+  it('do rascunho, contagens e preço da unidade só voltam como inteiros; a área, como número', () => {
+    window.sessionStorage.setItem(
+      CHAVE_RASCUNHO,
+      JSON.stringify({
+        versao: 1,
+        analise: {
+          objetivo: null,
+          terreno: {},
+          produto: { pavimentos: 4.5, unidadesPorPavimento: '4', areaUnidadeM2: 'x', precoUnidadeCentavos: 4500.5 },
+        },
+      }),
+    );
+
+    const { result } = renderUseAnalise();
+
+    expect(result.current.analise.produto).toEqual(criarProdutoVazio());
   });
 
   it('do rascunho, o produto só volta com opções e combinações da tabela', () => {
     for (const [produto, esperado] of [
       [{ tipoProjeto: 'usoMisto', tipologia: 'casa', padrao: 'medio' }, criarProdutoVazio()],
-      [{ tipoProjeto: 'residencial', tipologia: 'galpao', padrao: 'alto' }, { tipoProjeto: 'residencial', tipologia: null, padrao: 'alto' }],
+      [
+        { tipoProjeto: 'residencial', tipologia: 'galpao', padrao: 'alto' },
+        { ...criarProdutoVazio(), tipoProjeto: 'residencial', padrao: 'alto' },
+      ],
       [{ tipoProjeto: null, tipologia: 'casa', padrao: null }, criarProdutoVazio()],
       ['nada', criarProdutoVazio()],
     ]) {

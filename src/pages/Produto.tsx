@@ -1,19 +1,32 @@
 import { useRef, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { ProgramaEmpreendimento, type CampoNumericoProduto } from '../components/produto/ProgramaEmpreendimento';
 import { SeletorPadrao } from '../components/produto/SeletorPadrao';
 import { SeletorTipologia } from '../components/produto/SeletorTipologia';
 import { Botao } from '../components/ui/Botao';
 import { ResumoPendencias } from '../components/ui/ResumoPendencias';
 import { TEXTOS_PRODUTO } from '../content/produto';
+import { ehUnidadeUnica, pavimentosFixos } from '../data/tipologias';
 import { useAnalise } from '../hooks/useAnalise';
-import { ORDEM_CAMPOS_PRODUTO, validarEtapaProduto, type CampoEtapaProduto } from '../utils/validacao/produto';
+import type { LeituraNumero } from '../utils/motor/formatacao';
+import { calcularPrecoM2VendidoCentavos, calcularProgramaEfetivo } from '../utils/motor/produto';
+import {
+  MENSAGENS_PRODUTO,
+  ORDEM_CAMPOS_PRODUTO,
+  validarEtapaProduto,
+  type CampoEtapaProduto,
+} from '../utils/validacao/produto';
 import { etapaTerrenoValida } from '../utils/validacao/terreno';
 import estilosEtapa from './EtapaAnalise.module.css';
 
 export function Produto() {
   const navegar = useNavigate();
   const { analise, definirTipoProjeto, atualizarProduto } = useAnalise();
+  const [camposTocados, setCamposTocados] = useState<ReadonlySet<CampoEtapaProduto>>(new Set());
   const [tentouAvancar, setTentouAvancar] = useState(false);
+  // Texto que não pôde ser lido como número: o estado da análise guarda só números, então a
+  // ilegibilidade fica aqui, para a mensagem dizer "formato" e não "campo vazio".
+  const [ilegiveis, setIlegiveis] = useState<ReadonlySet<CampoNumericoProduto>>(new Set());
   const refResumo = useRef<HTMLDivElement>(null);
 
   // D-R11: só se chega aqui com a Etapa 1 válida. Pela URL direta (ou com o rascunho incompleto),
@@ -23,16 +36,43 @@ export function Produto() {
     return <Navigate to="/terreno" replace />;
   }
 
+  function registrarLeitura(campo: CampoNumericoProduto, leitura: LeituraNumero): number | null {
+    setIlegiveis((atuais) => {
+      const ilegivel = leitura.tipo === 'invalido';
+      if (atuais.has(campo) === ilegivel) return atuais;
+      const proximos = new Set(atuais);
+      if (ilegivel) proximos.add(campo);
+      else proximos.delete(campo);
+      return proximos;
+    });
+    return leitura.tipo === 'valido' ? leitura.unidadesMenores : null;
+  }
+
+  const { produto } = analise;
   const erros = validarEtapaProduto(analise);
+  // Campo travado pela tipologia não está na tela: um texto ilegível deixado nele antes da trava
+  // não pode virar pendência.
+  if (ilegiveis.has('pavimentos') && pavimentosFixos(produto.tipologia) === null) {
+    erros.pavimentos = MENSAGENS_PRODUTO.pavimentosNaoInteiro;
+  }
+  if (ilegiveis.has('unidadesPorPavimento') && !ehUnidadeUnica(produto.tipologia)) {
+    erros.unidadesPorPavimento = MENSAGENS_PRODUTO.unidadesNaoInteiro;
+  }
+  if (ilegiveis.has('areaUnidade')) erros.areaUnidade = MENSAGENS_PRODUTO.areaUnidadeIlegivel;
+  if (ilegiveis.has('precoUnidade')) erros.precoUnidade = MENSAGENS_PRODUTO.precoUnidadeIlegivel;
   const pendencias = ORDEM_CAMPOS_PRODUTO.flatMap((campo) => {
     const mensagem = erros[campo];
     return mensagem ? [{ campo, mensagem }] : [];
   });
 
-  // Todos os campos aqui são escolhas em cartões, sem "sair do campo": o erro só aparece depois da
-  // tentativa de avançar, como formato e topografia no Terreno.
+  // O erro só aparece depois que o usuário passou pelo campo ou tentou avançar, como no Terreno. As
+  // escolhas em cartões não têm "sair do campo": só a tentativa de avançar as acusa.
   function erroVisivel(campo: CampoEtapaProduto): string | undefined {
-    return tentouAvancar ? erros[campo] : undefined;
+    return tentouAvancar || camposTocados.has(campo) ? erros[campo] : undefined;
+  }
+
+  function marcarTocado(campo: CampoEtapaProduto) {
+    setCamposTocados((atuais) => (atuais.has(campo) ? atuais : new Set(atuais).add(campo)));
   }
 
   function aoAvancar() {
@@ -46,11 +86,17 @@ export function Produto() {
   }
 
   function irParaCampo(campo: string) {
-    document.querySelector<HTMLElement>(`[data-alvo-campo="${campo}"]`)?.focus();
+    document.querySelector<HTMLElement>(`[data-alvo-campo="${campo}"], #campo-${campo}`)?.focus();
   }
 
   const { secoes } = TEXTOS_PRODUTO;
-  const { produto } = analise;
+  // Derivados só com os insumos válidos: um número sobre insumo inválido seria um número sem base.
+  const { totalUnidades } = calcularProgramaEfetivo(produto);
+  const totalUnidadesExibido = erros.pavimentos || erros.unidadesPorPavimento ? null : totalUnidades;
+  const precoM2VendidoCentavos =
+    erros.areaUnidade || erros.precoUnidade
+      ? null
+      : calcularPrecoM2VendidoCentavos(produto.precoUnidadeCentavos, produto.areaUnidadeM2);
 
   return (
     <div className={estilosEtapa.pagina}>
@@ -90,6 +136,22 @@ export function Produto() {
             valor={produto.padrao}
             aoMudar={(padrao) => atualizarProduto({ padrao })}
             erro={erroVisivel('padrao')}
+          />
+        </section>
+
+        <section className={estilosEtapa.secao} aria-labelledby="secao-programa">
+          <h2 id="secao-programa" className={estilosEtapa.tituloSecao}>
+            {secoes.programa.titulo}
+          </h2>
+          <p className={estilosEtapa.descricaoSecao}>{secoes.programa.descricao}</p>
+          <ProgramaEmpreendimento
+            produto={produto}
+            totalUnidades={totalUnidadesExibido}
+            precoM2VendidoCentavos={precoM2VendidoCentavos}
+            erroVisivel={erroVisivel}
+            aoMudar={atualizarProduto}
+            aoLer={registrarLeitura}
+            aoSair={marcarTocado}
           />
         </section>
 
