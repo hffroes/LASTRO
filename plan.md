@@ -43,6 +43,8 @@
 | D-R18 | D-B6 — como Uso Misto aparece enquanto não tem projeto CUB | **Desabilitado com aviso**: 4º tipo de projeto, visível mas não escolhível, com o motivo ("Em definição: ainda não há tabela de custo (CUB) para uso misto"). Fica fora dos tipos aceitos pela validação, então não chega ao cálculo. O **mapeamento** CUB segue pendente em D-B6 | F09 |
 | D-R19 | Pavimentos de galpão — o `PRD` 2.2 trava só as unidades, mas o `PRD` 3.1 só liga galpão a projeto CUB (GI) com 1 pavimento | **Travado em 1 pavimento**, como as unidades: o campo mostra 1, com o motivo. Nenhuma análise de galpão chega ao cálculo sem projeto CUB | F10 |
 | D-R20 | Convenção única de percentual no motor (`CLAUDE.md`: "percentuais em convenção única") e como a taxa de ocupação aparece | **Inteiro em pontos-base**: 10.000 = 100%, 6.000 = 60,00% — na linha de centavos e centésimos de m², em inteiros exatos. A F12 herda: 8% = 800, 1,5% = 150, 0,5% = 50. A taxa de ocupação é digitada **em porcentagem** ("60", não "0,6"; a dica avisa) e **nasce preenchida com o padrão** (60%), obrigatória, de 0% exclusive a 100%; o botão "Voltar ao padrão" a restaura. O ajuste vale só na análise e nunca altera o padrão (`PRD` 2.10) | F11 |
+| D-R21 | Faixas de pavimentos do aditivo de fundação (`PRD` 3.2 A), que se sobrepõem em 8 e 16 ("até 8" e "entre 8 e 16") | **"Até N" inclui N: 1–4 / 5–8 / 9–16 / 17 ou mais** (7% / 10% / 15% / 20%). Casa e galpão usam as linhas "1" (4%) e "2+" (5%) da mesma tabela, e os edifícios (prédio, salas e lojas, andares livres), as quatro faixas. É a leitura que fecha com o caso de referência do `PRD` (4 pavimentos = "até 4" = 7%) e com R-16 sendo o projeto de 16 pavimentos | F12 |
+| D-R22 | D-B4 e D-B5 — combinação sem CUB publicado (padrão Baixo de R-16, CSL-8, CSL-16 e CAL-8; andares livres com 9+ pavimentos, CAL-16) | **Pendência explícita, nenhum valor estimado**: o painel diz que a tabela não traz o valor, que isso não é erro do usuário, e não mostra CUB base nem ajustado. Os aditivos continuam discriminados, e o padrão Normal ou Alto do mesmo projeto calcula. Não trava o "Avançar". A F17 (premissas ajustáveis) pode vir a permitir que o usuário informe o CUB que conhece | F12 |
 
 ### B. Decisões bloqueantes
 
@@ -53,8 +55,8 @@ Cada uma impede o início da fase indicada. **Não resolver por conta própria.*
 | D-B1 | Localização do motor único de cálculo. Proposta: motor puro em `src/utils/motor/`, importado tanto pelo React quanto pelo Express (`server/domain/` só adapta), para não duplicar regra de negócio. Exige aprovação por ser decisão arquitetural. | `CLAUDE.md` regras 2 e 11 | F13 |
 | D-B2 | **Despesas gerais: 11% ou 12%?** A itemização soma 12,0% mas a planilha aplica 11,0%. O MVP adota 11,0% para reproduzir o exemplo; confirmar. Não ajustar componente algum por conta própria. | `PRD` 4.1 (divergência aritmética) | F13 |
 | D-B3 | **Divergência de lucro:** exemplo da planilha "Escopo MVP" aplica 20% a padrão **Normal** (tabelado 22%). Qual prevalece? | `PRD` 3.1 (nota de divergência) | F13 |
-| D-B4 | **Fallback do CUB para padrão Baixo** nas combinações sem valor publicado (R-16, CSL-8, CSL-16, CAL-8). Não inventar valor. | `PRD` 3.1 (lacunas) | F12 |
-| D-B5 | **CAL-16 não existe** na tabela CUB Sinduscon-MG Ago/2026. Definir fallback ou remover a faixa 8+ de Andares Livres do MVP. | `PRD` 3.1 (lacunas) | F12 |
+| D-B4 | ~~**Fallback do CUB para padrão Baixo** nas combinações sem valor publicado (R-16, CSL-8, CSL-16, CAL-8).~~ **Resolvida na F12** — ver D-R22. O **valor** do padrão Baixo segue sem fonte: nenhuma regra de estimativa foi adotada. | `PRD` 3.1 (lacunas) | — |
+| D-B5 | ~~**CAL-16 não existe** na tabela CUB Sinduscon-MG Ago/2026.~~ **Resolvida na F12** — ver D-R22: andares livres com 9+ pavimentos ficam como pendência. | `PRD` 3.1 (lacunas) | — |
 | D-B6 | **Mapeamento CUB de Uso Misto** — sem correspondência em nenhuma fonte. Definir mapeamento, ou remover a opção do MVP, ou exibi-la desabilitada com aviso. A exibição foi resolvida na F09 (D-R18: desabilitada com aviso); **falta o mapeamento**, sem o qual a opção não pode ser habilitada. | `PRD` 3.1 e 2.2 | Habilitar Uso Misto |
 | D-B7 | **Metodologia detalhada do LASTRO Score** — como pontuar Margem de viabilidade (40), Conformidade de percentuais (30) e Risco técnico/regulatório (20). Pesos e limiares (4.4) não podem mudar sem aprovação. | `PRD` 4.3 | F19 |
 | D-B8 | **Potencial de mercado (10 pontos)** ficou sem fonte após a retirada da FipeZap. Pontuar por critério qualitativo, por outro indicador, ou redistribuir os 10 pontos? Exige aprovação explícita. | `PRD` 4.3 (pendência 1.2) | F19 |
@@ -585,7 +587,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Opus** |
 | **25. Justificativa** | Regra econômica sensível com lacunas de fonte e risco real de o modelo "completar" dados ausentes. |
 | **26. Conclusão** | CUB Ajustado reproduz o exemplo do PRD e as lacunas aparecem como pendência. |
-| **27. Checkpoint** | `[ ]` Usuário valida o CUB Ajustado e decide D-B4 e D-B5. |
+| **27. Checkpoint** | `[>]` Usuário valida o CUB Ajustado e decide D-B4 e D-B5. Implementada; aguardando validação no Replit. D-B4 e D-B5 decididas como pendência explícita (D-R22) e as faixas de pavimentos, em D-R21. **Caso de referência do `PRD` reproduzido**: prédio Normal, 4 pavimentos, topografia Regular, formato Regular → 7% + 15% + 1,5% + 0% = 23,5% → 2.554,58 × 1,235 = **R$ 3.154,91/m²**, numa única multiplicação (testado contra a cadeia, que daria outro valor). Os 13 valores de CUB do `PRD` 3.1 vivem só em `dados/cub-2026-08.ts` (em centavos), e um teste varre os módulos de lógica para garantir que nenhum os embute; a lógica consome a base por `RepositorioCub`, que a F24 troca pela tabela `external_data`. Os percentuais dos aditivos ficam centralizados em `parametros.ts`, em pontos-base, com versão e fonte (o tipo `Parametro` ganhou `versao`). **Pendências que ficaram**: (1) a **data de emissão** do boletim e o arquivo de origem não constam do `PRD`, então são `null`/TBD e a tela diz "data de emissão do boletim não informada" — nada foi inventado; (2) GI tem padrão único de CUB base, mas o **aditivo de padrão** segue o padrão escolhido (leitura literal do `PRD` 3.2 B, a confirmar); (3) o "Avançar" **não** é travado por pendência de CUB: o que o resultado faz sem CUB é decisão da F13/F14. Estado "base desatualizada" fica preparado (a versão guarda competência e data), mas o critério é D-A3, da F24. Diferenças do previsto: o bloco do CUB entrou como **seção própria** da página de Produto, logo após as áreas, e não dentro do `PainelAreas`, que ficou intacto; `PainelCub` mostra projeto, CUB base, os quatro aditivos em tabela (faixa/opção de cada um), a soma, o CUB ajustado com fórmula expansível e a competência; `calcularCubDaAnalise` une as duas etapas com as travas da tipologia, e a F13 usará a mesma entrada. |
 
 ---
 
@@ -1371,9 +1373,9 @@ Vale para **toda** sessão futura de implementação.
 | 2.9 — Dark mode | 1 | F00, F23 | Dois temas AA | Teste de tema + contraste | `[ ]` |
 | 2.10 — Parâmetros centralizados e versionados | 1 | F11, F12, F24 | Sem número mágico | Lint + testes | `[ ]` |
 | 2.10 — Importação periódica do CUB | 1 | F24 | Versionada com fallback | Teste de versionamento | `[ ]` |
-| 3.1 — Classificação CUB | 1 | F09, F12 | Duas etapas, sem código combinado | `cub.test.ts` | `[ ]` |
-| 3.1 — Lacunas (Baixo, CAL-16, Uso Misto) | 1 | F09, F12 | Pendência, nunca valor inventado | Teste de lacuna | `[?]` |
-| 3.2 — Aditivos e CUB Ajustado | 1 | F12 | Soma única; exemplo R$ 3.154,91 | `cub.test.ts` | `[ ]` |
+| 3.1 — Classificação CUB | 1 | F09, F12 | Duas etapas, sem código combinado | `cub.test.ts` | `[>]` |
+| 3.1 — Lacunas (Baixo, CAL-16, Uso Misto) | 1 | F09, F12 | Pendência, nunca valor inventado | Teste de lacuna | `[>]` (Baixo e CAL-16 em D-R22; Uso Misto segue em D-B6) |
+| 3.2 — Aditivos e CUB Ajustado | 1 | F12 | Soma única; exemplo R$ 3.154,91 | `cub.test.ts` | `[>]` |
 | 3.3 — Quatro áreas distintas | 1 | F11 | Obra na construída, VGV na comercializável | `areas.test.ts` | `[ ]` |
 | 3.4 — API de CEP | 1 | F06 | Sem chave, falha não bloqueia | `useCep` | `[ ]` |
 | 3.4 — CUB sem API | 1 | F24 | Importação manual versionada | Teste de importação | `[ ]` |
@@ -1443,7 +1445,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 10 | 1 | F09 Tipo, tipologia e padrão | Classificação em cascata | Média | Opus | D-R18 | `[>]` |
 | 11 | 1 | F10 Pavimentos e unidades | Programa + preço por m² | Média | Sonnet | D-R19 | `[>]` |
 | 12 | 1 | F11 Áreas e indicadores | Painel de áreas e CA | Média | Opus | D-R20 | `[>]` |
-| 13 | 1 | F12 Parâmetros e CUB | CUB Ajustado discriminado | Alta | Opus | **D-B4, D-B5** | `[ ]` |
+| 13 | 1 | F12 Parâmetros e CUB | CUB Ajustado discriminado | Alta | Opus | D-R21, D-R22 | `[>]` |
 | 14 | 1 | F13 Motor econômico e API | Resultado cru completo | Alta | Opus | **D-B1, D-B2, D-B3** | `[ ]` |
 | 15 | 1 | F14 Resultado v1 | Resumo e preço máximo | Média | Sonnet | — | `[ ]` |
 | 16 | 1 | F15 Composição econômica | Tabela de custos | Média | Sonnet | — | `[ ]` |

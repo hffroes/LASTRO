@@ -22,6 +22,11 @@ export const TEXTOS_PRODUTO = {
       titulo: 'Programa do empreendimento',
       descricao: 'Quantas unidades, de que tamanho e a que preço. O VGV sai daqui: unidades × preço de venda de cada uma.',
     },
+    cub: {
+      titulo: 'Custo unitário da obra (CUB)',
+      descricao:
+        'O custo por m² vem da tabela CUB do Sinduscon-MG para o projeto que você descreveu, somado a quatro aditivos. O custo total da obra aparece no resultado.',
+    },
     areas: {
       titulo: 'Áreas e indicadores urbanísticos',
       descricao:
@@ -90,6 +95,45 @@ export const TEXTOS_PRODUTO = {
     comoCalculado: 'Como é calculado',
     comSeusDados: 'Com os seus dados:',
   },
+} as const;
+
+// PRD 3.1 e 3.2. O CUB Ajustado é CUB base × (1 + soma dos aditivos): uma multiplicação só.
+export const TEXTOS_CUB = {
+  aguardando: 'Aparece quando a tipologia, os pavimentos e o padrão estiverem preenchidos.',
+  projeto: 'Projeto CUB',
+  cubBase: 'CUB base',
+  aditivos: 'Aditivos',
+  somaAditivos: 'Soma dos aditivos',
+  cubAjustado: 'CUB ajustado',
+  formula: 'CUB base × (1 + soma dos aditivos)',
+  formulaNota: 'Os quatro aditivos são somados e aplicados de uma vez sobre o CUB base, não um sobre o outro.',
+  comSeusDados: 'Com os seus dados:',
+  competencia: 'Base Sinduscon-MG, competência',
+  versaoBase: 'versão',
+  emissaoNaoInformada: 'data de emissão do boletim não informada',
+  aditivoFundacao: 'Fundação',
+  aditivoPadrao: 'Padrão de acabamento',
+  aditivoTopografia: 'Topografia',
+  aditivoFormato: 'Formato do lote',
+  tituloPendencia: 'Sem CUB publicado para esta combinação',
+  rotuloProjeto: (projeto: string, tipologia: string) => `${tipologia} → projeto ${projeto}`,
+  // D-B4: a tabela não publica o padrão Baixo. A lastro não estima o valor.
+  pendenciaPadraoSemValor: (projeto: string) =>
+    `A tabela CUB do Sinduscon-MG não publica valor do padrão Baixo para o projeto ${projeto}. A lastro não estima um valor que o boletim não traz: com o padrão Normal ou Alto há CUB publicado.`,
+  // D-B5: CAL-16 não existe na tabela.
+  pendenciaProjetoSemTabela: (projeto: string) =>
+    `A tabela CUB do Sinduscon-MG não tem o projeto ${projeto} (andares livres com mais de 8 pavimentos). A lastro não estima um valor que o boletim não traz.`,
+  pendenciaRodape: 'Isso não é um erro no que você preencheu. As áreas e o programa seguem válidos.',
+} as const;
+
+// Faixas do aditivo de fundação, no vocabulário da tabela do PRD 3.2 A (D-R21: "até N" inclui N).
+export const ROTULO_FAIXA_FUNDACAO = {
+  umPavimento: '1 pavimento',
+  doisOuMais: '2 ou mais pavimentos',
+  ate4: 'até 4 pavimentos',
+  de5a8: 'de 5 a 8 pavimentos',
+  de9a16: 'de 9 a 16 pavimentos',
+  acima16: 'mais de 16 pavimentos',
 } as const;
 
 // Campos travados pela tipologia explicam o motivo em vez de só desabilitar (aceite de UX da F10).

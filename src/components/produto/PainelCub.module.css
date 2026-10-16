@@ -1,0 +1,175 @@
+.painel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-16);
+}
+
+.aguardando {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  margin: 0;
+}
+
+.resumo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--lastro-space-12);
+  margin: 0;
+}
+
+@media (min-width: 640px) {
+  .resumo {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.linhaResumo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-gap-campo);
+  min-width: 0;
+  padding: var(--lastro-space-12) var(--lastro-space-16);
+  background: var(--lastro-surface-sunken);
+  border: 1px solid var(--lastro-border-default);
+  border-radius: var(--lastro-radius-sm);
+}
+
+.rotulo {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-rotulo);
+  font-weight: 600;
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-rotulo);
+}
+
+.valor {
+  margin: 0;
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-mono);
+  font-weight: 500;
+  color: var(--lastro-text-primary);
+}
+
+.detalhe {
+  margin: 0;
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+}
+
+.paragrafo {
+  margin: 0;
+}
+
+.paragrafo + .paragrafo {
+  margin-top: var(--lastro-space-8);
+}
+
+/* Tabela dos aditivos: uma linha por aditivo, valor em mono à direita, soma no rodapé. */
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  line-height: var(--lastro-leading-ui);
+}
+
+.legenda {
+  text-align: left;
+  padding-bottom: var(--lastro-space-8);
+  font-size: var(--lastro-font-size-rotulo);
+  font-weight: 600;
+  color: var(--lastro-text-rotulo);
+}
+
+.tabela tr {
+  border-bottom: 1px solid var(--lastro-border-default);
+}
+
+.tabela tfoot tr {
+  border-bottom: 0;
+  border-top: 1px solid var(--lastro-border-strong);
+}
+
+.celulaRotulo {
+  padding: var(--lastro-space-8) 0;
+  text-align: left;
+  font-weight: 500;
+  color: var(--lastro-text-primary);
+}
+
+.tabela tfoot .celulaRotulo {
+  font-weight: 600;
+}
+
+.celulaDetalhe {
+  display: block;
+  font-size: var(--lastro-font-size-auxiliar);
+  font-weight: 400;
+  color: var(--lastro-text-secondary);
+}
+
+.celulaValor {
+  padding: var(--lastro-space-8) 0 var(--lastro-space-8) var(--lastro-space-12);
+  text-align: right;
+  white-space: nowrap;
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-mono);
+  color: var(--lastro-text-primary);
+}
+
+.ajustado {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-gap-campo);
+  padding: var(--lastro-space-12) var(--lastro-space-16);
+  background: var(--lastro-info-bg);
+  border: 1px solid var(--lastro-info-border);
+  border-radius: var(--lastro-radius-sm);
+}
+
+/* O resultado da fase: maior que os demais números, ainda no tamanho de texto do guia. */
+.valorDestaque {
+  font-family: var(--lastro-font-mono);
+  font-size: var(--lastro-font-size-h2);
+  font-weight: 600;
+  color: var(--lastro-text-primary);
+}
+
+.formula {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+}
+
+.formula summary {
+  cursor: pointer;
+  color: var(--lastro-action-text);
+  border-radius: var(--lastro-radius-sm);
+}
+
+.formula summary:focus-visible {
+  outline: none;
+  box-shadow: var(--lastro-anel-foco);
+}
+
+.formula p {
+  margin: var(--lastro-space-4) 0 0;
+}
+
+.conta {
+  font-family: var(--lastro-font-mono);
+  color: var(--lastro-text-primary);
+}
+
+.competencia {
+  margin: 0;
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+}

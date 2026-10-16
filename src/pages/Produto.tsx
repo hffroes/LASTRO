@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { PainelAreas } from '../components/produto/PainelAreas';
+import { PainelCub } from '../components/produto/PainelCub';
 import { ProgramaEmpreendimento, type CampoNumericoProduto } from '../components/produto/ProgramaEmpreendimento';
 import { SeletorPadrao } from '../components/produto/SeletorPadrao';
 import { SeletorTipologia } from '../components/produto/SeletorTipologia';
@@ -11,6 +12,7 @@ import { ehUnidadeUnica, pavimentosFixos } from '../data/tipologias';
 import { useAnalise } from '../hooks/useAnalise';
 import type { LeituraNumero } from '../utils/motor/formatacao';
 import { calcularAreas, montarEntradaAreas } from '../utils/motor/areas';
+import { calcularCubDaAnalise } from '../utils/motor/cub';
 import { calcularPrecoM2VendidoCentavos, calcularProgramaEfetivo } from '../utils/motor/produto';
 import {
   MENSAGENS_PRODUTO,
@@ -100,6 +102,7 @@ export function Produto() {
   // painel só mostra o que tem base; mesma entrada que o motor econômico usará na F13.
   const entradaAreas = montarEntradaAreas(analise.terreno.areaTotalM2, produto);
   const resultadoAreas = calcularAreas(entradaAreas);
+  const resultadoCub = calcularCubDaAnalise(analise.terreno, produto);
   const precoM2VendidoCentavos =
     erros.areaUnidade || erros.precoUnidade
       ? null
@@ -176,6 +179,14 @@ export function Produto() {
             aoLer={registrarLeitura}
             aoSair={marcarTocado}
           />
+        </section>
+
+        <section className={estilosEtapa.secao} aria-labelledby="secao-cub">
+          <h2 id="secao-cub" className={estilosEtapa.tituloSecao}>
+            {secoes.cub.titulo}
+          </h2>
+          <p className={estilosEtapa.descricaoSecao}>{secoes.cub.descricao}</p>
+          <PainelCub resultado={resultadoCub} tipologia={produto.tipologia} pavimentos={entradaAreas.pavimentos} />
         </section>
 
         {tentouAvancar && pendencias.length > 0 && (

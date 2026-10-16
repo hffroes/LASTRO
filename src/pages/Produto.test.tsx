@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { MOTIVO_PAVIMENTOS_FIXOS, MOTIVO_UNIDADE_UNICA, TEXTOS_PRODUTO } from '../content/produto';
+import { MOTIVO_PAVIMENTOS_FIXOS, MOTIVO_UNIDADE_UNICA, TEXTOS_CUB, TEXTOS_PRODUTO } from '../content/produto';
 import { AnaliseProvider, CHAVE_RASCUNHO } from '../hooks/useAnalise';
 import { MENSAGENS_PRODUTO } from '../utils/validacao/produto';
 import { Produto } from './Produto';
@@ -152,7 +152,7 @@ describe('Produto', () => {
       renderProduto();
 
       const secoes = screen.getAllByRole('heading', { level: 2 }).map((titulo) => titulo.textContent);
-      expect(secoes).toEqual(['Tipo e tipologia', 'Padrão de acabamento', 'Programa do empreendimento', 'Áreas e indicadores urbanísticos']);
+      expect(secoes).toEqual(['Tipo e tipologia', 'Padrão de acabamento', 'Programa do empreendimento', 'Áreas e indicadores urbanísticos', 'Custo unitário da obra (CUB)']);
     });
 
     it('as tipologias só aparecem depois do tipo, e são só as dele', () => {
@@ -280,6 +280,143 @@ describe('Produto', () => {
       expect(entrada(campos.pavimentos).value).toBe('12');
       expect(entrada(campos.areaUnidade).value).toBe('400,00');
       expect(entrada(campos.precoUnidade).value).toBe('2.000.000,00');
+    });
+
+    describe('custo unitário da obra — CUB (F12)', () => {
+      // O terreno do rascunho tem topografia Plana e formato Regular. Aqui é preciso a Regular da
+      // referência do PRD, então o teste do caso de referência troca a topografia no rascunho.
+      function rascunhoComTopografia(topografia: string, formatoLote = 'regular') {
+        salvarRascunho({ ...TERRENO_VALIDO, topografia, formatoLote });
+      }
+
+      it('caso de referência do PRD: prédio Normal, 4 pav., topografia Regular → R$ 3.154,91/m²', () => {
+        rascunhoComTopografia('regular');
+        renderProduto();
+
+        escolher(campos.tipoProjeto, 'Residencial');
+        escolher(campos.tipologia, 'Prédio');
+        escolher(campos.padrao, 'Normal');
+        digitar(campos.pavimentos, '4');
+
+        expect(screen.getByTestId('cub-projeto').textContent).toBe('R-8');
+        expect(screen.getByTestId('cub-base').textContent).toBe('R$ 2.554,58/m²');
+        expect(screen.getByTestId('cub-soma').textContent).toBe('23,50%');
+        expect(screen.getByTestId('cub-ajustado').textContent).toBe('R$ 3.154,91/m²');
+      });
+
+      it('discrimina os quatro aditivos um a um, com a faixa e a opção de cada', () => {
+        rascunhoComTopografia('regular');
+        renderProduto();
+
+        escolher(campos.tipoProjeto, 'Residencial');
+        escolher(campos.tipologia, 'Prédio');
+        escolher(campos.padrao, 'Normal');
+        digitar(campos.pavimentos, '4');
+
+        const tabela = screen.getByRole('table', { name: TEXTOS_CUB.aditivos });
+        const linhas = within(tabela).getAllByRole('row').map((linha) => linha.textContent);
+        expect(linhas).toEqual([
+          'Fundaçãoaté 4 pavimentos7,00%',
+          'Padrão de acabamentoNormal15,00%',
+          'TopografiaRegular1,50%',
+          'Formato do loteRegular0,00%',
+          'Soma dos aditivos23,50%',
+        ]);
+      });
+
+      it('mostra a competência e a versão da base, e que a data de emissão não foi informada', () => {
+        renderProduto();
+
+        escolher(campos.tipoProjeto, 'Residencial');
+        escolher(campos.tipologia, 'Prédio');
+        escolher(campos.padrao, 'Normal');
+        digitar(campos.pavimentos, '4');
+
+        expect(screen.getByText(/Base Sinduscon-MG, competência Ago\/2026 · versão cub-2026-08/)).toBeTruthy();
+        expect(screen.getByText(new RegExp(TEXTOS_CUB.emissaoNaoInformada))).toBeTruthy();
+      });
+
+      it('mudar padrão, pavimentos e o terreno reclassifica e recalcula na hora', () => {
+        rascunhoComTopografia('regular');
+        renderProduto();
+        escolher(campos.tipoProjeto, 'Residencial');
+        escolher(campos.tipologia, 'Prédio');
+        escolher(campos.padrao, 'Normal');
+        digitar(campos.pavimentos, '4');
+
+        escolher(campos.padrao, 'Alto');
+        expect(screen.getByTestId('cub-base').textContent).toBe('R$ 3.120,21/m²');
+
+        digitar(campos.pavimentos, '10');
+        expect(screen.getByTestId('cub-projeto').textContent).toBe('R-16');
+        expect(screen.getByTestId('cub-base').textContent).toBe('R$ 3.223,52/m²');
+        expect(screen.getByTestId('cub-soma').textContent).toBe('36,50%'); // 15% + 20% + 1,5% + 0%
+      });
+
+      it('antes de classificar, diz o que falta e não mostra número', () => {
+        renderProduto();
+
+        expect(screen.getByText(TEXTOS_CUB.aguardando)).toBeTruthy();
+        expect(screen.queryByTestId('cub-ajustado')).toBeNull();
+      });
+
+      it('D-B4: padrão Baixo sem CUB publicado vira aviso, sem número, e diz que não é erro do usuário', () => {
+        renderProduto();
+
+        escolher(campos.tipoProjeto, 'Residencial');
+        escolher(campos.tipologia, 'Prédio');
+        escolher(campos.padrao, 'Baixo');
+        digitar(campos.pavimentos, '10');
+
+        expect(screen.getByText(TEXTOS_CUB.tituloPendencia)).toBeTruthy();
+        expect(screen.getByText(TEXTOS_CUB.pendenciaPadraoSemValor('R-16'))).toBeTruthy();
+        expect(screen.getByText(TEXTOS_CUB.pendenciaRodape)).toBeTruthy();
+        expect(screen.queryByTestId('cub-base')).toBeNull();
+        expect(screen.queryByTestId('cub-ajustado')).toBeNull();
+        // Os aditivos continuam discriminados: não dependem do valor que falta.
+        // Fundação 9–16 (15%) + Baixo (10%) + topografia Plana (0%) + formato Regular (0%).
+        expect(screen.getByTestId('cub-soma').textContent).toBe('25,00%');
+      });
+
+      it('D-B5: andares livres com 9+ pavimentos (CAL-16) vira aviso de projeto sem tabela', () => {
+        renderProduto();
+
+        escolher(campos.tipoProjeto, 'Comercial');
+        escolher(campos.tipologia, 'Andares livres');
+        escolher(campos.padrao, 'Normal');
+        digitar(campos.pavimentos, '12');
+
+        expect(screen.getByTestId('cub-projeto').textContent).toBe('CAL-16');
+        expect(screen.getByText(TEXTOS_CUB.pendenciaProjetoSemTabela('CAL-16'))).toBeTruthy();
+        expect(screen.queryByTestId('cub-ajustado')).toBeNull();
+      });
+
+      it('a pendência de CUB não trava o Avançar: o resultado decidirá o que fazer com ela (F13)', () => {
+        renderProduto();
+
+        escolher(campos.tipoProjeto, 'Comercial');
+        escolher(campos.tipologia, 'Andares livres');
+        escolher(campos.padrao, 'Normal');
+        digitar(campos.pavimentos, '12');
+        digitar(campos.unidadesPorPavimento, '4');
+        preencherUnidade();
+        avancar();
+
+        expect(screen.getByText('tela de resultado')).toBeTruthy();
+      });
+
+      it('galpão: projeto GI, 1 pavimento, e o CUB base é o mesmo nos três padrões', () => {
+        renderProduto();
+
+        escolher(campos.tipoProjeto, 'Galpões');
+        escolher(campos.padrao, 'Baixo');
+        const baseBaixo = screen.getByTestId('cub-base').textContent;
+        escolher(campos.padrao, 'Alto');
+
+        expect(screen.getByTestId('cub-projeto').textContent).toBe('GI');
+        expect(screen.getByTestId('cub-base').textContent).toBe('R$ 1.333,76/m²');
+        expect(baseBaixo).toBe('R$ 1.333,76/m²');
+      });
     });
 
     describe('áreas e indicadores urbanísticos (F11)', () => {
