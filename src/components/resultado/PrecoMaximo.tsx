@@ -2,6 +2,7 @@ import { Equal, TrendingDown, TrendingUp } from 'lucide-react';
 import { TEXTOS_RESULTADO } from '../../content/resultado';
 import type { ResultadoEconomiaDto } from '../../types/analise';
 import { formatarMoeda, formatarMoedaComSinal } from '../../utils/motor/formatacao';
+import { Etiqueta } from '../ui/Etiqueta';
 import { FraseFixoResolvido } from './TogglePerspectiva';
 import estilos from './PrecoMaximo.module.css';
 
@@ -11,13 +12,25 @@ const ICONES = { sobra: TrendingUp, deficit: TrendingDown, empate: Equal } as co
 
 interface PropriedadesPrecoMaximo {
   economia: Pick<ResultadoEconomiaDto, 'resultadoTerrenoCentavos' | 'precoPedidoCentavos' | 'resultadoLiquidoCentavos'>;
+  /** Premissas ajustadas no cenário (F17): com alguma, o cartão diz que os números são de um cenário. */
+  ajustadas?: number;
+}
+
+// F17: a marca do cenário ajustado, logo abaixo do título do cartão, nas duas leituras.
+export function MarcaCenario({ ajustadas }: { ajustadas: number }) {
+  if (ajustadas === 0) return null;
+  return (
+    <Etiqueta tom="info" data-testid="marca-cenario">
+      {TEXTOS_RESULTADO.cenarios.marcaCartao(ajustadas)}
+    </Etiqueta>
+  );
 }
 
 // O essencial da análise, na primeira dobra (F14): quanto o terreno pode custar e como o preço pedido se
 // compara. O preço máximo recomendado é exatamente o Resultado do Terreno da perspectiva Terrenista, e a
 // sobra ou o déficit é o Resultado Líquido (PRD 4.1), sem arredondar nem reinterpretar. A diferença entre
 // sobra e déficit vem de palavra, ícone e cor juntos: a cor nunca é o único sinal.
-export function PrecoMaximo({ economia }: PropriedadesPrecoMaximo) {
+export function PrecoMaximo({ economia, ajustadas = 0 }: PropriedadesPrecoMaximo) {
   const { precoMaximo } = TEXTOS_RESULTADO;
   const liquido = economia.resultadoLiquidoCentavos;
   const leitura: Leitura = liquido > 0 ? 'sobra' : liquido < 0 ? 'deficit' : 'empate';
@@ -32,6 +45,7 @@ export function PrecoMaximo({ economia }: PropriedadesPrecoMaximo) {
         {precoMaximo.titulo}
       </h2>
       <FraseFixoResolvido perspectiva="terrenista" className={estilos.explicacao} />
+      <MarcaCenario ajustadas={ajustadas} />
 
       <p
         className={estilos.valorMaximo}

@@ -45,3 +45,28 @@ export interface VersaoCub {
 export interface RepositorioCub {
   obterVersaoVigente(): VersaoCub;
 }
+
+// ——— Premissas ajustáveis (F17, PRD 2.6 e 10.2) ———
+
+// O que o usuário pode mudar no resultado para explorar um "e se...": o preço de venda e a taxa de
+// ocupação, que ele próprio informou na Etapa 2, e o lucro, as despesas gerais e o CUB ajustado, que
+// são da lastro. Na ordem do painel.
+export type PremissaAjustavel = 'precoUnidade' | 'lucroIncorporador' | 'despesasGerais' | 'taxaOcupacao' | 'cubAjustado';
+
+export const PREMISSAS_AJUSTAVEIS: readonly PremissaAjustavel[] = [
+  'precoUnidade',
+  'lucroIncorporador',
+  'despesasGerais',
+  'taxaOcupacao',
+  'cubAjustado',
+];
+
+// Só o que o usuário mudou: premissa ausente vale o original. Preço e CUB em centavos (o CUB por m²),
+// percentuais em pontos-base. Vive só na análise aberta: nunca altera um parâmetro global (PRD 2.10).
+export type AjustesPremissas = Partial<Record<PremissaAjustavel, number>>;
+
+// Faixa em pontos-base, com os dois limites dentro dela.
+export interface FaixaPontosBase {
+  minimo: number;
+  maximo: number;
+}

@@ -178,6 +178,16 @@
   --lastro-ilustracao-traco: var(--lastro-text-secondary);
   --lastro-ilustracao-preenchimento: var(--lastro-surface-sunken);
   --lastro-ilustracao-traco-largura: 1.75px;
+
+  /* Etiquetas de status — adição da F17, valores do guia (seção 05, "Status e etiquetas"): pílula de
+     12/600 com 4 × 10px de respiro e um ponto de 6px. As cores vêm dos tokens semânticos (info para
+     "Ajustada", como o "Rascunho" do guia), que já têm o par escuro. */
+  --lastro-etiqueta-respiro: 4px 10px;
+  --lastro-etiqueta-ponto: 6px;
+
+  /* Gaveta do mobile (premissas ajustáveis, F17): sobe do pé da tela e deixa uma faixa da página à
+     vista, para ficar claro que ela está por cima do resultado e não é outra página. */
+  --lastro-gaveta-altura-max: 88vh;
 }
 
 /* Semântico (tema escuro) — adição F00 (plan.md), remapeia sobre os tokens --lastro-dark-* já existentes */

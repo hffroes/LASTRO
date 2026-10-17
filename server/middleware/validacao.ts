@@ -1,5 +1,7 @@
 import type { RequestHandler } from 'express';
 import type { Analise } from '../../src/types/analise';
+import type { AjustesPremissas } from '../../src/types/parametros';
+import { lerAjustesDoPayload } from '../../src/utils/validacao/ajustes';
 import { lerAnaliseDoPayload } from '../../src/utils/validacao/analise';
 import { responderErro } from './erros';
 
@@ -22,6 +24,20 @@ export const validarCorpoDaAnalise: RequestHandler = (req, res, next) => {
     );
     return;
   }
+  // Os ajustes de premissa (F17) dependem da análise (o VGV usa o total de unidades), então vêm depois dela.
+  const leituraAjustes = lerAjustesDoPayload((req.body as Record<string, unknown>).ajustes, analise);
+  if (leituraAjustes.ajustes === null) {
+    const corpoInvalido = leituraAjustes.erros.some((erro) => erro.etapa === 'corpo');
+    responderErro(
+      res,
+      400,
+      corpoInvalido ? 'CORPO_INVALIDO' : 'VALIDACAO_FALHOU',
+      corpoInvalido ? 'O corpo da requisição não tem o formato esperado.' : 'Algum ajuste de premissa precisa de revisão.',
+      leituraAjustes.erros,
+    );
+    return;
+  }
   res.locals.analise = analise satisfies Analise;
+  res.locals.ajustes = leituraAjustes.ajustes satisfies AjustesPremissas;
   next();
 };

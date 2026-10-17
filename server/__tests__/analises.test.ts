@@ -303,6 +303,77 @@ describe('POST /api/v1/analises — validação obrigatória no backend', () => 
   });
 });
 
+describe('POST /api/v1/analises — premissas ajustadas (F17)', () => {
+  async function dadosDe(base: string, corpo: unknown) {
+    const resposta = await postar(base, corpo);
+    const json = (await resposta.json()) as { dados: RespostaAnalise };
+    return { status: resposta.status, dados: json.dados };
+  }
+
+  it('recalcula com os ajustes e registra original e usado no snapshot', async () => {
+    const base = await subir();
+    const { status, dados } = await dadosDe(base, { ...payloadValido(), ajustes: { precoUnidade: 99_000_000 } });
+    expect(status).toBe(200);
+    if (dados.situacao !== 'calculado') throw new Error(dados.situacao);
+    // Preço +10%, conferido à mão em premissas.test.ts.
+    expect(dados.economia.resultadoTerrenoCentavos).toBe(304_101_600);
+    expect(dados.premissas.ajustes.quantidade).toBe(1);
+    expect(dados.premissas.ajustes.premissas.precoUnidade).toEqual({ original: 90_000_000, usado: 99_000_000, ajustada: true });
+  });
+
+  it('é o mesmo motor da tela: a resposta é idêntica à execução direta com os ajustes', async () => {
+    const base = await subir();
+    const ajustes = { lucroIncorporador: 2_500, cubAjustado: 300_000 };
+    const { dados } = await dadosDe(base, { ...payloadValido(), ajustes });
+    expect(dados).toEqual(gerarAnalise(lerAnaliseDoPayload(payloadValido()).analise!, {}, ajustes));
+  });
+
+  it('o ajuste não contamina o padrão: o pedido seguinte, sem ajustes, volta ao original', async () => {
+    const base = await subir();
+    await dadosDe(base, { ...payloadValido(), ajustes: { lucroIncorporador: 3_000, despesasGerais: 1_500, taxaOcupacao: 5_000 } });
+    const { dados } = await dadosDe(base, payloadValido());
+    if (dados.situacao !== 'calculado') throw new Error(dados.situacao);
+    expect(dados.economia.resultadoTerrenoCentavos).toBe(207_621_600);
+    expect(dados.premissas.ajustes.quantidade).toBe(0);
+    expect(dados.premissas.lucroIncorporador.pontosBase).toBe(2_200);
+  });
+
+  it('ajuste inválido: 400 VALIDACAO_FALHOU com etapa "ajustes", o campo e a mensagem', async () => {
+    const base = await subir();
+    const resposta = await postar(base, { ...payloadValido(), ajustes: { despesasGerais: 10_001, cubAjustado: 0 } });
+    const corpo = (await resposta.json()) as { erro: { codigo: string; detalhes: { etapa: string; campo: string }[] } };
+    expect(resposta.status).toBe(400);
+    expect(corpo.erro.codigo).toBe('VALIDACAO_FALHOU');
+    expect(corpo.erro.detalhes.map((d) => `${d.etapa}.${d.campo}`)).toEqual(['ajustes.despesasGerais', 'ajustes.cubAjustado']);
+  });
+
+  it('"ajustes" que não é objeto: 400 CORPO_INVALIDO', async () => {
+    const base = await subir();
+    const resposta = await postar(base, { ...payloadValido(), ajustes: [1, 2] });
+    expect(resposta.status).toBe(400);
+    expect(((await resposta.json()) as { erro: { codigo: string } }).erro.codigo).toBe('CORPO_INVALIDO');
+  });
+
+  it('CUB ajustado que leva a obra além do que a conta representa: 422, sem explodir', async () => {
+    const base = await subir();
+    const payload = payloadValido();
+    payload.terreno.areaTotalM2 = 10_000_000;
+    payload.produto.pavimentos = 200;
+    const resposta = await postar(base, { ...payload, ajustes: { cubAjustado: 10_000_000 } });
+    expect(resposta.status).toBe(422);
+  });
+
+  it('recalcula em menos de 500 ms (PRD 6.2)', async () => {
+    const base = await subir();
+    const corpo = { ...payloadValido(), ajustes: { precoUnidade: 99_000_000, taxaOcupacao: 5_000 } };
+    await postar(base, corpo);
+    const inicio = performance.now();
+    const resposta = await postar(base, corpo);
+    expect(resposta.status).toBe(200);
+    expect(performance.now() - inicio).toBeLessThan(500);
+  });
+});
+
 describe('formato consistente e rotas', () => {
   it('rota inexistente da API responde 404 em JSON, no mesmo formato de erro', async () => {
     const base = await subir();

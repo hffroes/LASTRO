@@ -19,14 +19,23 @@ const percentual = (pontosBase: number) => `${formatarNumeroBr(pontosBase)}%`;
 export function DetalheDespesas({ economia, premissas }: PropriedadesDetalheDespesas) {
   const { despesas: texto } = TEXTOS_RESULTADO;
   const { despesasGerais } = premissas;
+  // F17: com as despesas ajustadas, os itens e a divergência continuam sendo os do padrão da lastro; o
+  // total do cenário é o ajustado, e a tela diz que os itens não o compõem.
+  const cenario = premissas.ajustes.premissas.despesasGerais;
+  const totalPadrao = cenario.original;
   const rotulo = (chave: string) => texto.rotulos[chave] ?? chave;
   const divergencia = texto.divergencia
     .replace('{soma}', percentual(despesasGerais.somaItemizacaoPontosBase))
-    .replace('{total}', percentual(despesasGerais.pontosBase));
-  const temDivergencia = despesasGerais.somaItemizacaoPontosBase !== despesasGerais.pontosBase;
+    .replace('{total}', percentual(totalPadrao));
+  const temDivergencia = despesasGerais.somaItemizacaoPontosBase !== totalPadrao;
 
   return (
     <Expansivel titulo={texto.titulo}>
+      {cenario.ajustada && (
+        <Alerta tom="info" titulo={texto.ajustadaTitulo}>
+          {texto.ajustada(percentual(cenario.usado), percentual(totalPadrao))}
+        </Alerta>
+      )}
       <p className={estilos.introducao}>{texto.introducao}</p>
       <dl className={estilos.lista} data-testid="detalhe-despesas">
         {Object.entries(despesasGerais.componentesAplicados).map(([chave, pontosBase]) => (
@@ -38,7 +47,9 @@ export function DetalheDespesas({ economia, premissas }: PropriedadesDetalheDesp
         <div className={`${estilos.item} ${estilos.total}`}>
           <dt>{texto.total}</dt>
           <dd data-testid="despesa-total">
-            {percentual(despesasGerais.pontosBase)} · {formatarMoedaComSinal(economia.despesasGeraisCentavos)}
+            {cenario.ajustada
+              ? percentual(totalPadrao)
+              : `${percentual(despesasGerais.pontosBase)} · ${formatarMoedaComSinal(economia.despesasGeraisCentavos)}`}
           </dd>
         </div>
       </dl>

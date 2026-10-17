@@ -1,3 +1,4 @@
+import type { PremissaAjustavel } from './parametros';
 import { criarProdutoVazio, type DadosProduto } from './produto';
 import { criarTerrenoVazio, type DadosTerreno } from './terreno';
 
@@ -24,7 +25,8 @@ export function criarAnaliseVazia(): Analise {
 // Um problema encontrado na validação do backend, no mesmo vocabulário da tela: a etapa e o campo são
 // os que o formulário usa, e a mensagem é a mesma de utils/validacao.
 export interface ErroValidacao {
-  etapa: 'corpo' | 'objetivo' | 'terreno' | 'produto';
+  // 'ajustes': premissas ajustadas no resultado (F17), validadas depois da análise.
+  etapa: 'corpo' | 'objetivo' | 'terreno' | 'produto' | 'ajustes';
   campo: string;
   mensagem: string;
 }
@@ -36,6 +38,15 @@ export interface ParametroUsado {
   provisorio: boolean;
   fonte: string;
   versao: string;
+}
+
+// F17: uma premissa ajustável como valeu na conta. "original" é o valor da análise sem ajuste (o que o
+// usuário informou nas etapas, ou o parâmetro da lastro), "usado" é o que entrou na conta; ajustada = os
+// dois diferem. Mesma unidade da premissa: centavos para preço e CUB por m², pontos-base para percentuais.
+export interface PremissaDoCenario {
+  original: number;
+  usado: number;
+  ajustada: boolean;
 }
 
 // Premissas e versão de dados usadas no cálculo, preservadas junto do resultado.
@@ -66,6 +77,11 @@ export interface SnapshotPremissas {
     foraDoTotal: Record<string, number>;
     // A soma de TODOS os itens da fonte: maior que o total aplicado (D-B2), e a tela sinaliza.
     somaItemizacaoPontosBase: number;
+  };
+  // F17 (PRD 10.5): o snapshot distingue premissa padrão de premissa ajustada, para auditoria.
+  ajustes: {
+    quantidade: number;
+    premissas: Record<PremissaAjustavel, PremissaDoCenario>;
   };
 }
 

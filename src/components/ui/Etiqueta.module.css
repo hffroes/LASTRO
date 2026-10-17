@@ -1,0 +1,30 @@
+/* "Neutro" no cinza do "Arquivado" do guia; "info" no azul do "Rascunho". */
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--lastro-gap-campo);
+  padding: var(--lastro-etiqueta-respiro);
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  font-weight: 600;
+  line-height: var(--lastro-leading-ui);
+  border: 1px solid var(--lastro-border-default);
+  border-radius: var(--lastro-radius-pill);
+  background: var(--lastro-surface-sunken);
+  color: var(--lastro-text-secondary);
+}
+
+.etiqueta[data-tom='info'] {
+  background: var(--lastro-info-bg);
+  border-color: var(--lastro-info-border);
+  color: var(--lastro-info-title);
+}
+
+.ponto {
+  flex: none;
+  width: var(--lastro-etiqueta-ponto);
+  height: var(--lastro-etiqueta-ponto);
+  border-radius: var(--lastro-radius-pill);
+  background: currentColor;
+}
