@@ -1,6 +1,8 @@
 import { act, renderHook } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { criarAnaliseVazia } from '../types/analise';
+import { criarProdutoVazio } from '../types/produto';
 import { criarTerrenoVazio } from '../types/terreno';
 import { AnaliseProvider, CHAVE_RASCUNHO, useAnalise } from './useAnalise';
 
@@ -24,7 +26,7 @@ describe('useAnalise', () => {
   it('começa vazia e sem objetivo padrão', () => {
     const { result } = renderUseAnalise();
 
-    expect(result.current.analise).toEqual({ objetivo: null, terreno: criarTerrenoVazio() });
+    expect(result.current.analise).toEqual(criarAnaliseVazia());
   });
 
   it('registra o objetivo e os dados do terreno', () => {
@@ -36,6 +38,7 @@ describe('useAnalise', () => {
     expect(result.current.analise).toEqual({
       objetivo: 'executarEmpreendimento',
       terreno: { ...criarTerrenoVazio(), nome: 'Lote da Rua Alagoas' },
+      produto: criarProdutoVazio(),
     });
   });
 
@@ -68,7 +71,7 @@ describe('useAnalise', () => {
     for (const bruto of ['{não é json', JSON.stringify({ versao: 99, analise: { objetivo: null, terreno: { nome: 'x' } } })]) {
       window.sessionStorage.setItem(CHAVE_RASCUNHO, bruto);
       const { result, unmount } = renderUseAnalise();
-      expect(result.current.analise).toEqual({ objetivo: null, terreno: criarTerrenoVazio() });
+      expect(result.current.analise).toEqual(criarAnaliseVazia());
       unmount();
     }
   });
@@ -84,7 +87,10 @@ describe('useAnalise', () => {
 
     const { result } = renderUseAnalise();
 
-    expect(result.current.analise).toEqual({ objetivo: null, terreno: { ...criarTerrenoVazio(), nome: 'Lote 12' } });
+    expect(result.current.analise).toEqual({
+      ...criarAnaliseVazia(),
+      terreno: { ...criarTerrenoVazio(), nome: 'Lote 12' },
+    });
   });
 
   it('formato e topografia só voltam do rascunho se forem opções da tabela', () => {
@@ -127,7 +133,110 @@ describe('useAnalise', () => {
     expect(result.current.analise).toEqual({
       objetivo: 'comprarTerreno',
       terreno: { ...criarTerrenoVazio(), nome: 'Lote 12' },
+      produto: criarProdutoVazio(),
     });
+  });
+
+  it('trocar o tipo de projeto apaga a tipologia e mantém o padrão (cascata do PRD 3.1)', () => {
+    const { result } = renderUseAnalise();
+
+    act(() => result.current.definirTipoProjeto('residencial'));
+    act(() => result.current.atualizarProduto({ tipologia: 'predio', padrao: 'alto' }));
+    act(() => result.current.definirTipoProjeto('comercial'));
+
+    expect(result.current.analise.produto).toEqual({
+      ...criarProdutoVazio(),
+      tipoProjeto: 'comercial',
+      tipologia: null,
+      padrao: 'alto',
+    });
+  });
+
+  it('guarda o produto no rascunho e o recupera numa nova montagem (F5)', () => {
+    const primeira = renderUseAnalise();
+    act(() => primeira.result.current.definirTipoProjeto('galpoes'));
+    act(() =>
+      primeira.result.current.atualizarProduto({ padrao: 'baixo', areaUnidadeM2: 3000.5, precoUnidadeCentavos: 900_000_000 }),
+    );
+    primeira.unmount();
+
+    const segunda = renderUseAnalise();
+
+    expect(segunda.result.current.analise.produto).toEqual({
+      ...criarProdutoVazio(),
+      tipoProjeto: 'galpoes',
+      tipologia: 'galpao',
+      padrao: 'baixo',
+      areaUnidadeM2: 3000.5,
+      precoUnidadeCentavos: 900_000_000,
+    });
+  });
+
+  it('do rascunho, contagens e preço da unidade só voltam como inteiros; a área, como número', () => {
+    window.sessionStorage.setItem(
+      CHAVE_RASCUNHO,
+      JSON.stringify({
+        versao: 1,
+        analise: {
+          objetivo: null,
+          terreno: {},
+          produto: { pavimentos: 4.5, unidadesPorPavimento: '4', areaUnidadeM2: 'x', precoUnidadeCentavos: 4500.5 },
+        },
+      }),
+    );
+
+    const { result } = renderUseAnalise();
+
+    expect(result.current.analise.produto).toEqual(criarProdutoVazio());
+  });
+
+  it('rascunho anterior à F11 (sem a taxa) volta com o padrão; a taxa apagada continua apagada', () => {
+    window.sessionStorage.setItem(
+      CHAVE_RASCUNHO,
+      JSON.stringify({ versao: 1, analise: { objetivo: null, terreno: {}, produto: { padrao: 'alto' } } }),
+    );
+    const antigo = renderUseAnalise();
+    expect(antigo.result.current.analise.produto.taxaOcupacaoPontosBase).toBe(6_000);
+    antigo.unmount();
+
+    window.sessionStorage.setItem(
+      CHAVE_RASCUNHO,
+      JSON.stringify({ versao: 1, analise: { objetivo: null, terreno: {}, produto: { taxaOcupacaoPontosBase: null } } }),
+    );
+    const apagada = renderUseAnalise();
+    expect(apagada.result.current.analise.produto.taxaOcupacaoPontosBase).toBeNull();
+  });
+
+  it('a taxa ajustada volta do rascunho só como inteiro', () => {
+    for (const [taxa, esperado] of [[5_500, 5_500], [55.5, null], ['55', null]] as const) {
+      window.sessionStorage.setItem(
+        CHAVE_RASCUNHO,
+        JSON.stringify({ versao: 1, analise: { objetivo: null, terreno: {}, produto: { taxaOcupacaoPontosBase: taxa } } }),
+      );
+      const { result, unmount } = renderUseAnalise();
+      expect(result.current.analise.produto.taxaOcupacaoPontosBase).toBe(esperado);
+      unmount();
+    }
+  });
+
+  it('do rascunho, o produto só volta com opções e combinações da tabela', () => {
+    for (const [produto, esperado] of [
+      [{ tipoProjeto: 'usoMisto', tipologia: 'casa', padrao: 'medio' }, criarProdutoVazio()],
+      [
+        { tipoProjeto: 'residencial', tipologia: 'galpao', padrao: 'alto' },
+        { ...criarProdutoVazio(), tipoProjeto: 'residencial', padrao: 'alto' },
+      ],
+      [{ tipoProjeto: null, tipologia: 'casa', padrao: null }, criarProdutoVazio()],
+      ['nada', criarProdutoVazio()],
+    ]) {
+      window.sessionStorage.setItem(
+        CHAVE_RASCUNHO,
+        JSON.stringify({ versao: 1, analise: { objetivo: null, terreno: {}, produto } }),
+      );
+      const { result, unmount } = renderUseAnalise();
+      expect(result.current.analise.produto).toEqual(esperado);
+      unmount();
+    }
   });
 
   it('segue funcionando em memória se o sessionStorage estiver bloqueado', () => {

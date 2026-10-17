@@ -4,7 +4,10 @@ import {
   dividirArredondando,
   formatarArea,
   formatarMoeda,
+  formatarInteiroBr,
+  formatarMoedaComSinal,
   formatarNumeroBr,
+  interpretarInteiroBr,
   interpretarNumeroBr,
 } from '../formatacao';
 
@@ -136,5 +139,46 @@ describe('dividirArredondando', () => {
     expect(() => dividirArredondando(-100, 3)).toThrow(RangeError);
     expect(() => dividirArredondando(1.5, 3)).toThrow(RangeError);
     expect(() => dividirArredondando(2 ** 53, 3)).toThrow(RangeError);
+  });
+});
+
+describe('interpretarInteiroBr', () => {
+  function contagem(texto: string) {
+    const leitura = interpretarInteiroBr(texto);
+    return leitura.tipo === 'valido' ? leitura.unidadesMenores : leitura.tipo;
+  }
+
+  it('lê contagens, com ou sem milhar e com casas zeradas', () => {
+    expect(contagem('4')).toBe(4);
+    expect(contagem('1.000')).toBe(1000);
+    expect(contagem('4,00')).toBe(4);
+    expect(contagem(' 16 ')).toBe(16);
+  });
+
+  it('recusa fração em vez de arredondar: "4,5 pavimentos" é erro de digitação', () => {
+    expect(contagem('4,5')).toBe('invalido');
+    expect(contagem('2.5')).toBe('invalido');
+  });
+
+  it('mantém vazio e ilegível como na leitura decimal', () => {
+    expect(contagem('')).toBe('vazio');
+    expect(contagem('quatro')).toBe('invalido');
+  });
+});
+
+describe('formatarInteiroBr', () => {
+  it('separa milhar e não mostra casas', () => {
+    expect(formatarInteiroBr(4)).toBe('4');
+    expect(formatarInteiroBr(1000)).toBe('1.000');
+    expect(formatarInteiroBr(200_000)).toBe('200.000');
+  });
+});
+
+describe('formatarMoedaComSinal', () => {
+  it('positivo e zero como a moeda comum; negativo com o sinal antes do símbolo', () => {
+    expect(formatarMoedaComSinal(207_621_600)).toBe('R$ 2.076.216,00');
+    expect(formatarMoedaComSinal(0)).toBe('R$ 0,00');
+    expect(formatarMoedaComSinal(-274_778_400)).toBe('-R$ 2.747.784,00');
+    expect(formatarMoedaComSinal(-1)).toBe('-R$ 0,01');
   });
 });

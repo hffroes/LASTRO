@@ -1,0 +1,22 @@
+/* Só o que é do Resultado; a estrutura da página vem de EtapaAnalise.module.css e cada bloco tem o seu
+   próprio módulo em components/resultado. */
+.carregando {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-body);
+  line-height: var(--lastro-leading-body);
+  color: var(--lastro-text-secondary);
+  margin: 0;
+}
+
+.listaErros {
+  margin: 0;
+  padding-left: var(--lastro-space-16);
+}
+
+.paragrafo {
+  margin: 0;
+}
+
+.paragrafo + .paragrafo {
+  margin-top: var(--lastro-space-8);
+}

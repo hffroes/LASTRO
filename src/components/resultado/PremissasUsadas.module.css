@@ -1,0 +1,19 @@
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-8);
+  margin: 0;
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+}
+
+.lista dt {
+  font-weight: 600;
+  color: var(--lastro-text-rotulo);
+}
+
+.lista dd {
+  margin: 0;
+}

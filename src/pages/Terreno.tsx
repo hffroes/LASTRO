@@ -26,6 +26,7 @@ import {
   validarEtapaTerreno,
   type CampoEtapaTerreno,
 } from '../utils/validacao/terreno';
+import estilosEtapa from './EtapaAnalise.module.css';
 import estilos from './Terreno.module.css';
 
 const OPCOES_MUNICIPIOS = MUNICIPIOS_MG.map((municipio) => ({ valor: municipio.codigoIbge, rotulo: municipio.nome }));
@@ -147,13 +148,13 @@ export function Terreno() {
     erros.area || erros.preco ? null : calcularPrecoUnitarioCentavos(precoPedidoCentavos, areaTotalM2);
 
   return (
-    <div className={estilos.pagina}>
-      <p className={estilos.sobretitulo}>{TEXTOS_TERRENO.sobretitulo}</p>
-      <h1 className={estilos.titulo}>{TEXTOS_TERRENO.titulo}</h1>
-      <p className={estilos.introducao}>{TEXTOS_TERRENO.introducao}</p>
+    <div className={estilosEtapa.pagina}>
+      <p className={estilosEtapa.sobretitulo}>{TEXTOS_TERRENO.sobretitulo}</p>
+      <h1 className={estilosEtapa.titulo}>{TEXTOS_TERRENO.titulo}</h1>
+      <p className={estilosEtapa.introducao}>{TEXTOS_TERRENO.introducao}</p>
 
       <form
-        className={estilos.formulario}
+        className={estilosEtapa.formulario}
         noValidate
         onSubmit={(evento) => {
           // Enter num campo equivale a "Avançar", com a mesma trava.
@@ -161,11 +162,11 @@ export function Terreno() {
           aoAvancar();
         }}
       >
-        <section className={estilos.secao} aria-labelledby="secao-objetivo">
-          <h2 id="secao-objetivo" className={estilos.tituloSecao}>
+        <section className={estilosEtapa.secao} aria-labelledby="secao-objetivo">
+          <h2 id="secao-objetivo" className={estilosEtapa.tituloSecao}>
             {secoes.objetivo.titulo}
           </h2>
-          <p className={estilos.descricaoSecao}>{secoes.objetivo.descricao}</p>
+          <p className={estilosEtapa.descricaoSecao}>{secoes.objetivo.descricao}</p>
           <GrupoOpcoes
             nome="objetivo"
             legenda={campos.objetivo}
@@ -176,8 +177,8 @@ export function Terreno() {
           />
         </section>
 
-        <section className={estilos.secao} aria-labelledby="secao-identificacao">
-          <h2 id="secao-identificacao" className={estilos.tituloSecao}>
+        <section className={estilosEtapa.secao} aria-labelledby="secao-identificacao">
+          <h2 id="secao-identificacao" className={estilosEtapa.tituloSecao}>
             {secoes.identificacao.titulo}
           </h2>
           <Campo
@@ -275,11 +276,11 @@ export function Terreno() {
           </Campo>
         </section>
 
-        <section className={estilos.secao} aria-labelledby="secao-fisicos">
-          <h2 id="secao-fisicos" className={estilos.tituloSecao}>
+        <section className={estilosEtapa.secao} aria-labelledby="secao-fisicos">
+          <h2 id="secao-fisicos" className={estilosEtapa.tituloSecao}>
             {secoes.fisicos.titulo}
           </h2>
-          <p className={estilos.descricaoSecao}>{secoes.fisicos.descricao}</p>
+          <p className={estilosEtapa.descricaoSecao}>{secoes.fisicos.descricao}</p>
 
           <Campo id="campo-area" rotulo={campos.area} erro={erroVisivel('area')} dica={campos.dicaArea}>
             {(controle) => (
@@ -321,11 +322,11 @@ export function Terreno() {
           />
         </section>
 
-        <section className={estilos.secao} aria-labelledby="secao-lote">
-          <h2 id="secao-lote" className={estilos.tituloSecao}>
+        <section className={estilosEtapa.secao} aria-labelledby="secao-lote">
+          <h2 id="secao-lote" className={estilosEtapa.tituloSecao}>
             {secoes.lote.titulo}
           </h2>
-          <p className={estilos.descricaoSecao}>{secoes.lote.descricao}</p>
+          <p className={estilosEtapa.descricaoSecao}>{secoes.lote.descricao}</p>
           <SeletorFormatoLote
             valor={analise.terreno.formatoLote}
             aoMudar={(formatoLote) => atualizarTerreno({ formatoLote })}
@@ -342,7 +343,7 @@ export function Terreno() {
           <ResumoPendencias ref={refResumo} pendencias={pendencias} aoIrParaCampo={irParaCampo} />
         )}
 
-        <div className={estilos.acoes}>
+        <div className={estilosEtapa.acoes}>
           <Botao variante="contorno" onClick={() => navegar('/')}>
             Voltar
           </Botao>

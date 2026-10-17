@@ -7,6 +7,8 @@ export interface OpcaoEscolha<Valor extends string> {
   valor: Valor;
   rotulo: string;
   descricao?: string;
+  /** Visível mas não escolhível; a descrição precisa dizer por quê. */
+  desabilitada?: boolean;
 }
 
 interface PropriedadesGrupoOpcoes<Valor extends string> {
@@ -40,7 +42,13 @@ export function GrupoOpcoes<Valor extends string>({
         {opcoes.map((opcao, indice) => {
           const id = `${nome}-${opcao.valor}`;
           return (
-            <label key={opcao.valor} htmlFor={id} className={estilos.opcao} data-invalido={erro ? 'true' : undefined}>
+            <label
+              key={opcao.valor}
+              htmlFor={id}
+              className={estilos.opcao}
+              data-invalido={erro && !opcao.desabilitada ? 'true' : undefined}
+              data-desabilitada={opcao.desabilitada ? 'true' : undefined}
+            >
               <input
                 id={id}
                 // O primeiro radio é o alvo do "ir para o campo" do resumo de pendências.
@@ -49,6 +57,9 @@ export function GrupoOpcoes<Valor extends string>({
                 name={nome}
                 value={opcao.valor}
                 checked={valor === opcao.valor}
+                // Radio nativo desabilitado: as setas o pulam e o leitor de tela o anuncia como
+                // indisponível, lendo o motivo junto do rótulo.
+                disabled={opcao.desabilitada}
                 onChange={() => aoMudar(opcao.valor)}
                 aria-invalid={erro ? true : undefined}
                 className={estilos.radio}
