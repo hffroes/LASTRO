@@ -1,6 +1,6 @@
 // Gera a análise completa a partir do que o usuário informou: áreas, CUB, economia e o snapshot das
-// premissas. Pura e sem React nem Express: é o que o servidor executa (server/domain/motorAdapter.ts) e
-// o que a F16 e a F17 reaproveitarão para recalcular. Espera uma análise já validada (utils/validacao).
+// premissas. Pura e sem React nem Express: é o que o servidor executa (server/domain/motorAdapter.ts).
+// Espera uma análise já validada (utils/validacao), e os ajustes de premissa (F17) também validados.
 import type {
   Analise,
   AreasDto,
@@ -10,7 +10,7 @@ import type {
 } from '../../types/analise';
 import { calcularAreasDoProduto } from './areas';
 import { calcularCubDaAnalise } from './cub';
-import type { RepositorioCub } from '../../types/parametros';
+import type { AjustesPremissas, RepositorioCub } from '../../types/parametros';
 import { calcularEconomia, PARAMETROS_ECONOMIA_PADRAO, type ParametrosEconomia } from './economia';
 import {
   DESPESAS_GERAIS_COMPONENTES_APLICADOS,
@@ -21,6 +21,13 @@ import {
   TAXA_OCUPACAO_PADRAO,
   VERSAO_MOTOR,
 } from './parametros';
+import {
+  aplicarAjustes,
+  descreverCenario,
+  parametrosDoCenario,
+  produtoDoCenario,
+  valoresOriginais,
+} from './premissas';
 import { calcularProgramaEfetivo } from './produto';
 
 export interface OpcoesGerarAnalise {
@@ -28,20 +35,27 @@ export interface OpcoesGerarAnalise {
   parametros?: ParametrosEconomia;
 }
 
-export function gerarAnalise(analise: Analise, opcoes: OpcoesGerarAnalise = {}): RespostaAnalise {
+// Sem ajustes, é a análise como o usuário a informou. Com ajustes, as premissas ajustadas entram por cima
+// (utils/motor/premissas.ts) e a conta é a mesma; o padrão global nunca é tocado (PRD 2.10).
+export function gerarAnalise(
+  analise: Analise,
+  opcoes: OpcoesGerarAnalise = {},
+  ajustes: AjustesPremissas = {},
+): RespostaAnalise {
   const { terreno, produto } = analise;
-  const areas: AreasDto = calcularAreasDoProduto(terreno.areaTotalM2, produto);
   const cub = calcularCubDaAnalise(terreno, produto, opcoes.repositorioCub);
 
   if (cub.situacao === 'pendente') {
+    // Sem CUB não há conta a ajustar (D-R22): a pendência é a da análise informada.
+    const areas = calcularAreasDoProduto(terreno.areaTotalM2, produto);
     return { situacao: 'cubPendente', motivo: cub.motivo, projeto: cub.projeto, areas };
   }
   const programa = calcularProgramaEfetivo(produto);
   if (
     cub.situacao !== 'calculado' ||
     programa.totalUnidades === null ||
-    areas.areaConstruidaCentesimos === null ||
     produto.precoUnidadeCentavos === null ||
+    produto.taxaOcupacaoPontosBase === null ||
     terreno.precoPedidoCentavos === null ||
     produto.padrao === null
   ) {
@@ -51,22 +65,35 @@ export function gerarAnalise(analise: Analise, opcoes: OpcoesGerarAnalise = {}):
 
   if (programa.pavimentos === null || programa.unidadesPorPavimento === null) return { situacao: 'foraDoLimite' };
 
+  const parametrosBase = opcoes.parametros ?? PARAMETROS_ECONOMIA_PADRAO;
+  const originais = valoresOriginais({
+    precoUnidadeCentavos: produto.precoUnidadeCentavos,
+    taxaOcupacaoPontosBase: produto.taxaOcupacaoPontosBase,
+    padrao: produto.padrao,
+    parametros: parametrosBase,
+    cubAjustadoCentavos: cub.cubAjustadoCentavos,
+  });
+  const usados = aplicarAjustes(originais, ajustes);
+  const parametros = parametrosDoCenario(parametrosBase, produto.padrao, usados);
+  // A taxa de ocupação muda a área construída; o preço, o VGV. As áreas saem do produto do cenário.
+  const areas: AreasDto = calcularAreasDoProduto(terreno.areaTotalM2, produtoDoCenario(produto, usados));
+  if (areas.areaConstruidaCentesimos === null) return { situacao: 'foraDoLimite' };
+
   const economia = calcularEconomia(
     {
       totalUnidades: programa.totalUnidades,
-      precoUnidadeCentavos: produto.precoUnidadeCentavos,
+      precoUnidadeCentavos: usados.precoUnidade,
       areaConstruidaCentesimos: areas.areaConstruidaCentesimos,
-      cubAjustadoCentavos: cub.cubAjustadoCentavos,
+      cubAjustadoCentavos: usados.cubAjustado,
       padrao: produto.padrao,
       precoPedidoCentavos: terreno.precoPedidoCentavos,
     },
-    opcoes.parametros ?? PARAMETROS_ECONOMIA_PADRAO,
+    parametros,
   );
   if (economia === null) return { situacao: 'foraDoLimite' };
 
   const economiaDto: ResultadoEconomiaDto = economia;
-  const parametros = opcoes.parametros ?? PARAMETROS_ECONOMIA_PADRAO;
-  const taxa = produto.taxaOcupacaoPontosBase ?? TAXA_OCUPACAO_PADRAO.valor;
+  const taxa = usados.taxaOcupacao;
   const premissas: SnapshotPremissas = {
     versaoMotor: VERSAO_MOTOR,
     cub: {
@@ -74,6 +101,7 @@ export function gerarAnalise(analise: Analise, opcoes: OpcoesGerarAnalise = {}):
       projeto: cub.projeto,
       padrao: cub.padrao,
       cubBaseCentavos: cub.cubBaseCentavos,
+      // O calculado pela base e pelos aditivos; o que valeu na conta, se o usuário o ajustou, está em ajustes.
       cubAjustadoCentavos: cub.cubAjustadoCentavos,
       aditivos: {
         fundacaoPontosBase: cub.aditivos.fundacao.pontosBase,
@@ -110,6 +138,7 @@ export function gerarAnalise(analise: Analise, opcoes: OpcoesGerarAnalise = {}):
       foraDoTotal: { ...DESPESAS_GERAIS_FORA_DO_TOTAL },
       somaItemizacaoPontosBase: SOMA_ITEMIZACAO_DESPESAS_GERAIS,
     },
+    ajustes: descreverCenario(originais, usados),
   };
 
   return {

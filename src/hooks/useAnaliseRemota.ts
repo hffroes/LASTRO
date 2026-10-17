@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Analise, ErroValidacao, RespostaAnalise } from '../types/analise';
+import type { AjustesPremissas } from '../types/parametros';
 
 // Espelha o contrato de POST /api/v1/analises (server/controllers/analisesController.ts): o servidor
 // valida de novo e calcula; o que vale é a resposta dele.
@@ -33,6 +34,35 @@ function lerErro(corpo: unknown): { mensagem: string; detalhes: ErroValidacao[] 
   return { mensagem: erro.mensagem, detalhes };
 }
 
+export type DesfechoPedido = Extract<EstadoAnaliseRemota, { situacao: 'sucesso' | 'erroValidacao' | 'erroServidor' }>;
+
+// Um pedido à API, do envio à leitura do corpo. Usado pelo cálculo da página e pelo recálculo dos ajustes
+// (F17, usePremissas), para os dois lerem a resposta do mesmo jeito. Rede fora do ar e cancelamento
+// chegam como exceção: quem chamou decide o que fazer com elas.
+export async function pedirAnalise(
+  buscar: typeof fetch,
+  analise: Analise,
+  ajustes: AjustesPremissas | undefined,
+  signal: AbortSignal,
+): Promise<DesfechoPedido> {
+  const resposta = await buscar('/api/v1/analises', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(ajustes ? { ...analise, ajustes } : analise),
+    signal,
+  });
+  const corpo: unknown = await resposta.json().catch(() => null);
+  if (resposta.ok) {
+    const dados = (corpo as { dados?: unknown } | null)?.dados;
+    return ehResposta(dados) ? { situacao: 'sucesso', resposta: dados } : { situacao: 'erroServidor', mensagem: MENSAGEM_ERRO_GENERICO };
+  }
+  const erro = lerErro(corpo);
+  if (resposta.status >= 400 && resposta.status < 500 && erro && erro.detalhes.length > 0) {
+    return { situacao: 'erroValidacao', erros: erro.detalhes };
+  }
+  return { situacao: 'erroServidor', mensagem: erro?.mensagem ?? MENSAGEM_ERRO_GENERICO };
+}
+
 export function useAnaliseRemota({ buscar }: OpcoesUseAnaliseRemota = {}) {
   const [estado, setEstado] = useState<EstadoAnaliseRemota>({ situacao: 'ocioso' });
   const refControle = useRef<AbortController | null>(null);
@@ -49,28 +79,9 @@ export function useAnaliseRemota({ buscar }: OpcoesUseAnaliseRemota = {}) {
 
       const cronometro = setTimeout(() => controle.abort(), TEMPO_LIMITE_ANALISE_MS);
       try {
-        const resposta = await (buscar ?? fetch)('/api/v1/analises', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(analise),
-          signal: controle.signal,
-        });
+        const desfecho = await pedirAnalise(buscar ?? fetch, analise, undefined, controle.signal);
         if (refControle.current !== controle) return;
-
-        const corpo: unknown = await resposta.json().catch(() => null);
-        if (refControle.current !== controle) return;
-
-        if (resposta.ok) {
-          const dados = (corpo as { dados?: unknown } | null)?.dados;
-          setEstado(ehResposta(dados) ? { situacao: 'sucesso', resposta: dados } : { situacao: 'erroServidor', mensagem: MENSAGEM_ERRO_GENERICO });
-          return;
-        }
-        const erro = lerErro(corpo);
-        if (resposta.status >= 400 && resposta.status < 500 && erro && erro.detalhes.length > 0) {
-          setEstado({ situacao: 'erroValidacao', erros: erro.detalhes });
-          return;
-        }
-        setEstado({ situacao: 'erroServidor', mensagem: erro?.mensagem ?? MENSAGEM_ERRO_GENERICO });
+        setEstado(desfecho);
       } catch {
         // Cancelado por uma chamada mais nova (ou pela saída da página): quem cancelou cuida do estado.
         if (refControle.current !== controle) return;

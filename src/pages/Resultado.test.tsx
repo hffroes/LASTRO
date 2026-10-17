@@ -167,6 +167,8 @@ describe('Resultado (F13, versão crua)', () => {
         'Preço máximo recomendado para o terreno',
         'O que o projeto entrega',
         'Projeto analisado',
+        // F17: o painel de cenários entra antes da conta, sem mudar a ordem aprovada na F14.
+        'Explorar cenários',
         'Composição de custos',
       ]);
     });
@@ -480,7 +482,7 @@ describe('Resultado (F13, versão crua)', () => {
       await screen.findByTestId('lucro-resultante');
 
       const titulos = screen.getAllByRole('heading', { level: 2 }).map((titulo) => titulo.textContent);
-      expect(titulos).toEqual([margem.titulo, 'O que o projeto entrega', 'Projeto analisado', 'Composição de custos']);
+      expect(titulos).toEqual([margem.titulo, 'O que o projeto entrega', 'Projeto analisado', 'Explorar cenários', 'Composição de custos']);
       const destaque = screen.getByRole('region', { name: margem.titulo }).textContent ?? '';
       expect(destaque).not.toMatch(/\bVGV\b|\bCUB\b|resíduo/i);
     });

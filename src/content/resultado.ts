@@ -56,6 +56,55 @@ export const TEXTOS_RESULTADO = {
     esperado: (padrao: string, percentual: string, valor: string) => `Esperado no padrão ${padrao} (${percentual}%): ${valor}.`,
     prejuizo: 'A este preço, as vendas não cobrem a obra, as despesas e o terreno: o resultado é prejuízo.',
   },
+  // F17: o "e se..." do resultado (PRD 2.6 e 10.2). Os ajustes valem só nesta análise e nunca mudam os
+  // padrões da lastro (PRD 2.10); a tela diz isso antes do primeiro ajuste.
+  cenarios: {
+    titulo: 'Explorar cenários',
+    descricao:
+      'E se você vender por mais, ou a obra custar menos? Ajuste as premissas e veja o resultado mudar. Os ajustes valem só nesta análise e não mudam os padrões da lastro.',
+    abrir: 'Ajustar premissas',
+    fechar: 'Fechar e ver o resultado',
+    restaurar: 'Voltar ao original',
+    restaurarRotulo: (premissa: string) => `Voltar ${premissa} ao original`,
+    restaurarTudo: 'Restaurar tudo',
+    etiqueta: { original: 'Original', ajustada: 'Ajustada' },
+    nenhumAjuste: 'Nenhuma premissa ajustada: o resultado é o da análise que você informou.',
+    quantidade: (n: number) => (n === 1 ? '1 premissa ajustada' : `${n} premissas ajustadas`),
+    recalculando: 'Recalculando…',
+    atualizado: (rotulo: string, valor: string) => `Resultado atualizado. ${rotulo}: ${valor}.`,
+    corrigir: 'Corrija o campo marcado para recalcular. Os números na tela são os do último cenário válido.',
+    erroTitulo: 'Não foi possível recalcular',
+    erroRodape: 'Os números na tela são os do último cenário calculado.',
+    impacto: {
+      terrenista: 'Preço máximo recomendado',
+      incorporador: 'Lucro ao preço pedido',
+      semAjustes: (valor: string) => `Sem ajustes: ${valor}`,
+      acima: (valor: string) => `${valor} acima da análise sem ajustes`,
+      abaixo: (valor: string) => `${valor} abaixo da análise sem ajustes`,
+      igual: 'Igual à análise sem ajustes',
+    },
+    // No cartão da primeira dobra: deixa claro que os números já não são os da análise informada.
+    marcaCartao: (n: number) => `Cenário ajustado · ${n === 1 ? '1 premissa' : `${n} premissas`}`,
+    premissas: {
+      precoUnidade: { rotulo: 'Preço de venda da unidade', original: (valor: string) => `Informado na Etapa 2: ${valor}` },
+      lucroIncorporador: {
+        rotulo: 'Lucro do incorporador (% do VGV)',
+        original: (valor: string, padrao: string) => `Padrão da lastro para o acabamento ${padrao}: ${valor}`,
+      },
+      despesasGerais: { rotulo: 'Despesas gerais (% do VGV)', original: (valor: string) => `Padrão da lastro: ${valor}` },
+      taxaOcupacao: { rotulo: 'Taxa de ocupação (%)', original: (valor: string) => `Informada na Etapa 2: ${valor}` },
+      cubAjustado: {
+        rotulo: 'CUB ajustado (R$/m²)',
+        original: (valor: string) => `Calculado pela lastro (CUB base com os aditivos): ${valor}`,
+      },
+    },
+    // Orientativos: o ajuste fora do usual é aceito, só não passa sem aviso.
+    avisos: {
+      faixa: (minimo: string, maximo: string) => `Fora da faixa usual de ${minimo} a ${maximo}. O cálculo segue, mas confira o valor.`,
+      custoObra: (valor: string, minimo: string, maximo: string) =>
+        `Com estes ajustes, o custo de obra fica em ${valor} do VGV, fora da faixa usual de ${minimo} a ${maximo}. O cálculo segue, mas confira os valores.`,
+    },
+  },
   potencial: {
     titulo: 'O que o projeto entrega',
     construida: { rotulo: 'Área construída', nota: 'Tudo o que se constrói, incluindo hall, corredores e escadas.' },
@@ -123,6 +172,10 @@ export const TEXTOS_RESULTADO = {
     divergenciaTitulo: 'Divergência na fonte',
     divergencia:
       'Somando todos os itens da fonte, o total seria {soma}, mas a análise aplica {total}: o item de venda e marketing fica de fora. A composição está provisória, à espera de validação.',
+    // F17: com as despesas ajustadas, a composição mostrada é a do padrão, e não a do cenário.
+    ajustadaTitulo: 'Despesas gerais ajustadas por você',
+    ajustada: (usado: string, original: string) =>
+      `Neste cenário as despesas gerais são ${usado} do VGV. Os itens abaixo compõem o padrão da lastro (${original}) e não se aplicam ao valor ajustado.`,
     rotulos: {
       comissoes: 'Comissões',
       impostosETaxas: 'Impostos e taxas',
@@ -135,6 +188,8 @@ export const TEXTOS_RESULTADO = {
     aditivo: 'Aditivo',
     cubBase: 'CUB base',
     cubAjustado: 'CUB ajustado',
+    // F17: quando o usuário informa outro CUB ajustado, é ele que entra no custo de obra.
+    cubUsado: 'CUB usado na conta (ajustado por você)',
     areaConstruida: 'Área total construída',
     custoObra: 'Custo de obra',
     somaAditivos: 'Soma dos aditivos',
@@ -169,6 +224,10 @@ export const TEXTOS_RESULTADO = {
     lucro: 'Lucro do incorporador',
     despesas: 'Despesas gerais',
     versaoMotor: 'Versão do cálculo',
+    // F17: o que o usuário ajustou no cenário, com o original ao lado (PRD 10.5).
+    ajustes: 'Ajustadas por você neste cenário',
+    semAjustes: 'Nenhuma: todas as premissas são as da análise informada.',
+    ajusteDe: (usado: string, original: string) => `${usado} (original: ${original})`,
   },
   erroValidacao: {
     titulo: 'Alguns dados precisam de ajuste',

@@ -1,4 +1,4 @@
-import type { Parametro } from '../../types/parametros';
+import type { FaixaPontosBase, Parametro } from '../../types/parametros';
 import type { PadraoAcabamento } from '../../types/produto';
 import type { FormatoLote, Topografia } from '../../types/terreno';
 
@@ -101,6 +101,19 @@ export const DESPESAS_GERAIS_TOTAL: Parametro<number> = {
   valor: 1_100,
   provisorio: true,
   fonte: 'PRD 4.1 — total da planilha de referência; D-R24 (11,0% adotado) e D-R26 (comissões + impostos + despesas financeiras)',
+  versao: 'v1',
+};
+
+// Faixas de normalidade dos KPIs sobre o VGV (PRD 4.2 e 2.10), com os dois limites dentro da faixa. A F17
+// as usa para avisar quando um ajuste de premissa sai do usual; a F18 parte delas para os alertas.
+export const FAIXAS_NORMALIDADE: Parametro<Readonly<Record<'custoObra' | 'despesasGerais' | 'lucroIncorporador', FaixaPontosBase>>> = {
+  valor: {
+    custoObra: { minimo: 4_000, maximo: 6_500 },
+    despesasGerais: { minimo: 1_000, maximo: 1_500 },
+    lucroIncorporador: { minimo: 2_000, maximo: 2_500 },
+  },
+  provisorio: false,
+  fonte: 'PRD 4.2 — análise de normalidade dos percentuais',
   versao: 'v1',
 };
 

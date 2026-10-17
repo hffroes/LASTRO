@@ -24,6 +24,8 @@ function rotuloDe(opcoes: readonly { valor: string; rotulo: string }[], valor: s
 export function DetalheCub({ economia, areas, premissas }: PropriedadesDetalheCub) {
   const { cub: texto } = TEXTOS_RESULTADO;
   const { cub } = premissas;
+  // F17: o CUB ajustado pelo usuário substitui o calculado no custo de obra; os dois ficam à vista.
+  const cubDoCenario = premissas.ajustes.premissas.cubAjustado;
   const faixa = ROTULO_FAIXA_FUNDACAO[cub.aditivos.faixaFundacao as keyof typeof ROTULO_FAIXA_FUNDACAO] ?? cub.aditivos.faixaFundacao;
   const aditivos = [
     { id: 'fundacao', rotulo: texto.fundacao, detalhe: faixa, pontosBase: cub.aditivos.fundacaoPontosBase },
@@ -82,6 +84,12 @@ export function DetalheCub({ economia, areas, premissas }: PropriedadesDetalheCu
           <dt>{texto.cubAjustado}</dt>
           <dd data-testid="detalhe-cub-ajustado">{porM2(cub.cubAjustadoCentavos)}</dd>
         </div>
+        {cubDoCenario.ajustada && (
+          <div className={estilos.linha}>
+            <dt>{texto.cubUsado}</dt>
+            <dd data-testid="detalhe-cub-usado">{porM2(cubDoCenario.usado)}</dd>
+          </div>
+        )}
         {areas.areaConstruidaCentesimos !== null && (
           <div className={estilos.linha}>
             <dt>{texto.areaConstruida}</dt>

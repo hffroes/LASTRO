@@ -6,6 +6,7 @@ import { formatarMoeda, formatarMoedaComSinal, formatarNumeroBr } from '../../ut
 // O mesmo cartão da leitura Terrenista: trocar a perspectiva troca o conteúdo, não o desenho nem a altura
 // da primeira dobra.
 import estilos from './PrecoMaximo.module.css';
+import { MarcaCenario } from './PrecoMaximo';
 import { FraseFixoResolvido } from './TogglePerspectiva';
 
 type Leitura = 'acima' | 'abaixo' | 'igual';
@@ -20,13 +21,15 @@ interface PropriedadesMargemResultante {
     'lucroResultanteCentavos' | 'lucroIncorporadorCentavos' | 'precoPedidoCentavos' | 'resultadoLiquidoCentavos' | 'percentuaisDoVgvPontosBase'
   >;
   premissas: Pick<SnapshotPremissas, 'lucroIncorporador'>;
+  /** Premissas ajustadas no cenário (F17). */
+  ajustadas?: number;
 }
 
 // A primeira dobra na leitura Incorporador (PRD 2.6 e 4.1): o preço pedido fica fixo e a resposta é o lucro
 // que sobra, Lucro Resultante = VGV − Obra − Despesas − Preço Pedido, vindo do servidor sem reinterpretar.
 // A comparação com o lucro esperado do padrão é a sobra ou o déficit da outra leitura, com o mesmo valor:
 // as duas perspectivas não podem contar histórias diferentes sobre a mesma conta.
-export function MargemResultante({ economia, premissas }: PropriedadesMargemResultante) {
+export function MargemResultante({ economia, premissas, ajustadas = 0 }: PropriedadesMargemResultante) {
   const { margem: texto } = TEXTOS_RESULTADO;
   const diferencaCentavos = economia.resultadoLiquidoCentavos;
   const leitura: Leitura = diferencaCentavos > 0 ? 'acima' : diferencaCentavos < 0 ? 'abaixo' : 'igual';
@@ -46,6 +49,7 @@ export function MargemResultante({ economia, premissas }: PropriedadesMargemResu
         {texto.titulo}
       </h2>
       <FraseFixoResolvido perspectiva="incorporador" className={estilos.explicacao} />
+      <MarcaCenario ajustadas={ajustadas} />
 
       <p className={estilos.valorMaximo} data-testid="lucro-resultante" data-negativo={prejuizo ? 'true' : undefined}>
         {formatarMoedaComSinal(economia.lucroResultanteCentavos)}

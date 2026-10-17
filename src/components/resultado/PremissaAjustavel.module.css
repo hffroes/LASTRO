@@ -1,0 +1,35 @@
+/* Uma premissa do painel: o campo do guia (rótulo, controle, texto auxiliar) e, embaixo, o estado. */
+.premissa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-8);
+  min-width: 0;
+}
+
+/* Altura do controle mesmo sem o botão: a premissa não pula quando passa a "ajustada". */
+.estado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lastro-space-4) var(--lastro-space-8);
+  min-height: var(--lastro-altura-controle);
+}
+
+.restaurar {
+  margin-right: calc(-1 * var(--lastro-space-16));
+}
+
+/* Ajuste fora da faixa usual: aviso orientativo no texto auxiliar, em atenção, sem marcar o campo inválido. */
+.aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--lastro-gap-campo);
+  margin-top: var(--lastro-space-4);
+  color: var(--lastro-warning-text);
+}
+
+.iconeAviso {
+  flex: none;
+  margin-top: calc(var(--lastro-space-4) / 2);
+}

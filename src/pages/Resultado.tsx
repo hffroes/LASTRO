@@ -4,6 +4,7 @@ import { ComposicaoEconomica } from '../components/resultado/ComposicaoEconomica
 import { DetalheCub } from '../components/resultado/DetalheCub';
 import { DetalheDespesas } from '../components/resultado/DetalheDespesas';
 import { MargemResultante } from '../components/resultado/MargemResultante';
+import { PainelPremissas } from '../components/resultado/PainelPremissas';
 import { PotencialPreliminar } from '../components/resultado/PotencialPreliminar';
 import { PrecoMaximo } from '../components/resultado/PrecoMaximo';
 import { PremissasUsadas } from '../components/resultado/PremissasUsadas';
@@ -16,7 +17,8 @@ import { TEXTOS_CUB } from '../content/produto';
 import { TEXTOS_RESULTADO } from '../content/resultado';
 import { useAnaliseRemota } from '../hooks/useAnaliseRemota';
 import { useAnalise } from '../hooks/useAnalise';
-import type { Perspectiva } from '../types/analise';
+import { usePremissas } from '../hooks/usePremissas';
+import type { Analise, Perspectiva, RespostaAnalise } from '../types/analise';
 import { perspectivaPadrao } from '../utils/motor/perspectiva';
 import { etapaProdutoValida } from '../utils/validacao/produto';
 import { etapaTerrenoValida } from '../utils/validacao/terreno';
@@ -28,6 +30,7 @@ import estilos from './Resultado.module.css';
 // e calcula. Nota, recomendação e alertas ainda não existem (F18 e F19), então nada aqui é veredito.
 // F16: a mesma resposta lida pelas duas perspectivas. Alternar só troca o destaque e a tabela; os números
 // são os da mesma resposta do servidor, sem novo cálculo.
+// F17: o resultado calculado ganha o painel de cenários, e tudo abaixo do toggle passa a mostrar o cenário.
 export function Resultado() {
   const navegar = useNavigate();
   const { analise } = useAnalise();
@@ -73,30 +76,7 @@ export function Resultado() {
         )}
 
         {estado.situacao === 'sucesso' && estado.resposta.situacao === 'calculado' && (
-          <>
-            {perspectiva === 'terrenista' ? (
-              <PrecoMaximo economia={estado.resposta.economia} />
-            ) : (
-              <MargemResultante economia={estado.resposta.economia} premissas={estado.resposta.premissas} />
-            )}
-            <PotencialPreliminar areas={estado.resposta.areas} programa={estado.resposta.programa} />
-            <ResumoProjeto analise={analise} programa={estado.resposta.programa} />
-            <section className={estilosEtapa.secao} aria-labelledby="secao-conta">
-              <h2 id="secao-conta" className={estilosEtapa.tituloSecao}>
-                {textos.secaoNumeros}
-              </h2>
-              <Expansivel titulo={textos.verDetalhes}>
-                <ComposicaoEconomica
-                  economia={estado.resposta.economia}
-                  premissas={estado.resposta.premissas}
-                  perspectiva={perspectiva}
-                />
-                <DetalheDespesas economia={estado.resposta.economia} premissas={estado.resposta.premissas} />
-                <DetalheCub economia={estado.resposta.economia} areas={estado.resposta.areas} premissas={estado.resposta.premissas} />
-                <PremissasUsadas dados={estado.resposta} />
-              </Expansivel>
-            </section>
-          </>
+          <ResultadoCalculado analise={analise} original={estado.resposta} perspectiva={perspectiva} />
         )}
 
         {estado.situacao === 'sucesso' && estado.resposta.situacao === 'cubPendente' && (
@@ -148,5 +128,48 @@ export function Resultado() {
         </div>
       </div>
     </div>
+  );
+}
+
+type Calculado = Extract<RespostaAnalise, { situacao: 'calculado' }>;
+
+interface PropriedadesResultadoCalculado {
+  analise: Analise;
+  original: Calculado;
+  perspectiva: Perspectiva;
+}
+
+// O resultado com o cenário "e se..." (F17). Os ajustes nascem vazios a cada vez que este bloco monta: uma
+// análise nova (ou "tentar de novo") começa sempre das premissas originais, e nada do cenário anterior fica.
+// Do cartão à tabela, os números são os do cenário; sem ajuste, o cenário é a própria resposta original.
+function ResultadoCalculado({ analise, original, perspectiva }: PropriedadesResultadoCalculado) {
+  const textos = TEXTOS_RESULTADO;
+  const premissas = usePremissas({ analise, original });
+  const { resposta } = premissas;
+  const ajustadas = resposta.premissas.ajustes.quantidade;
+  return (
+    <>
+      {perspectiva === 'terrenista' ? (
+        <PrecoMaximo economia={resposta.economia} ajustadas={ajustadas} />
+      ) : (
+        <MargemResultante economia={resposta.economia} premissas={resposta.premissas} ajustadas={ajustadas} />
+      )}
+      <PotencialPreliminar areas={resposta.areas} programa={resposta.programa} />
+      <ResumoProjeto analise={analise} programa={resposta.programa} />
+      {/* Depois da leitura aprovada na F14 (destaque, entrega, projeto), antes da conta: o impacto de cada
+          ajuste aparece no topo do próprio painel, então ele não precisa ficar colado ao cartão. */}
+      <PainelPremissas estado={premissas} original={original} perspectiva={perspectiva} />
+      <section className={estilosEtapa.secao} aria-labelledby="secao-conta">
+        <h2 id="secao-conta" className={estilosEtapa.tituloSecao}>
+          {textos.secaoNumeros}
+        </h2>
+        <Expansivel titulo={textos.verDetalhes}>
+          <ComposicaoEconomica economia={resposta.economia} premissas={resposta.premissas} perspectiva={perspectiva} />
+          <DetalheDespesas economia={resposta.economia} premissas={resposta.premissas} />
+          <DetalheCub economia={resposta.economia} areas={resposta.areas} premissas={resposta.premissas} />
+          <PremissasUsadas dados={resposta} />
+        </Expansivel>
+      </section>
+    </>
   );
 }

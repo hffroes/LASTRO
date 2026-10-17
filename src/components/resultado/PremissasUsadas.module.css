@@ -17,3 +17,8 @@
 .lista dd {
   margin: 0;
 }
+
+.ajustes {
+  margin: 0;
+  padding-left: var(--lastro-space-16);
+}
