@@ -20,25 +20,3 @@
 .paragrafo + .paragrafo {
   margin-top: var(--lastro-space-8);
 }
-
-/* A conta completa e as premissas ficam recolhidas: detalhe progressivo, depois do essencial. */
-.detalhes summary {
-  cursor: pointer;
-  color: var(--lastro-action-text);
-  font-family: var(--lastro-font-body);
-  font-size: var(--lastro-font-size-ui);
-  font-weight: 600;
-  border-radius: var(--lastro-radius-sm);
-}
-
-.detalhes summary:focus-visible {
-  outline: none;
-  box-shadow: var(--lastro-anel-foco);
-}
-
-.corpoDetalhes {
-  display: flex;
-  flex-direction: column;
-  gap: var(--lastro-space-16);
-  margin-top: var(--lastro-space-12);
-}

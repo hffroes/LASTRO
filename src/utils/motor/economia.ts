@@ -27,6 +27,17 @@ export interface EntradaEconomia {
   precoPedidoCentavos: number;
 }
 
+// Cada valor como % do VGV, em pontos-base com duas casas (10.000 = 100%). null = não há base: VGV zero,
+// ou valor grande demais para a conta ficar exata.
+export interface PercentuaisDoVgv {
+  custoObra: number | null;
+  despesasGerais: number | null;
+  lucroIncorporador: number | null;
+  resultadoTerreno: number | null;
+  precoPedido: number | null;
+  resultadoLiquido: number | null;
+}
+
 export interface ResultadoEconomia {
   vgvCentavos: number;
   custoObraCentavos: number;
@@ -38,6 +49,7 @@ export interface ResultadoEconomia {
   resultadoTerrenoCentavos: number;
   /** Resultado do Terreno − Preço Pedido. */
   resultadoLiquidoCentavos: number;
+  percentuaisDoVgvPontosBase: PercentuaisDoVgv;
   /** Viável se o Resultado Líquido é maior ou igual a zero (PRD 4.1). */
   viavel: boolean;
 }
@@ -67,6 +79,36 @@ export function calcularCustoObraCentavos(cubAjustadoCentavos: number, areaConst
   return dividirArredondando(produto, 100);
 }
 
+// Valor ÷ VGV, em pontos-base, meio para cima (o sinal acompanha o valor). Sem VGV positivo ou com o
+// numerador fora dos inteiros exatos, não há percentual.
+export function calcularPercentualDoVgvPontosBase(valorCentavos: number, vgvCentavos: number): number | null {
+  if (!Number.isSafeInteger(valorCentavos) || !Number.isSafeInteger(vgvCentavos) || vgvCentavos <= 0) return null;
+  const numerador = Math.abs(valorCentavos) * PONTOS_BASE_CEM_POR_CENTO;
+  if (!Number.isSafeInteger(numerador)) return null;
+  const percentual = dividirArredondando(numerador, vgvCentavos);
+  return valorCentavos < 0 ? -percentual : percentual;
+}
+
+// A tabela de composição (PRD 2.5) tem que FECHAR na tela: o Resultado do terreno é 100% menos as três
+// deduções, e o Resultado líquido é esse menos o preço pedido, em vez de cada um arredondado sozinho. Assim
+// quem soma a coluna com a calculadora chega ao que vê; a diferença para o arredondamento isolado é de
+// no máximo um ponto-base (0,01%), e os valores em reais seguem exatos ao centavo.
+export function calcularPercentuaisDoVgv(
+  economia: Omit<ResultadoEconomia, 'percentuaisDoVgvPontosBase' | 'viavel'>,
+): PercentuaisDoVgv {
+  const { vgvCentavos } = economia;
+  const custoObra = calcularPercentualDoVgvPontosBase(economia.custoObraCentavos, vgvCentavos);
+  const despesasGerais = calcularPercentualDoVgvPontosBase(economia.despesasGeraisCentavos, vgvCentavos);
+  const lucroIncorporador = calcularPercentualDoVgvPontosBase(economia.lucroIncorporadorCentavos, vgvCentavos);
+  const precoPedido = calcularPercentualDoVgvPontosBase(economia.precoPedidoCentavos, vgvCentavos);
+  const resultadoTerreno =
+    custoObra === null || despesasGerais === null || lucroIncorporador === null
+      ? null
+      : PONTOS_BASE_CEM_POR_CENTO - custoObra - despesasGerais - lucroIncorporador;
+  const resultadoLiquido = resultadoTerreno === null || precoPedido === null ? null : resultadoTerreno - precoPedido;
+  return { custoObra, despesasGerais, lucroIncorporador, resultadoTerreno, precoPedido, resultadoLiquido };
+}
+
 // null = os valores passam do que a conta representa com exatidão, ou há insumo inválido.
 export function calcularEconomia(
   entrada: EntradaEconomia,
@@ -83,7 +125,7 @@ export function calcularEconomia(
   const resultadoTerreno = vgv - custoObra - despesasGerais - lucroIncorporador;
   const resultadoLiquido = resultadoTerreno - entrada.precoPedidoCentavos;
 
-  return {
+  const parcelas = {
     vgvCentavos: vgv,
     custoObraCentavos: custoObra,
     despesasGeraisCentavos: despesasGerais,
@@ -91,6 +133,6 @@ export function calcularEconomia(
     precoPedidoCentavos: entrada.precoPedidoCentavos,
     resultadoTerrenoCentavos: resultadoTerreno,
     resultadoLiquidoCentavos: resultadoLiquido,
-    viavel: resultadoLiquido >= 0,
   };
+  return { ...parcelas, percentuaisDoVgvPontosBase: calcularPercentuaisDoVgv(parcelas), viavel: resultadoLiquido >= 0 };
 }

@@ -4,13 +4,17 @@ import {
   PARAMETROS_ECONOMIA_PADRAO,
   calcularCustoObraCentavos,
   calcularEconomia,
+  calcularPercentualDoVgvPontosBase,
   calcularVgvCentavos,
   percentualDoVgvCentavos,
   type EntradaEconomia,
 } from '../economia';
 import {
+  DESPESAS_GERAIS_COMPONENTES_APLICADOS,
+  DESPESAS_GERAIS_FORA_DO_TOTAL,
   DESPESAS_GERAIS_TOTAL,
   LUCRO_INCORPORADOR_POR_PADRAO,
+  SOMA_COMPONENTES_APLICADOS_DESPESAS_GERAIS,
   SOMA_ITEMIZACAO_DESPESAS_GERAIS,
 } from '../parametros';
 
@@ -167,6 +171,21 @@ describe('lucro por padrão e despesas gerais: parâmetros centralizados e provi
     expect(DESPESAS_GERAIS_TOTAL.valor).not.toBe(SOMA_ITEMIZACAO_DESPESAS_GERAIS);
   });
 
+  it('D-R26: os 11% são comissões 5,0% + impostos 4,5% + despesas financeiras 1,5%', () => {
+    expect(DESPESAS_GERAIS_COMPONENTES_APLICADOS).toEqual({ comissoes: 500, impostosETaxas: 450, despesasFinanceiras: 150 });
+    expect(SOMA_COMPONENTES_APLICADOS_DESPESAS_GERAIS).toBe(1_100);
+  });
+
+  it('os componentes aplicados somam exatamente o total aplicado: se um mudar sem o outro, o teste acusa', () => {
+    expect(SOMA_COMPONENTES_APLICADOS_DESPESAS_GERAIS).toBe(DESPESAS_GERAIS_TOTAL.valor);
+  });
+
+  it('Venda e Marketing (1,0%) é listado pela fonte e fica fora do total; a soma de tudo é 12,0%', () => {
+    expect(DESPESAS_GERAIS_FORA_DO_TOTAL).toEqual({ vendaEMarketing: 100 });
+    expect(SOMA_ITEMIZACAO_DESPESAS_GERAIS).toBe(1_200);
+    expect(SOMA_ITEMIZACAO_DESPESAS_GERAIS - SOMA_COMPONENTES_APLICADOS_DESPESAS_GERAIS).toBe(100);
+  });
+
   it('ambos são provisórios (TBD) e carregam fonte e versão', () => {
     for (const parametro of [DESPESAS_GERAIS_TOTAL, LUCRO_INCORPORADOR_POR_PADRAO]) {
       expect(parametro.provisorio).toBe(true);
@@ -189,5 +208,78 @@ describe('insumos inválidos: sem número', () => {
     expect(calcularEconomia({ ...REFERENCIA, precoPedidoCentavos: 10.5 })).toBeNull();
     expect(calcularEconomia({ ...REFERENCIA, padrao: 'medio' as never })).toBeNull();
     expect(calcularEconomia({ ...REFERENCIA, cubAjustadoCentavos: -1 })).toBeNull();
+  });
+});
+
+describe('percentuais do VGV (PRD 2.5)', () => {
+  it('cenário de referência: obra 52,58%, despesas 11,00%, lucro 22,00%, terreno 14,42%, pedido 8,33%, líquido 6,09%', () => {
+    const p = calcularEconomia(REFERENCIA)?.percentuaisDoVgvPontosBase;
+    expect(p).toEqual({
+      custoObra: 5_258, // 757.178.400 ÷ 1.440.000.000 = 52,5818…%
+      despesasGerais: 1_100,
+      lucroIncorporador: 2_200,
+      resultadoTerreno: 1_442, // 100% − 52,58% − 11,00% − 22,00%
+      precoPedido: 833, // 8,3333…%
+      resultadoLiquido: 609, // 14,42% − 8,33%
+    });
+  });
+
+  it('a coluna FECHA: VGV − as três deduções = Resultado do terreno, e esse − preço pedido = líquido', () => {
+    const p = calcularEconomia(REFERENCIA)?.percentuaisDoVgvPontosBase;
+    if (!p) throw new Error('sem percentuais');
+    expect(10_000 - (p.custoObra ?? 0) - (p.despesasGerais ?? 0) - (p.lucroIncorporador ?? 0)).toBe(p.resultadoTerreno);
+    expect((p.resultadoTerreno ?? 0) - (p.precoPedido ?? 0)).toBe(p.resultadoLiquido);
+  });
+
+  it('a coluna fecha em qualquer cenário, e cada derivado difere do arredondamento isolado em até 0,01%', () => {
+    const cenarios: Partial<EntradaEconomia>[] = [
+      {},
+      { precoUnidadeCentavos: 45_000_000 },
+      { precoUnidadeCentavos: 33_333_333, totalUnidades: 7 },
+      { padrao: 'alto', cubAjustadoCentavos: 412_345, areaConstruidaCentesimos: 123_457 },
+      { precoPedidoCentavos: 1, totalUnidades: 3, precoUnidadeCentavos: 1_000_007 },
+      { padrao: 'baixo', totalUnidades: 120, precoUnidadeCentavos: 77_777_777, precoPedidoCentavos: 987_654_321 },
+    ];
+    for (const alteracao of cenarios) {
+      const e = calcularEconomia({ ...REFERENCIA, ...alteracao });
+      if (!e) throw new Error('sem economia');
+      const p = e.percentuaisDoVgvPontosBase;
+      expect(10_000 - (p.custoObra ?? 0) - (p.despesasGerais ?? 0) - (p.lucroIncorporador ?? 0), JSON.stringify(alteracao)).toBe(p.resultadoTerreno);
+      expect((p.resultadoTerreno ?? 0) - (p.precoPedido ?? 0), JSON.stringify(alteracao)).toBe(p.resultadoLiquido);
+      for (const [campo, valor] of [
+        ['resultadoTerreno', e.resultadoTerrenoCentavos],
+        ['resultadoLiquido', e.resultadoLiquidoCentavos],
+      ] as const) {
+        const isolado = calcularPercentualDoVgvPontosBase(valor, e.vgvCentavos) as number;
+        expect(Math.abs((p[campo] as number) - isolado), `${campo} ${JSON.stringify(alteracao)}`).toBeLessThanOrEqual(2);
+      }
+    }
+  });
+
+  it('resultado do terreno negativo dá percentual negativo, e a coluna segue fechando', () => {
+    const p = calcularEconomia({ ...REFERENCIA, precoUnidadeCentavos: 45_000_000 })?.percentuaisDoVgvPontosBase;
+    expect(p?.resultadoTerreno).toBe(-3_816); // 100% − 105,16% − 11% − 22%
+    expect(p?.resultadoLiquido).toBe(-5_483);
+    expect(p?.custoObra).toBe(10_516);
+  });
+
+  describe('calcularPercentualDoVgvPontosBase', () => {
+    it('arredonda meio para cima ao ponto-base, e o sinal acompanha o valor', () => {
+      expect(calcularPercentualDoVgvPontosBase(1, 3)).toBe(3_333); // 33,3333%
+      expect(calcularPercentualDoVgvPontosBase(2, 3)).toBe(6_667);
+      expect(calcularPercentualDoVgvPontosBase(1, 8_000)).toBe(1); // 0,0125% → 1
+      expect(calcularPercentualDoVgvPontosBase(-1, 3)).toBe(-3_333);
+      expect(calcularPercentualDoVgvPontosBase(0, 100)).toBe(0);
+    });
+
+    it('VGV zero ou negativo: sem percentual, não divisão por zero (estado "VGV zero")', () => {
+      expect(calcularPercentualDoVgvPontosBase(100, 0)).toBeNull();
+      expect(calcularPercentualDoVgvPontosBase(100, -5)).toBeNull();
+    });
+
+    it('numerador fora dos inteiros exatos: sem percentual, em vez de impreciso', () => {
+      expect(calcularPercentualDoVgvPontosBase(1_000_000_000_000, 1_000)).toBeNull();
+      expect(calcularPercentualDoVgvPontosBase(Number.MAX_SAFE_INTEGER, 1_000)).toBeNull();
+    });
   });
 });

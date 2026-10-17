@@ -1,7 +1,8 @@
 import { TEXTOS_CUB } from '../../content/produto';
 import { TEXTOS_RESULTADO } from '../../content/resultado';
 import type { RespostaAnalise } from '../../types/analise';
-import { formatarMoedaComSinal, formatarNumeroBr } from '../../utils/motor/formatacao';
+import { formatarNumeroBr } from '../../utils/motor/formatacao';
+import { Expansivel } from '../ui/Expansivel';
 import estilos from './PremissasUsadas.module.css';
 
 type Calculado = Extract<RespostaAnalise, { situacao: 'calculado' }>;
@@ -15,8 +16,7 @@ export function PremissasUsadas({ dados }: { dados: Calculado }) {
   const { premissas } = dados;
   const { versaoBase } = premissas.cub;
   return (
-    <details className={estilos.premissas}>
-      <summary>{texto.titulo}</summary>
+    <Expansivel titulo={texto.titulo}>
       <dl className={estilos.lista}>
         <div>
           <dt>{texto.baseCub}</dt>
@@ -24,22 +24,6 @@ export function PremissasUsadas({ dados }: { dados: Calculado }) {
             Sinduscon-MG, competência {MESES[versaoBase.competencia.mes - 1]}/{versaoBase.competencia.ano} · versão {versaoBase.id}
             {versaoBase.dataEmissao === null && ` · ${TEXTOS_CUB.emissaoNaoInformada}`}
           </dd>
-        </div>
-        <div>
-          <dt>{texto.projetoCub}</dt>
-          <dd>{premissas.cub.projeto}</dd>
-        </div>
-        <div>
-          <dt>{texto.cubBase}</dt>
-          <dd>{formatarMoedaComSinal(premissas.cub.cubBaseCentavos)}/m²</dd>
-        </div>
-        <div>
-          <dt>{texto.somaAditivos}</dt>
-          <dd>{percentual(premissas.cub.aditivos.somaPontosBase)}</dd>
-        </div>
-        <div>
-          <dt>{texto.cubAjustado}</dt>
-          <dd>{formatarMoedaComSinal(premissas.cub.cubAjustadoCentavos)}/m²</dd>
         </div>
         <div>
           <dt>{texto.taxaOcupacao}</dt>
@@ -59,8 +43,7 @@ export function PremissasUsadas({ dados }: { dados: Calculado }) {
         <div>
           <dt>{texto.despesas}</dt>
           <dd>
-            {percentual(premissas.despesasGerais.pontosBase)} do VGV{premissas.despesasGerais.provisorio ? ` (${provisorio})` : ''}.{' '}
-            {texto.itemizacao.replace('{soma}', percentual(premissas.despesasGerais.somaItemizacaoPontosBase))}
+            {percentual(premissas.despesasGerais.pontosBase)} do VGV{premissas.despesasGerais.provisorio ? ` (${provisorio})` : ''}
           </dd>
         </div>
         <div>
@@ -68,6 +51,6 @@ export function PremissasUsadas({ dados }: { dados: Calculado }) {
           <dd>{premissas.versaoMotor}</dd>
         </div>
       </dl>
-    </details>
+    </Expansivel>
   );
 }

@@ -1,21 +1,8 @@
-.premissas summary {
-  cursor: pointer;
-  color: var(--lastro-action-text);
-  font-family: var(--lastro-font-body);
-  font-size: var(--lastro-font-size-ui);
-  border-radius: var(--lastro-radius-sm);
-}
-
-.premissas summary:focus-visible {
-  outline: none;
-  box-shadow: var(--lastro-anel-foco);
-}
-
 .lista {
   display: flex;
   flex-direction: column;
   gap: var(--lastro-space-8);
-  margin: var(--lastro-space-12) 0 0;
+  margin: 0;
   font-family: var(--lastro-font-body);
   font-size: var(--lastro-font-size-auxiliar);
   line-height: var(--lastro-leading-ui);

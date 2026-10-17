@@ -1,0 +1,37 @@
+.resumo {
+  cursor: pointer;
+  font-family: var(--lastro-font-body);
+  color: var(--lastro-action-text);
+  border-radius: var(--lastro-radius-sm);
+}
+
+.resumo:focus-visible {
+  outline: none;
+  box-shadow: var(--lastro-anel-foco);
+}
+
+.principal > .resumo {
+  font-size: var(--lastro-font-size-ui);
+  font-weight: 600;
+}
+
+.discreta > .resumo {
+  font-size: var(--lastro-font-size-auxiliar);
+  font-weight: 500;
+}
+
+.corpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-16);
+  margin-top: var(--lastro-space-12);
+}
+
+.discreta > .corpo {
+  gap: var(--lastro-space-4);
+  margin-top: var(--lastro-space-4);
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+}

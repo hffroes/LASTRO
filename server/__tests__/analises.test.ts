@@ -82,6 +82,14 @@ describe('POST /api/v1/analises — payload válido', () => {
       precoPedidoCentavos: 120_000_000,
       resultadoTerrenoCentavos: 207_621_600,
       resultadoLiquidoCentavos: 87_621_600,
+      percentuaisDoVgvPontosBase: {
+        custoObra: 5_258,
+        despesasGerais: 1_100,
+        lucroIncorporador: 2_200,
+        resultadoTerreno: 1_442,
+        precoPedido: 833,
+        resultadoLiquido: 609,
+      },
       viavel: true,
     });
     expect(dados.areas.areaConstruidaCentesimos).toBe(240_000);
@@ -111,8 +119,15 @@ describe('POST /api/v1/analises — payload válido', () => {
     expect(premissas.cub.cubAjustadoCentavos).toBe(315_491);
     expect(premissas.cub.aditivos.somaPontosBase).toBe(2_350);
     expect(premissas.lucroIncorporador).toMatchObject({ padrao: 'normal', pontosBase: 2_200, provisorio: true, versao: 'v1' });
-    // D-B2: aplica 11,0% e registra a itemização da fonte, que soma 12,0%, sem aplicá-la.
-    expect(premissas.despesasGerais).toMatchObject({ pontosBase: 1_100, provisorio: true, somaItemizacaoPontosBase: 1_200 });
+    // D-B2 e D-R26: aplica 11,0% (comissões + impostos + despesas financeiras) e registra que a fonte lista
+    // Venda e Marketing (1,0%) fora do total, o que leva a soma dos itens a 12,0%.
+    expect(premissas.despesasGerais).toMatchObject({
+      pontosBase: 1_100,
+      provisorio: true,
+      componentesAplicados: { comissoes: 500, impostosETaxas: 450, despesasFinanceiras: 150 },
+      foraDoTotal: { vendaEMarketing: 100 },
+      somaItemizacaoPontosBase: 1_200,
+    });
     expect(premissas.taxaOcupacao).toMatchObject({ pontosBase: 6_000, ajustadaPeloUsuario: false, provisorio: true });
   });
 

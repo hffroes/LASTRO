@@ -13,7 +13,8 @@ import { calcularCubDaAnalise } from './cub';
 import type { RepositorioCub } from '../../types/parametros';
 import { calcularEconomia, PARAMETROS_ECONOMIA_PADRAO, type ParametrosEconomia } from './economia';
 import {
-  DESPESAS_GERAIS_ITEMIZACAO_DA_FONTE,
+  DESPESAS_GERAIS_COMPONENTES_APLICADOS,
+  DESPESAS_GERAIS_FORA_DO_TOTAL,
   DESPESAS_GERAIS_TOTAL,
   LUCRO_INCORPORADOR_POR_PADRAO,
   SOMA_ITEMIZACAO_DESPESAS_GERAIS,
@@ -78,7 +79,9 @@ export function gerarAnalise(analise: Analise, opcoes: OpcoesGerarAnalise = {}):
         fundacaoPontosBase: cub.aditivos.fundacao.pontosBase,
         faixaFundacao: cub.aditivos.fundacao.faixa,
         padraoPontosBase: cub.aditivos.padrao.pontosBase,
+        topografia: cub.aditivos.topografia.topografia,
         topografiaPontosBase: cub.aditivos.topografia.pontosBase,
+        formato: cub.aditivos.formato.formato,
         formatoPontosBase: cub.aditivos.formato.pontosBase,
         somaPontosBase: cub.aditivos.somaPontosBase,
       },
@@ -103,7 +106,8 @@ export function gerarAnalise(analise: Analise, opcoes: OpcoesGerarAnalise = {}):
       provisorio: DESPESAS_GERAIS_TOTAL.provisorio,
       fonte: DESPESAS_GERAIS_TOTAL.fonte,
       versao: DESPESAS_GERAIS_TOTAL.versao,
-      itemizacaoDaFonte: { ...DESPESAS_GERAIS_ITEMIZACAO_DA_FONTE },
+      componentesAplicados: { ...DESPESAS_GERAIS_COMPONENTES_APLICADOS },
+      foraDoTotal: { ...DESPESAS_GERAIS_FORA_DO_TOTAL },
       somaItemizacaoPontosBase: SOMA_ITEMIZACAO_DESPESAS_GERAIS,
     },
   };

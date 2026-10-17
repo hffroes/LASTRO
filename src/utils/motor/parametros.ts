@@ -71,27 +71,36 @@ export const LUCRO_INCORPORADOR_POR_PADRAO: Parametro<Readonly<Record<PadraoAcab
   versao: 'v1',
 };
 
-// Itemização das despesas gerais como aparece na fonte (PRD 4.1). Ela soma 12,0%, mas a planilha aplica
-// 11,0%: a divergência é o D-B2, que o usuário resolveu em D-R24 (vale o total de 11,0%). Nenhum
-// componente foi alterado por conta própria; a itemização fica só para o snapshot e a auditoria.
-export const DESPESAS_GERAIS_ITEMIZACAO_DA_FONTE = {
-  vendaEMarketing: 100,
+// Itemização das despesas gerais (PRD 4.1). Os quatro itens da fonte somam 12,0%, mas a planilha aplica
+// 11,0% (D-B2, resolvida em D-R24). D-R26 esclarece de onde vêm os 11%: comissões, impostos e despesas
+// financeiras. O item de Venda e Marketing (1,0%) é listado pela fonte, mas não entra no total aplicado.
+// Nenhum percentual foi alterado por conta própria. Itens em pontos-base.
+export const DESPESAS_GERAIS_COMPONENTES_APLICADOS = {
   comissoes: 500,
   impostosETaxas: 450,
   despesasFinanceiras: 150,
 } as const;
 
-export const SOMA_ITEMIZACAO_DESPESAS_GERAIS = Object.values(DESPESAS_GERAIS_ITEMIZACAO_DA_FONTE).reduce(
+export const DESPESAS_GERAIS_FORA_DO_TOTAL = {
+  vendaEMarketing: 100,
+} as const;
+
+export const SOMA_COMPONENTES_APLICADOS_DESPESAS_GERAIS = Object.values(DESPESAS_GERAIS_COMPONENTES_APLICADOS).reduce(
   (soma, componente) => soma + componente,
   0,
 );
+
+// A soma de TODOS os itens da fonte: a divergência que a tela sinaliza.
+export const SOMA_ITEMIZACAO_DESPESAS_GERAIS =
+  SOMA_COMPONENTES_APLICADOS_DESPESAS_GERAIS +
+  Object.values(DESPESAS_GERAIS_FORA_DO_TOTAL).reduce((soma, componente) => soma + componente, 0);
 
 // Total aplicado sobre o VGV no MVP (PRD 4.1): 11,0%. Provisório até a validação adicional que o PRD
 // pede (pode variar por tipologia ou padrão).
 export const DESPESAS_GERAIS_TOTAL: Parametro<number> = {
   valor: 1_100,
   provisorio: true,
-  fonte: 'PRD 4.1 — total da planilha de referência; D-R24 (11,0% adotado; a itemização da fonte soma 12,0%)',
+  fonte: 'PRD 4.1 — total da planilha de referência; D-R24 (11,0% adotado) e D-R26 (comissões + impostos + despesas financeiras)',
   versao: 'v1',
 };
 

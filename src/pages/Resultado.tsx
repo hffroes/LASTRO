@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { ContaCompleta } from '../components/resultado/ContaCompleta';
+import { ComposicaoEconomica } from '../components/resultado/ComposicaoEconomica';
+import { DetalheCub } from '../components/resultado/DetalheCub';
+import { DetalheDespesas } from '../components/resultado/DetalheDespesas';
 import { PotencialPreliminar } from '../components/resultado/PotencialPreliminar';
 import { PrecoMaximo } from '../components/resultado/PrecoMaximo';
 import { PremissasUsadas } from '../components/resultado/PremissasUsadas';
 import { ResumoProjeto } from '../components/resultado/ResumoProjeto';
 import { Alerta } from '../components/ui/Alerta';
 import { Botao } from '../components/ui/Botao';
+import { Expansivel } from '../components/ui/Expansivel';
 import { TEXTOS_CUB } from '../content/produto';
 import { TEXTOS_RESULTADO } from '../content/resultado';
 import { useAnaliseRemota } from '../hooks/useAnaliseRemota';
@@ -64,13 +67,12 @@ export function Resultado() {
               <h2 id="secao-conta" className={estilosEtapa.tituloSecao}>
                 {textos.secaoNumeros}
               </h2>
-              <details className={estilos.detalhes}>
-                <summary>{textos.contaCompleta}</summary>
-                <div className={estilos.corpoDetalhes}>
-                  <ContaCompleta dados={estado.resposta} />
-                  <PremissasUsadas dados={estado.resposta} />
-                </div>
-              </details>
+              <Expansivel titulo={textos.verDetalhes}>
+                <ComposicaoEconomica economia={estado.resposta.economia} premissas={estado.resposta.premissas} />
+                <DetalheDespesas economia={estado.resposta.economia} premissas={estado.resposta.premissas} />
+                <DetalheCub economia={estado.resposta.economia} areas={estado.resposta.areas} premissas={estado.resposta.premissas} />
+                <PremissasUsadas dados={estado.resposta} />
+              </Expansivel>
             </section>
           </>
         )}

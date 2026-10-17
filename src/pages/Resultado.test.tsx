@@ -69,9 +69,17 @@ function servidorQueCalcula() {
   });
 }
 
+// Valor e percentual de uma linha da tabela de composição (F15).
 function valorDe(id: string) {
-  return screen.getByTestId(`resultado-${id}`).textContent;
+  return screen.getByTestId(`composicao-${id}-valor`).textContent;
 }
+
+function pctDe(id: string) {
+  return screen.getByTestId(`composicao-${id}-pct`).textContent;
+}
+
+// Espera o resultado chegar: o VGV é a primeira linha da tabela.
+const AGUARDAR = 'composicao-vgv-valor';
 
 describe('Resultado (F13, versão crua)', () => {
   beforeEach(() => {
@@ -115,7 +123,7 @@ describe('Resultado (F13, versão crua)', () => {
       vi.stubGlobal('fetch', buscar);
       renderResultado();
 
-      await screen.findByTestId('resultado-vgv');
+      await screen.findByTestId(AGUARDAR);
       expect(buscar).toHaveBeenCalledTimes(1);
       const [url, inicio] = buscar.mock.calls[0] as [string, RequestInit];
       expect(url).toBe('/api/v1/analises');
@@ -131,7 +139,7 @@ describe('Resultado (F13, versão crua)', () => {
 
       expect(screen.getByRole('status').textContent).toBe(TEXTOS_RESULTADO.carregando);
       liberar(respostaJson({ dados: gerarAnalise(analiseValida()) }));
-      await screen.findByTestId('resultado-vgv');
+      await screen.findByTestId(AGUARDAR);
       expect(screen.queryByText(TEXTOS_RESULTADO.carregando)).toBeNull();
     });
   });
@@ -159,7 +167,7 @@ describe('Resultado (F13, versão crua)', () => {
         'Preço máximo recomendado para o terreno',
         'O que o projeto entrega',
         'Projeto analisado',
-        'Método do resíduo do terreno',
+        'Composição de custos',
       ]);
     });
 
@@ -186,9 +194,9 @@ describe('Resultado (F13, versão crua)', () => {
       renderResultado();
       await screen.findByTestId('preco-maximo');
 
-      const detalhes = screen.getByText(TEXTOS_RESULTADO.contaCompleta).closest('details') as HTMLDetailsElement;
+      const detalhes = screen.getByText(TEXTOS_RESULTADO.verDetalhes).closest('details') as HTMLDetailsElement;
       expect(detalhes.open).toBe(false);
-      expect(within(detalhes).getByTestId('resultado-vgv').textContent).toBe('R$ 14.400.000,00');
+      expect(within(detalhes).getByTestId('composicao-vgv-valor').textContent).toBe('R$ 14.400.000,00');
       expect(within(detalhes).getByText(TEXTOS_RESULTADO.premissas.titulo)).toBeTruthy();
     });
 
@@ -233,12 +241,12 @@ describe('Resultado (F13, versão crua)', () => {
     });
   });
 
-  describe('sucesso: os números do servidor, linha a linha', () => {
+  describe('composição de custos (F15): a tabela do PRD 2.5', () => {
     beforeEach(() => vi.stubGlobal('fetch', servidorQueCalcula()));
 
-    it('VGV, obra, despesas, lucro, Resultado do terreno e líquido do cenário conferido à mão', async () => {
+    it('VGV, obra, despesas, lucro, Resultado do terreno, preço pedido e sobra, do cenário conferido à mão', async () => {
       renderResultado();
-      await screen.findByTestId('resultado-vgv');
+      await screen.findByTestId(AGUARDAR);
 
       expect(valorDe('vgv')).toBe('R$ 14.400.000,00');
       expect(valorDe('custo-obra')).toBe('R$ 7.571.784,00');
@@ -246,42 +254,138 @@ describe('Resultado (F13, versão crua)', () => {
       expect(valorDe('lucro')).toBe('R$ 3.168.000,00');
       expect(valorDe('resultado-terreno')).toBe('R$ 2.076.216,00');
       expect(valorDe('preco-pedido')).toBe('R$ 1.200.000,00');
-      expect(valorDe('resultado-liquido')).toBe('R$ 876.216,00');
-      expect(valorDe('viavel')).toBe('Sim');
+      expect(valorDe('sobra-deficit')).toBe('R$ 876.216,00');
     });
 
-    it('rotula os percentuais e marca os parâmetros provisórios', async () => {
+    it('cada linha traz o seu percentual do VGV, e a coluna fecha', async () => {
       renderResultado();
-      await screen.findByTestId('resultado-vgv');
+      await screen.findByTestId(AGUARDAR);
 
-      expect(screen.getByText(/Despesas gerais \(11,00%\)/)).toBeTruthy();
-      expect(screen.getByText(/Lucro do incorporador \(22,00%\)/)).toBeTruthy();
-      expect(screen.getAllByText(new RegExp(TEXTOS_RESULTADO.provisorio)).length).toBeGreaterThanOrEqual(2);
+      expect(pctDe('vgv')).toMatch(/^100,00%/);
+      expect(pctDe('custo-obra')).toMatch(/^52,58%/);
+      expect(pctDe('despesas-gerais')).toMatch(/^11,00%/);
+      expect(pctDe('lucro')).toMatch(/^22,00%/);
+      expect(pctDe('resultado-terreno')).toMatch(/^14,42%/);
+      expect(pctDe('preco-pedido')).toMatch(/^8,33%/);
+      expect(pctDe('sobra-deficit')).toMatch(/^6,09%/);
+      // 100,00 − 52,58 − 11,00 − 22,00 = 14,42; 14,42 − 8,33 = 6,09
     });
 
-    it('mostra as premissas e a versão de dados usadas, incluindo a divergência da itemização (D-B2)', async () => {
+    it('a tabela é acessível: legenda, cabeçalhos de coluna e de linha, e os números nas células certas', async () => {
       renderResultado();
-      await screen.findByTestId('resultado-vgv');
+      await screen.findByTestId(AGUARDAR);
+
+      const tabela = screen.getByRole('table', { name: TEXTOS_RESULTADO.composicao.legenda });
+      const colunas = within(tabela).getAllByRole('columnheader').map((c) => c.textContent);
+      expect(colunas).toEqual(['Componente', 'Valor', '% do VGV']);
+      const linhas = within(tabela).getAllByRole('row');
+      expect(linhas).toHaveLength(8); // cabeçalho + 7 linhas
+      const cabecalhosDeLinha = within(tabela).getAllByRole('rowheader').map((c) => c.textContent ?? '');
+      expect(cabecalhosDeLinha[0]).toMatch(/^VGV total/);
+      expect(cabecalhosDeLinha[2]).toMatch(/Despesas gerais \(11,00%\)/);
+      expect(cabecalhosDeLinha[6]).toMatch(/Sobra\/déficit/);
+    });
+
+    it('despesas gerais é uma linha só, com os 11,00% no rótulo; os itens ficam no detalhe', async () => {
+      renderResultado();
+      await screen.findByTestId(AGUARDAR);
+
+      const tabela = screen.getByRole('table', { name: TEXTOS_RESULTADO.composicao.legenda });
+      const linhasDeDespesas = within(tabela)
+        .getAllByRole('rowheader')
+        .filter((cabecalho) => /Despesas gerais \(\d/.test(cabecalho.textContent ?? ''));
+      expect(linhasDeDespesas).toHaveLength(1);
+      expect(within(tabela).queryByText(/Comissões|Impostos e taxas|Despesas financeiras|marketing/i)).toBeNull();
+    });
+
+    it('cada linha mostra a fórmula sob demanda, e a tabela não depende de abrir nada para ser lida', async () => {
+      renderResultado();
+      await screen.findByTestId(AGUARDAR);
+
+      const formulas = screen.getAllByText(TEXTOS_RESULTADO.comoCalculado);
+      expect(formulas.length).toBeGreaterThanOrEqual(7);
+      const primeira = formulas[0]?.closest('details') as HTMLDetailsElement;
+      expect(primeira.open).toBe(false);
+      expect(within(primeira).getByText('Total de unidades × preço de venda da unidade')).toBeTruthy();
+    });
+
+    it('abrir "Ver detalhes" não reordena a página', async () => {
+      renderResultado();
+      await screen.findByTestId(AGUARDAR);
+      const antes = screen.getAllByRole('heading', { level: 2 }).map((t) => t.textContent);
+
+      const detalhes = screen.getByText(TEXTOS_RESULTADO.verDetalhes).closest('details') as HTMLDetailsElement;
+      fireEvent.click(screen.getByText(TEXTOS_RESULTADO.verDetalhes));
+      detalhes.open = true;
+
+      expect(screen.getAllByRole('heading', { level: 2 }).map((t) => t.textContent)).toEqual(antes);
+    });
+
+    it('o detalhe das despesas: itens dos 11%, o item fora do total e a divergência de 12% sinalizada', async () => {
+      renderResultado();
+      await screen.findByTestId(AGUARDAR);
+
+      expect(screen.getByTestId('despesa-comissoes').textContent).toBe('5,00%');
+      expect(screen.getByTestId('despesa-impostosETaxas').textContent).toBe('4,50%');
+      expect(screen.getByTestId('despesa-despesasFinanceiras').textContent).toBe('1,50%');
+      expect(screen.getByTestId('despesa-total').textContent).toBe('11,00% · R$ 1.584.000,00');
+      expect(screen.getByTestId('despesa-fora-vendaEMarketing').textContent).toContain('1,00%');
+      expect(screen.getByText(TEXTOS_RESULTADO.despesas.divergenciaTitulo)).toBeTruthy();
+      expect(
+        screen.getByText(/Somando todos os itens da fonte, o total seria 12,00%, mas a análise aplica 11,00%/),
+      ).toBeTruthy();
+    });
+
+    it('os itens aplicados somam exatamente o total mostrado', async () => {
+      renderResultado();
+      await screen.findByTestId(AGUARDAR);
+
+      const itens = ['despesa-comissoes', 'despesa-impostosETaxas', 'despesa-despesasFinanceiras'].map((id) =>
+        Number((screen.getByTestId(id).textContent ?? '').replace('%', '').replace(',', '.')),
+      );
+      expect(Math.round(itens.reduce((a, b) => a + b, 0) * 100)).toBe(1_100);
+    });
+
+    it('o detalhe do CUB: projeto, base, os quatro aditivos com a opção de cada um, a soma e o custo de obra', async () => {
+      renderResultado();
+      await screen.findByTestId(AGUARDAR);
+
+      expect(screen.getByTestId('detalhe-cub-projeto').textContent).toBe('R-8');
+      expect(screen.getByTestId('detalhe-cub-base').textContent).toBe('R$ 2.554,58/m²');
+      expect(screen.getByTestId('detalhe-cub-fundacao').textContent).toBe('7,00%');
+      expect(screen.getByTestId('detalhe-cub-padrao').textContent).toBe('15,00%');
+      expect(screen.getByTestId('detalhe-cub-topografia').textContent).toBe('1,50%');
+      expect(screen.getByTestId('detalhe-cub-formato').textContent).toBe('0,00%');
+      expect(screen.getByTestId('detalhe-cub-soma').textContent).toBe('23,50%');
+      expect(screen.getByTestId('detalhe-cub-ajustado').textContent).toBe('R$ 3.154,91/m²');
+      expect(screen.getByTestId('detalhe-cub-area').textContent).toBe('2.400,00 m²');
+      expect(screen.getByTestId('detalhe-cub-custo-obra').textContent).toBe('R$ 7.571.784,00');
+      expect(screen.getByText('até 4 pavimentos')).toBeTruthy();
+    });
+
+    it('o snapshot continua visível: base de CUB, taxa, lucro e despesas provisórios, e a versão do cálculo', async () => {
+      renderResultado();
+      await screen.findByTestId(AGUARDAR);
 
       const premissas = screen.getByText(TEXTOS_RESULTADO.premissas.titulo).closest('details') as HTMLElement;
-      const texto = within(premissas).getByText(/Sinduscon-MG, competência Ago\/2026 · versão cub-2026-08/);
-      expect(texto).toBeTruthy();
-      expect(within(premissas).getByText(/R-8/)).toBeTruthy();
-      expect(within(premissas).getByText(/A itemização da fonte soma 12,00%/)).toBeTruthy();
+      expect(within(premissas).getByText(/Sinduscon-MG, competência Ago\/2026 · versão cub-2026-08/)).toBeTruthy();
+      expect(within(premissas).getAllByText(new RegExp(TEXTOS_RESULTADO.provisorio)).length).toBeGreaterThanOrEqual(3);
       expect(within(premissas).getByText('motor-v1')).toBeTruthy();
     });
 
-    it('cenário inviável: resultado do terreno e líquido negativos, com o sinal antes do símbolo', async () => {
+    it('cenário inviável: preço máximo, resultado e sobra/déficit negativos, com o percentual também negativo', async () => {
       const analise = analiseValida();
       analise.produto.precoUnidadeCentavos = 45_000_000;
       salvarRascunho(analise);
       renderResultado();
-      await screen.findByTestId('resultado-vgv');
+      await screen.findByTestId(AGUARDAR);
 
       expect(valorDe('resultado-terreno')).toBe('-R$ 2.747.784,00');
-      expect(valorDe('resultado-liquido')).toBe('-R$ 3.947.784,00');
-      expect(valorDe('viavel')).toBe('Não');
-      expect(screen.getByTestId('resultado-resultado-terreno').getAttribute('data-negativo')).toBe('true');
+      expect(valorDe('sobra-deficit')).toBe('-R$ 3.947.784,00');
+      expect(pctDe('resultado-terreno')).toMatch(/^-38,16%/);
+      expect(pctDe('sobra-deficit')).toMatch(/^-54,83%/);
+      expect(screen.getByTestId('composicao-resultado-terreno-valor').getAttribute('data-negativo')).toBe('true');
+      expect(screen.getByTestId('composicao-resultado-terreno-pct').getAttribute('data-negativo')).toBe('true');
     });
   });
 
@@ -295,7 +399,7 @@ describe('Resultado (F13, versão crua)', () => {
 
       expect(await screen.findByText(TEXTOS_CUB.tituloPendencia)).toBeTruthy();
       expect(screen.getByText(TEXTOS_CUB.pendenciaPadraoSemValor('R-16'))).toBeTruthy();
-      expect(screen.queryByTestId('resultado-vgv')).toBeNull();
+      expect(screen.queryByTestId(AGUARDAR)).toBeNull();
       expect(screen.getByRole('button', { name: TEXTOS_RESULTADO.cubPendente.voltar })).toBeTruthy();
     });
   });
@@ -354,7 +458,7 @@ describe('Resultado (F13, versão crua)', () => {
       expect(screen.getByText(MENSAGEM_ERRO_GENERICO)).toBeTruthy();
 
       fireEvent.click(screen.getByRole('button', { name: TEXTOS_RESULTADO.erroServidor.tentarDeNovo }));
-      await screen.findByTestId('resultado-vgv');
+      await screen.findByTestId(AGUARDAR);
       expect(buscar).toHaveBeenCalledTimes(2);
       expect(screen.queryByText(TEXTOS_RESULTADO.erroServidor.titulo)).toBeNull();
     });

@@ -51,7 +51,9 @@ export interface SnapshotPremissas {
       fundacaoPontosBase: number;
       faixaFundacao: string;
       padraoPontosBase: number;
+      topografia: string;
       topografiaPontosBase: number;
+      formato: string;
       formatoPontosBase: number;
       somaPontosBase: number;
     };
@@ -59,10 +61,22 @@ export interface SnapshotPremissas {
   taxaOcupacao: ParametroUsado & { padraoPontosBase: number; ajustadaPeloUsuario: boolean };
   lucroIncorporador: ParametroUsado & { padrao: string };
   despesasGerais: ParametroUsado & {
-    // A itemização da fonte soma mais que o total adotado (D-B2): fica registrada, nunca aplicada.
-    itemizacaoDaFonte: Record<string, number>;
+    // O que compõe o total aplicado (D-R26), em pontos-base, e o que a fonte lista mas não aplica.
+    componentesAplicados: Record<string, number>;
+    foraDoTotal: Record<string, number>;
+    // A soma de TODOS os itens da fonte: maior que o total aplicado (D-B2), e a tela sinaliza.
     somaItemizacaoPontosBase: number;
   };
+}
+
+// Cada valor como % do VGV, em pontos-base (10.000 = 100%); null = sem base (VGV zero ou valor grande demais).
+export interface PercentuaisDoVgvDto {
+  custoObra: number | null;
+  despesasGerais: number | null;
+  lucroIncorporador: number | null;
+  resultadoTerreno: number | null;
+  precoPedido: number | null;
+  resultadoLiquido: number | null;
 }
 
 export interface ResultadoEconomiaDto {
@@ -73,6 +87,7 @@ export interface ResultadoEconomiaDto {
   precoPedidoCentavos: number;
   resultadoTerrenoCentavos: number;
   resultadoLiquidoCentavos: number;
+  percentuaisDoVgvPontosBase: PercentuaisDoVgvDto;
   viavel: boolean;
 }
 
