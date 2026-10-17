@@ -1,12 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { ComposicaoEconomica } from '../components/resultado/ComposicaoEconomica';
 import { DetalheCub } from '../components/resultado/DetalheCub';
 import { DetalheDespesas } from '../components/resultado/DetalheDespesas';
+import { MargemResultante } from '../components/resultado/MargemResultante';
 import { PotencialPreliminar } from '../components/resultado/PotencialPreliminar';
 import { PrecoMaximo } from '../components/resultado/PrecoMaximo';
 import { PremissasUsadas } from '../components/resultado/PremissasUsadas';
 import { ResumoProjeto } from '../components/resultado/ResumoProjeto';
+import { TogglePerspectiva } from '../components/resultado/TogglePerspectiva';
 import { Alerta } from '../components/ui/Alerta';
 import { Botao } from '../components/ui/Botao';
 import { Expansivel } from '../components/ui/Expansivel';
@@ -14,6 +16,8 @@ import { TEXTOS_CUB } from '../content/produto';
 import { TEXTOS_RESULTADO } from '../content/resultado';
 import { useAnaliseRemota } from '../hooks/useAnaliseRemota';
 import { useAnalise } from '../hooks/useAnalise';
+import type { Perspectiva } from '../types/analise';
+import { perspectivaPadrao } from '../utils/motor/perspectiva';
 import { etapaProdutoValida } from '../utils/validacao/produto';
 import { etapaTerrenoValida } from '../utils/validacao/terreno';
 import estilosEtapa from './EtapaAnalise.module.css';
@@ -22,6 +26,8 @@ import estilos from './Resultado.module.css';
 // Resultado (F14): a primeira leitura, com o essencial na primeira dobra — o preço máximo recomendado e
 // como o preço pedido se compara — e o que está por trás recolhido. Os números vêm do servidor, que valida
 // e calcula. Nota, recomendação e alertas ainda não existem (F18 e F19), então nada aqui é veredito.
+// F16: a mesma resposta lida pelas duas perspectivas. Alternar só troca o destaque e a tabela; os números
+// são os da mesma resposta do servidor, sem novo cálculo.
 export function Resultado() {
   const navegar = useNavigate();
   const { analise } = useAnalise();
@@ -29,6 +35,8 @@ export function Resultado() {
   const terrenoValido = etapaTerrenoValida(analise);
   const produtoValido = etapaProdutoValida(analise);
   const pronta = terrenoValido && produtoValido;
+  // D-R6: abre na perspectiva do objetivo escolhido; daqui em diante é só a leitura, não o objetivo.
+  const [perspectiva, setPerspectiva] = useState<Perspectiva>(() => perspectivaPadrao(analise.objetivo));
 
   // Uma vez ao abrir a página (e de novo só pelo "Tentar de novo"): o cálculo é do servidor, e a análise
   // é a que o usuário acabou de fechar na Etapa 2.
@@ -43,11 +51,17 @@ export function Resultado() {
   if (!produtoValido) return <Navigate to="/produto" replace />;
 
   const textos = TEXTOS_RESULTADO;
+  const calculado = estado.situacao === 'sucesso' && estado.resposta.situacao === 'calculado';
   return (
     <div className={estilosEtapa.pagina}>
       <p className={estilosEtapa.sobretitulo}>{textos.sobretitulo}</p>
       <h1 className={estilosEtapa.titulo}>{textos.titulo}</h1>
-      <p className={estilosEtapa.introducao}>{textos.introducao}</p>
+      {/* Com o resultado na tela, o toggle ocupa o lugar da introdução: é a primeira coisa a ler. */}
+      {calculado ? (
+        <TogglePerspectiva valor={perspectiva} aoMudar={setPerspectiva} />
+      ) : (
+        <p className={estilosEtapa.introducao}>{textos.introducao}</p>
+      )}
 
       <div className={estilosEtapa.formulario}>
         {(estado.situacao === 'ocioso' || estado.situacao === 'carregando') && (
@@ -60,7 +74,11 @@ export function Resultado() {
 
         {estado.situacao === 'sucesso' && estado.resposta.situacao === 'calculado' && (
           <>
-            <PrecoMaximo economia={estado.resposta.economia} />
+            {perspectiva === 'terrenista' ? (
+              <PrecoMaximo economia={estado.resposta.economia} />
+            ) : (
+              <MargemResultante economia={estado.resposta.economia} premissas={estado.resposta.premissas} />
+            )}
             <PotencialPreliminar areas={estado.resposta.areas} programa={estado.resposta.programa} />
             <ResumoProjeto analise={analise} programa={estado.resposta.programa} />
             <section className={estilosEtapa.secao} aria-labelledby="secao-conta">
@@ -68,7 +86,11 @@ export function Resultado() {
                 {textos.secaoNumeros}
               </h2>
               <Expansivel titulo={textos.verDetalhes}>
-                <ComposicaoEconomica economia={estado.resposta.economia} premissas={estado.resposta.premissas} />
+                <ComposicaoEconomica
+                  economia={estado.resposta.economia}
+                  premissas={estado.resposta.premissas}
+                  perspectiva={perspectiva}
+                />
                 <DetalheDespesas economia={estado.resposta.economia} premissas={estado.resposta.premissas} />
                 <DetalheCub economia={estado.resposta.economia} areas={estado.resposta.areas} premissas={estado.resposta.premissas} />
                 <PremissasUsadas dados={estado.resposta} />

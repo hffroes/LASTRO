@@ -1,0 +1,90 @@
+/* Fica no lugar do parágrafo de introdução, então ocupa o mínimo: rótulo e controle numa linha só, que
+   quebra apenas se não couber. */
+.bloco {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lastro-space-4);
+  margin-top: var(--lastro-space-8);
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--lastro-space-8) var(--lastro-space-12);
+}
+
+.rotulo {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-rotulo);
+  font-weight: 600;
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-rotulo);
+}
+
+.segmentos {
+  display: inline-flex;
+  padding: var(--lastro-space-4);
+  gap: var(--lastro-space-4);
+  background: var(--lastro-surface-sunken);
+  border: 1px solid var(--lastro-border-strong);
+  border-radius: var(--lastro-radius-sm);
+}
+
+/* O radio cobre o segmento inteiro, invisível: o clique, o foco e as setas são dele, e o texto é o rótulo. */
+.segmento {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--lastro-space-8) var(--lastro-space-16);
+  border-radius: var(--lastro-radius-sm);
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-ui);
+  font-weight: 600;
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  cursor: pointer;
+}
+
+.segmento:hover {
+  color: var(--lastro-text-primary);
+}
+
+/* Escolhido: fundo de ação e texto claro, e o peso do contraste; não depende só da cor do texto. */
+.segmento:has(.radio:checked) {
+  background: var(--lastro-action);
+  color: var(--lastro-text-on-action);
+  box-shadow: var(--lastro-shadow-sm);
+}
+
+.segmento:has(.radio:focus-visible) {
+  box-shadow: var(--lastro-anel-foco);
+}
+
+.radio {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.nota {
+  font-family: var(--lastro-font-body);
+  font-size: var(--lastro-font-size-auxiliar);
+  line-height: var(--lastro-leading-ui);
+  color: var(--lastro-text-secondary);
+  margin: 0;
+}
+
+.apenasLeitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

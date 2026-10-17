@@ -25,6 +25,12 @@
   margin: 0;
 }
 
+/* A frase de fixo e resolvido (F16): os dois rótulos em destaque, o resto no tom secundário. */
+.explicacao strong {
+  font-weight: 600;
+  color: var(--lastro-text-primary);
+}
+
 .explicacao {
   font-family: var(--lastro-font-body);
   font-size: var(--lastro-font-size-ui);
@@ -72,6 +78,11 @@
   align-items: baseline;
   justify-content: space-between;
   gap: var(--lastro-space-4) var(--lastro-space-12);
+}
+
+/* A leitura Incorporador traz duas linhas (margem e preço pedido). */
+.comparacao div + div {
+  margin-top: var(--lastro-space-4);
 }
 
 .comparacao dt {

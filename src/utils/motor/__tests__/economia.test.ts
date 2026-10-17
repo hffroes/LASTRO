@@ -221,6 +221,7 @@ describe('percentuais do VGV (PRD 2.5)', () => {
       resultadoTerreno: 1_442, // 100% − 52,58% − 11,00% − 22,00%
       precoPedido: 833, // 8,3333…%
       resultadoLiquido: 609, // 14,42% − 8,33%
+      lucroResultante: 2_809, // 100% − 52,58% − 11,00% − 8,33%
     });
   });
 
@@ -281,5 +282,54 @@ describe('percentuais do VGV (PRD 2.5)', () => {
       expect(calcularPercentualDoVgvPontosBase(1_000_000_000_000, 1_000)).toBeNull();
       expect(calcularPercentualDoVgvPontosBase(Number.MAX_SAFE_INTEGER, 1_000)).toBeNull();
     });
+  });
+});
+
+describe('perspectiva Incorporador: lucro resultante (PRD 4.1)', () => {
+  // Lucro Resultante = VGV − Obra − Despesas − Preço Pedido
+  //   = 14.400.000 − 7.571.784 − 1.584.000 − 1.200.000 = R$ 4.044.216,00
+  it('segue exatamente a fórmula do PRD, conferida à mão', () => {
+    const e = calcularEconomia(REFERENCIA);
+    expect(e?.lucroResultanteCentavos).toBe(404_421_600);
+    expect(e?.lucroResultanteCentavos).toBe(
+      (e?.vgvCentavos ?? 0) - (e?.custoObraCentavos ?? 0) - (e?.despesasGeraisCentavos ?? 0) - (e?.precoPedidoCentavos ?? 0),
+    );
+  });
+
+  it('é o lucro da premissa mais o resultado líquido, ao centavo, em qualquer cenário', () => {
+    for (const alteracao of [{}, { precoUnidadeCentavos: 45_000_000 }, { padrao: 'alto' as const }, { precoPedidoCentavos: 1 }]) {
+      const e = calcularEconomia({ ...REFERENCIA, ...alteracao });
+      if (!e) throw new Error('sem economia');
+      expect(e.lucroResultanteCentavos).toBe(e.lucroIncorporadorCentavos + e.resultadoLiquidoCentavos);
+    }
+  });
+
+  it('no ponto de equilíbrio (preço pedido = Resultado do terreno) as duas leituras coincidem', () => {
+    const terreno = calcularEconomia(REFERENCIA)?.resultadoTerrenoCentavos as number;
+    const e = calcularEconomia({ ...REFERENCIA, precoPedidoCentavos: terreno });
+    expect(e?.resultadoLiquidoCentavos).toBe(0);
+    expect(e?.lucroResultanteCentavos).toBe(e?.lucroIncorporadorCentavos);
+    expect(e?.percentuaisDoVgvPontosBase.lucroResultante).toBe(e?.percentuaisDoVgvPontosBase.lucroIncorporador);
+  });
+
+  it('margem negativa: com a obra maior que o VGV, o lucro resultante é prejuízo', () => {
+    // 7.200.000 − 7.571.784 − 792.000 − 1.200.000 = −R$ 2.363.784,00
+    const e = calcularEconomia({ ...REFERENCIA, precoUnidadeCentavos: 45_000_000 });
+    expect(e?.lucroResultanteCentavos).toBe(-236_378_400);
+    expect(e?.percentuaisDoVgvPontosBase.lucroResultante).toBe(-3_283); // 100% − 105,16% − 11% − 16,67%
+  });
+
+  it('o percentual fecha a coluna (100% − obra − despesas − pedido) e é lucro% + líquido%', () => {
+    const p = calcularEconomia(REFERENCIA)?.percentuaisDoVgvPontosBase;
+    if (!p) throw new Error('sem percentuais');
+    expect(p.lucroResultante).toBe(2_809); // 100 − 52,58 − 11,00 − 8,33 = 28,09%
+    expect(p.lucroResultante).toBe((p.lucroIncorporador ?? 0) + (p.resultadoLiquido ?? 0));
+  });
+
+  it('a perspectiva só muda a leitura: VGV, obra, despesas e preço pedido são os mesmos nas duas', () => {
+    const e = calcularEconomia(REFERENCIA);
+    // Uma única chamada produz as duas leituras: não há insumo próprio de cada perspectiva.
+    expect(e?.resultadoTerrenoCentavos).toBe(207_621_600);
+    expect(e?.lucroResultanteCentavos).toBe(404_421_600);
   });
 });

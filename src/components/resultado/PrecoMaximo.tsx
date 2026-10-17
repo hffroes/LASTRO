@@ -2,6 +2,7 @@ import { Equal, TrendingDown, TrendingUp } from 'lucide-react';
 import { TEXTOS_RESULTADO } from '../../content/resultado';
 import type { ResultadoEconomiaDto } from '../../types/analise';
 import { formatarMoeda, formatarMoedaComSinal } from '../../utils/motor/formatacao';
+import { FraseFixoResolvido } from './TogglePerspectiva';
 import estilos from './PrecoMaximo.module.css';
 
 type Leitura = 'sobra' | 'deficit' | 'empate';
@@ -30,7 +31,7 @@ export function PrecoMaximo({ economia }: PropriedadesPrecoMaximo) {
       <h2 id="titulo-preco-maximo" className={estilos.titulo}>
         {precoMaximo.titulo}
       </h2>
-      <p className={estilos.explicacao}>{precoMaximo.explicacao}</p>
+      <FraseFixoResolvido perspectiva="terrenista" className={estilos.explicacao} />
 
       <p
         className={estilos.valorMaximo}

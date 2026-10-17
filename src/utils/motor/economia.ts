@@ -36,6 +36,8 @@ export interface PercentuaisDoVgv {
   resultadoTerreno: number | null;
   precoPedido: number | null;
   resultadoLiquido: number | null;
+  /** Perspectiva Incorporador: o lucro que sobra com o preço pedido fixo. */
+  lucroResultante: number | null;
 }
 
 export interface ResultadoEconomia {
@@ -49,6 +51,12 @@ export interface ResultadoEconomia {
   resultadoTerrenoCentavos: number;
   /** Resultado do Terreno − Preço Pedido. */
   resultadoLiquidoCentavos: number;
+  /**
+   * Perspectiva Incorporador (PRD 4.1): o preço pedido é fixo e o lucro é o resolvido.
+   * Lucro Resultante = VGV − Obra − Despesas − Preço Pedido. É o lucro da premissa mais o Resultado
+   * Líquido, então no ponto de equilíbrio (preço pedido = Resultado do terreno) as duas leituras coincidem.
+   */
+  lucroResultanteCentavos: number;
   percentuaisDoVgvPontosBase: PercentuaisDoVgv;
   /** Viável se o Resultado Líquido é maior ou igual a zero (PRD 4.1). */
   viavel: boolean;
@@ -106,7 +114,13 @@ export function calcularPercentuaisDoVgv(
       ? null
       : PONTOS_BASE_CEM_POR_CENTO - custoObra - despesasGerais - lucroIncorporador;
   const resultadoLiquido = resultadoTerreno === null || precoPedido === null ? null : resultadoTerreno - precoPedido;
-  return { custoObra, despesasGerais, lucroIncorporador, resultadoTerreno, precoPedido, resultadoLiquido };
+  // Mesmo fechamento da coluna: VGV menos obra, despesas e preço pedido. Por construção é o lucro da
+  // premissa mais o resultado líquido, também em percentual.
+  const lucroResultante =
+    custoObra === null || despesasGerais === null || precoPedido === null
+      ? null
+      : PONTOS_BASE_CEM_POR_CENTO - custoObra - despesasGerais - precoPedido;
+  return { custoObra, despesasGerais, lucroIncorporador, resultadoTerreno, precoPedido, resultadoLiquido, lucroResultante };
 }
 
 // null = os valores passam do que a conta representa com exatidão, ou há insumo inválido.
@@ -124,6 +138,7 @@ export function calcularEconomia(
   const lucroIncorporador = percentualDoVgvCentavos(vgv, lucroPontosBase);
   const resultadoTerreno = vgv - custoObra - despesasGerais - lucroIncorporador;
   const resultadoLiquido = resultadoTerreno - entrada.precoPedidoCentavos;
+  const lucroResultante = vgv - custoObra - despesasGerais - entrada.precoPedidoCentavos;
 
   const parcelas = {
     vgvCentavos: vgv,
@@ -133,6 +148,7 @@ export function calcularEconomia(
     precoPedidoCentavos: entrada.precoPedidoCentavos,
     resultadoTerrenoCentavos: resultadoTerreno,
     resultadoLiquidoCentavos: resultadoLiquido,
+    lucroResultanteCentavos: lucroResultante,
   };
   return { ...parcelas, percentuaisDoVgvPontosBase: calcularPercentuaisDoVgv(parcelas), viavel: resultadoLiquido >= 0 };
 }

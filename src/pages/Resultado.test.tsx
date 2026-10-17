@@ -389,6 +389,179 @@ describe('Resultado (F13, versão crua)', () => {
     });
   });
 
+  describe('perspectiva Terrenista × Incorporador (F16)', () => {
+    beforeEach(() => vi.stubGlobal('fetch', servidorQueCalcula()));
+    const { perspectiva: textoPerspectiva, margem } = TEXTOS_RESULTADO;
+
+    function radio(nome: string) {
+      return screen.getByRole('radio', { name: nome }) as HTMLInputElement;
+    }
+
+    function abrirComo(objetivo: Analise['objetivo'], alterar?: (analise: Analise) => void) {
+      const analise = analiseValida();
+      analise.objetivo = objetivo;
+      alterar?.(analise);
+      salvarRascunho(analise);
+      return renderResultado();
+    }
+
+    it('quem quer comprar o terreno abre na Terrenista (D-R6)', async () => {
+      abrirComo('comprarTerreno');
+      await screen.findByTestId('preco-maximo');
+
+      expect(radio('Terrenista').checked).toBe(true);
+      expect(radio('Incorporador').checked).toBe(false);
+      expect(screen.queryByTestId('lucro-resultante')).toBeNull();
+    });
+
+    it('quem quer executar o empreendimento abre na Incorporador, com o lucro resultante como resposta', async () => {
+      abrirComo('executarEmpreendimento');
+      await screen.findByTestId('lucro-resultante');
+
+      expect(radio('Incorporador').checked).toBe(true);
+      expect(screen.queryByTestId('preco-maximo')).toBeNull();
+      // 14.400.000 − 7.571.784 − 1.584.000 − 1.200.000
+      expect(screen.getByTestId('lucro-resultante').textContent).toBe('R$ 4.044.216,00');
+      expect(screen.getByTestId('margem-resultante').textContent).toBe('28,09%');
+      expect(screen.getByTestId('preco-pedido').textContent).toBe('R$ 1.200.000,00');
+      expect(screen.getByTestId('leitura-rotulo').textContent).toBe(margem.leitura.acima);
+      expect(screen.getByTestId('leitura-valor').textContent).toBe('R$ 876.216,00');
+      expect(screen.getByText(margem.esperado('Normal', '22,00', 'R$ 3.168.000,00'))).toBeTruthy();
+    });
+
+    it('o toggle é um grupo de radios com nome, e cada perspectiva diz o que está fixo e o que é resolvido', async () => {
+      abrirComo('comprarTerreno');
+      await screen.findByTestId('preco-maximo');
+
+      const grupo = screen.getByRole('radiogroup', { name: textoPerspectiva.rotulo });
+      expect(within(grupo).getAllByRole('radio')).toHaveLength(2);
+      // A frase fica no cartão de destaque, logo acima do número que responde.
+      const destaque = () => screen.getAllByRole('region')[0] as HTMLElement;
+      expect(within(destaque()).getByTestId('perspectiva-frase').textContent).toBe(
+        'Fixo: o lucro do incorporador. Resolvido: o preço máximo do terreno.',
+      );
+      expect(screen.getByText(textoPerspectiva.mesmaConta)).toBeTruthy();
+
+      fireEvent.click(radio('Incorporador'));
+      expect(within(destaque()).getByTestId('perspectiva-frase').textContent).toBe(
+        'Fixo: o preço pedido pelo terreno. Resolvido: o lucro do incorporador.',
+      );
+      // O cartão troca inteiro; quem usa leitor de tela ouve a troca pela região viva do toggle.
+      const anuncio = screen.getByTestId('perspectiva-anuncio');
+      expect(anuncio.getAttribute('aria-live')).toBe('polite');
+      expect(anuncio.textContent).toBe(
+        'Leitura Incorporador. Fixo: o preço pedido pelo terreno. Resolvido: o lucro do incorporador.',
+      );
+    });
+
+    it('alternar troca o destaque sem novo cálculo e sem mudar nenhum insumo', async () => {
+      abrirComo('comprarTerreno');
+      await screen.findByTestId('preco-maximo');
+      const chamadas = vi.mocked(fetch).mock.calls.length;
+      const projetoAntes = screen.getByRole('region', { name: 'Projeto analisado' }).textContent;
+      const potencialAntes = screen.getByRole('region', { name: 'O que o projeto entrega' }).textContent;
+      const comuns = ['vgv', 'custo-obra', 'despesas-gerais', 'preco-pedido'];
+      const antes = comuns.map((id) => [valorDe(id), pctDe(id)]);
+
+      fireEvent.click(radio('Incorporador'));
+      expect(screen.getByTestId('lucro-resultante').textContent).toBe('R$ 4.044.216,00');
+      fireEvent.click(radio('Terrenista'));
+      expect(screen.getByTestId('preco-maximo').textContent).toBe('R$ 2.076.216,00');
+      fireEvent.click(radio('Incorporador'));
+
+      expect(vi.mocked(fetch).mock.calls.length).toBe(chamadas);
+      expect(screen.getByRole('region', { name: 'Projeto analisado' }).textContent).toBe(projetoAntes);
+      expect(screen.getByRole('region', { name: 'O que o projeto entrega' }).textContent).toBe(potencialAntes);
+      expect(comuns.map((id) => [valorDe(id), pctDe(id)])).toEqual(antes);
+    });
+
+    it('a ordem dos blocos é a mesma nas duas leituras; só o título do destaque muda', async () => {
+      abrirComo('executarEmpreendimento');
+      await screen.findByTestId('lucro-resultante');
+
+      const titulos = screen.getAllByRole('heading', { level: 2 }).map((titulo) => titulo.textContent);
+      expect(titulos).toEqual([margem.titulo, 'O que o projeto entrega', 'Projeto analisado', 'Composição de custos']);
+      const destaque = screen.getByRole('region', { name: margem.titulo }).textContent ?? '';
+      expect(destaque).not.toMatch(/\bVGV\b|\bCUB\b|resíduo/i);
+    });
+
+    it('a composição na Incorporador: o preço pedido no lugar do lucro, e a coluna fecha no lucro resultante', async () => {
+      abrirComo('executarEmpreendimento');
+      await screen.findByTestId('lucro-resultante');
+
+      const tabela = screen.getByRole('table', { name: TEXTOS_RESULTADO.composicao.legendaIncorporador });
+      const linhas = within(tabela)
+        .getAllByRole('rowheader')
+        .map((celula) => celula.querySelector('span')?.textContent);
+      // O sinal visível (aria-hidden) e a leitura por extenso, juntos no texto da célula.
+      expect(linhas).toEqual([
+        'VGV total',
+        '−menos Custo de obra',
+        '−menos Despesas gerais (11,00%)',
+        '−menos Preço pedido pelo terreno',
+        '=igual a Lucro resultante',
+        '−menos Lucro esperado (22,00%)',
+        '=igual a Diferença para o esperado',
+      ]);
+      expect(valorDe('lucro-resultante')).toBe(screen.getByTestId('lucro-resultante').textContent);
+      expect(pctDe('lucro-resultante')).toMatch(/^28,09%/); // 100,00 − 52,58 − 11,00 − 8,33
+      expect(valorDe('lucro-esperado')).toBe('R$ 3.168.000,00');
+      expect(pctDe('lucro-esperado')).toMatch(/^22,00%/);
+      expect(valorDe('diferenca-lucro')).toBe('R$ 876.216,00');
+      expect(pctDe('diferenca-lucro')).toMatch(/^6,09%/); // 28,09 − 22,00
+      expect(screen.getByText(TEXTOS_RESULTADO.composicao.fechamentoIncorporador)).toBeTruthy();
+      expect(screen.queryByTestId('composicao-resultado-terreno-valor')).toBeNull();
+    });
+
+    it('a diferença para o esperado na Incorporador é a sobra da Terrenista, ao centavo', async () => {
+      abrirComo('comprarTerreno');
+      await screen.findByTestId('preco-maximo');
+      const sobra = valorDe('sobra-deficit');
+
+      fireEvent.click(radio('Incorporador'));
+      expect(valorDe('diferenca-lucro')).toBe(sobra);
+      expect(screen.getByTestId('leitura-valor').textContent).toBe(sobra);
+    });
+
+    it('margem negativa: o lucro resultante é prejuízo, com o sinal, a cor e uma frase que explica', async () => {
+      abrirComo('executarEmpreendimento', (analise) => {
+        analise.produto.precoUnidadeCentavos = 45_000_000;
+      });
+      await screen.findByTestId('lucro-resultante');
+
+      // 7.200.000 − 7.571.784 − 792.000 − 1.200.000
+      expect(screen.getByTestId('lucro-resultante').textContent).toBe('-R$ 2.363.784,00');
+      expect(screen.getByTestId('lucro-resultante').getAttribute('data-negativo')).toBe('true');
+      expect(screen.getByTestId('margem-resultante').textContent).toBe('-32,83%');
+      expect(screen.getByTestId('leitura-rotulo').textContent).toBe(margem.leitura.abaixo);
+      // −2.363.784 − 1.584.000 esperados = −3.947.784, o mesmo déficit da Terrenista
+      expect(screen.getByTestId('leitura-valor').textContent).toBe('R$ 3.947.784,00');
+      expect(screen.getByText(margem.prejuizo)).toBeTruthy();
+      expect(pctDe('lucro-resultante')).toMatch(/^-32,83%/);
+    });
+
+    it('alternar não muda o objetivo escolhido: o resumo segue dizendo o que você quer decidir', async () => {
+      abrirComo('comprarTerreno');
+      await screen.findByTestId('preco-maximo');
+      const resumo = () => screen.getByRole('region', { name: 'Projeto analisado' }).textContent;
+      const antes = resumo();
+
+      fireEvent.click(radio('Incorporador'));
+      expect(resumo()).toBe(antes);
+      expect(antes).toMatch(/Comprar o terreno/i);
+    });
+
+    it('sem resultado calculado não há toggle: a introdução fica no lugar', async () => {
+      abrirComo('comprarTerreno', (analise) => {
+        Object.assign(analise.produto, { padrao: 'baixo', pavimentos: 10 });
+      });
+      await screen.findByText(TEXTOS_CUB.tituloPendencia);
+
+      expect(screen.queryByRole('radiogroup')).toBeNull();
+      expect(screen.getByText(TEXTOS_RESULTADO.introducao)).toBeTruthy();
+    });
+  });
+
   describe('CUB sem valor publicado: estado do resultado, não erro', () => {
     it('padrão Baixo em R-16 (D-B4) explica a pendência e não mostra número de custo', async () => {
       const analise = analiseValida();

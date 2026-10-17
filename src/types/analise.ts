@@ -77,6 +77,7 @@ export interface PercentuaisDoVgvDto {
   resultadoTerreno: number | null;
   precoPedido: number | null;
   resultadoLiquido: number | null;
+  lucroResultante: number | null;
 }
 
 export interface ResultadoEconomiaDto {
@@ -87,6 +88,7 @@ export interface ResultadoEconomiaDto {
   precoPedidoCentavos: number;
   resultadoTerrenoCentavos: number;
   resultadoLiquidoCentavos: number;
+  lucroResultanteCentavos: number;
   percentuaisDoVgvPontosBase: PercentuaisDoVgvDto;
   viavel: boolean;
 }
@@ -124,6 +126,11 @@ export type RespostaAnalise =
     }
   // Valores que passam do que o cálculo representa com exatidão (tetos somados).
   | { situacao: 'foraDoLimite' };
+
+// As duas leituras da mesma base de cálculo (PRD 2.6 e 4.1): na Terrenista o lucro do incorporador é fixo e
+// o resolvido é quanto o terreno pode custar; na Incorporador o preço pedido é fixo e o resolvido é o lucro.
+export type Perspectiva = 'terrenista' | 'incorporador';
+export const PERSPECTIVAS: readonly Perspectiva[] = ['terrenista', 'incorporador'];
 
 export type CodigoErroApi =
   | 'VALIDACAO_FALHOU'

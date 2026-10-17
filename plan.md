@@ -709,8 +709,8 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **6. Comportamento esperado** | Alternar troca a variável resolvida e o destaque, sem recarregar; cada perspectiva explica em uma frase o que está fixo e o que está sendo resolvido. |
 | **7. Escopo incluído** | Função de perspectiva no motor, toggle acessível, adaptação do destaque e da composição, `Lucro Resultante = VGV − Obra − Despesas − Preço Pedido`. |
 | **8. Fora do escopo** | Ajuste de premissas (F17). |
-| **9. Arquivos criados** | `src/components/resultado/TogglePerspectiva.tsx` + `.module.css`, `src/components/resultado/MargemResultante.tsx` |
-| **10. Arquivos modificados** | `src/utils/motor/economia.ts`, `src/utils/motor/__tests__/economia.test.ts`, `src/pages/Resultado.tsx`, `src/components/resultado/ComposicaoEconomica.tsx`, `src/types/analise.ts` |
+| **9. Arquivos criados** | `src/components/resultado/TogglePerspectiva.tsx` + `.module.css`, `src/components/resultado/MargemResultante.tsx` (usa o `.module.css` do `PrecoMaximo`), `src/utils/motor/perspectiva.ts`, testes `perspectiva.test.ts` e `components/resultado/perspectiva.test.tsx` |
+| **10. Arquivos modificados** | `src/utils/motor/economia.ts`, `src/utils/motor/__tests__/economia.test.ts`, `src/pages/Resultado.tsx`, `src/components/resultado/ComposicaoEconomica.tsx`, `src/types/analise.ts`, `PrecoMaximo.tsx` (+ `.module.css`), `src/content/resultado.ts`, testes do Resultado e do servidor |
 | **11. Arquivos removidos** | Nenhum |
 | **12. Dependências** | F15 |
 | **13. Dados reais × simulados** | Reais. |
@@ -727,7 +727,7 @@ Objetivo: permitir que a jornada completa do Terreno Viável seja percorrida, te
 | **24. Modelo** | **Opus** |
 | **25. Justificativa** | Mexe no motor econômico e na interpretação do resultado — regra crítica de domínio. |
 | **26. Conclusão** | Duas leituras corretas e coerentes entre si. |
-| **27. Checkpoint** | `[ ]` Usuário aprova as duas perspectivas e a perspectiva padrão herdada do objetivo. |
+| **27. Checkpoint** | `[>]` Usuário aprova as duas perspectivas e a perspectiva padrão herdada do objetivo. Implementada; aguarda validação no Replit. **Motor**: `calcularEconomia` passa a devolver `lucroResultanteCentavos` = VGV − obra − despesas − preço pedido (`PRD` 4.1, conferido à mão: R$ 4.044.216,00 no cenário de referência) e o seu percentual (28,09%), que fecha a coluna (100% − obra − despesas − pedido). Por construção é **o lucro da premissa mais o resultado líquido**, ao centavo, então no ponto de equilíbrio as duas leituras coincidem (testado). Uma única chamada produz as duas leituras: não há insumo próprio de cada perspectiva, e **alternar não chama o servidor de novo** (testado na página e medido no navegador). **Perspectiva padrão** vem do objetivo (D-R6): comprar → Terrenista, executar → Incorporador; o toggle troca só a leitura, nunca o objetivo nem os insumos. **Toggle**: controle segmentado "Ler como Terrenista \| Incorporador" sobre radios nativos (Tab e setas, testado no Chromium), no lugar da introdução, com a nota "Trocar a leitura não altera nenhum dado da análise" (risco 21) e uma região viva que anuncia a troca ao leitor de tela. **Frase de fixo e resolvido** dentro do cartão de destaque, no lugar da explicação: Terrenista "Fixo: o lucro do incorporador. Resolvido: o preço máximo do terreno."; Incorporador "Fixo: o preço pedido pelo terreno. Resolvido: o lucro do incorporador.". **Destaque Incorporador** ("Lucro ao preço pedido"): o lucro resultante no maior tamanho, a margem sobre as vendas e o preço pedido, e a leitura **acima/abaixo/igual ao esperado**, cuja diferença é **exatamente a sobra ou o déficit da Terrenista** (mesmo valor, mesma cor); margem negativa mostra o valor com sinal, em vermelho, e uma frase de prejuízo. **Composição na Incorporador**: VGV − obra − despesas − preço pedido = lucro resultante, − lucro esperado (22%) = diferença para o esperado. **Medido** (seção E): em 375 × 667 a leitura termina em 643 px (Terrenista) e 645 px (Incorporador), nos cenários viável, déficit e inviável, nos dois temas; a primeira medição deu 731 e 759 px e foi corrigida. Contraste do segmento escolhido 4,60:1 (claro) e 5,83:1 (escuro), do não escolhido 5,89:1 e 7,96:1; leituras com os mesmos 4,57–7,31:1 da F14; sem estouro horizontal em 375, 820 e 1280. **Escolhas minhas, para você validar**: (1) a explicação do cartão da F14 ("Quanto você pode pagar pelo terreno, depois da obra…") deu lugar à frase de fixo e resolvido, para caber na dobra sem repetir a ideia; (2) "Preço pedido pelo terreno" virou "Preço pedido" no cartão (na tabela segue completo), para caber numa linha no celular; (3) "margem de lucro resultante" aparece como "Lucro ao preço pedido" e "Margem sobre as vendas", sem VGV na primeira dobra; (4) o segmento tem 37 px de altura (acima dos 24 px do critério AA de alvo de toque), para caber na dobra. |
 
 ---
 
@@ -1347,7 +1347,7 @@ Vale para **toda** sessão futura de implementação.
 
 | Requisito / seção do PRD | Macro | Fase | Critério de aceite | Teste | Status |
 |---|---|---|---|---|---|
-| 1 — Duas perguntas do produto | 1 | F02, F16 | Ambas respondidas pelas duas perspectivas | Teste de perspectiva | `[ ]` |
+| 1 — Duas perguntas do produto | 1 | F02, F16 | Ambas respondidas pelas duas perspectivas | Teste de perspectiva | `[>]` |
 | 2.1 — Análise econômica completa | 1 | F13 | Fórmulas do 4.1 corretas | `economia.test.ts` | `[x]` |
 | 2.1 — Percentuais por padrão | 1 | F12, F13 | 8/9/10% e 20/22/25% por padrão | `parametros`/`economia` | `[ ]` |
 | 2.1 — Preço máximo recomendado | 1 | F14 | = Resultado Terreno | Teste de componente | `[ ]` |
@@ -1365,7 +1365,7 @@ Vale para **toda** sessão futura de implementação.
 | 2.4 — Alerta qualitativo de mercado | 1 | F18 | Sem base de preços | Teste de conteúdo | `[ ]` |
 | 2.5 — Estrutura do output | 1 | F14, F15, F19 | Todas as seções do 2.5 | Testes de componente | `[ ]` |
 | 2.6 — Interatividade em tempo real | 1 | F17 | Recálculo < 500ms | Teste de performance | `[ ]` |
-| 2.6 — Toggle de perspectiva | 1 | F16 | Mesma base, variável distinta | `economia.test.ts` | `[ ]` |
+| 2.6 — Toggle de perspectiva | 1 | F16 | Mesma base, variável distinta | `economia.test.ts` | `[>]` |
 | 2.7 — Acesso por link, sem login | 2 | F27 | Token validado no servidor | Testes de acesso | `[ ]` |
 | 2.7 — Uma análise por acesso | 1/2 | F22, F31 | Sem histórico ao usuário | Teste de isolamento | `[ ]` |
 | 2.7 — Armazenamento interno | 2 | F31 | Snapshot gravado, não exposto | Teste de repositório | `[ ]` |
@@ -1453,7 +1453,7 @@ Nenhum destes pode ser implementado sem aprovação explícita (PRD seção 2 �
 | 14 | 1 | F13 Motor econômico e API | Resultado cru completo | Alta | Opus | D-R23, D-R24, D-R25 | `[x]` |
 | 15 | 1 | F14 Resultado v1 | Resumo e preço máximo | Média | Sonnet | — | `[x]` |
 | 16 | 1 | F15 Composição econômica | Tabela de custos | Média | Sonnet | D-R26 | `[x]` |
-| 17 | 1 | F16 Terrenista × Incorporador | Toggle de perspectiva | Média | Opus | — | `[ ]` |
+| 17 | 1 | F16 Terrenista × Incorporador | Toggle de perspectiva | Média | Opus | D-R6 | `[>]` |
 | 18 | 1 | F17 Premissas ajustáveis | Cenários em tempo real | Alta | Opus | — | `[ ]` |
 | 19 | 1 | F18 Alertas | Alertas e checklist | Alta | Opus | — | `[ ]` |
 | 20 | 1 | F19 LASTRO Score | Score e recomendação | Alta | Opus | **D-B7, D-B8** | `[ ]` |

@@ -46,7 +46,10 @@ describe('PrecoMaximo', () => {
     it('explica em linguagem simples, sem veredito', () => {
       render(<PrecoMaximo economia={cenario} />);
       expect(screen.getByText(precoMaximo.frase.sobra('R$ 876.216,00'))).toBeTruthy();
-      expect(screen.getByText(precoMaximo.explicacao)).toBeTruthy();
+      // F16: a explicação do cartão é a frase de fixo e resolvido da leitura Terrenista.
+      expect(screen.getByTestId('perspectiva-frase').textContent).toBe(
+        'Fixo: o lucro do incorporador. Resolvido: o preço máximo do terreno.',
+      );
       expect(screen.getByText(precoMaximo.preliminar)).toBeTruthy();
       const bloco = screen.getByRole('region', { name: precoMaximo.titulo });
       expect(within(bloco).queryByText(/comprar|viável|recomend[ao] (comprar|fazer)/i)).toBeNull();

@@ -82,6 +82,7 @@ describe('POST /api/v1/analises — payload válido', () => {
       precoPedidoCentavos: 120_000_000,
       resultadoTerrenoCentavos: 207_621_600,
       resultadoLiquidoCentavos: 87_621_600,
+      lucroResultanteCentavos: 404_421_600,
       percentuaisDoVgvPontosBase: {
         custoObra: 5_258,
         despesasGerais: 1_100,
@@ -89,6 +90,7 @@ describe('POST /api/v1/analises — payload válido', () => {
         resultadoTerreno: 1_442,
         precoPedido: 833,
         resultadoLiquido: 609,
+        lucroResultante: 2_809,
       },
       viavel: true,
     });

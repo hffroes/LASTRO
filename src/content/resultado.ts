@@ -9,8 +9,9 @@ export const TEXTOS_RESULTADO = {
   // F14: primeira dobra. Palavras do dia a dia; os termos técnicos (VGV, CUB, resíduo) ficam na conta completa.
   precoMaximo: {
     titulo: 'Preço máximo recomendado para o terreno',
-    explicacao: 'Quanto você pode pagar pelo terreno, depois da obra, das despesas e do lucro de quem constrói.',
-    preco: 'Preço pedido pelo terreno',
+    // F16: a explicação do cartão é a frase de fixo e resolvido da perspectiva (TogglePerspectiva).
+    // "Preço pedido" curto: com o valor, cabe numa linha no celular.
+    preco: 'Preço pedido',
     // Quando o resultado do terreno é negativo, o projeto não se paga nem com o terreno de graça.
     semMargem: 'Mesmo sem pagar nada pelo terreno, este projeto não cobre o seu custo e o lucro esperado.',
     leitura: {
@@ -25,6 +26,35 @@ export const TEXTOS_RESULTADO = {
       empate: 'O preço pedido é igual ao máximo que este cenário comporta.',
     },
     preliminar: 'Resultado preliminar: ainda não considera a nota da análise nem os alertas, que chegam depois.',
+  },
+  // F16: as duas leituras da mesma conta (PRD 2.6). Cada uma diz em uma frase o que está fixo e o que é
+  // resolvido (dentro do cartão de destaque), e a nota lembra que trocar a leitura não muda o cenário
+  // (risco 21 da fase).
+  perspectiva: {
+    rotulo: 'Ler como',
+    opcoes: { terrenista: 'Terrenista', incorporador: 'Incorporador' },
+    fixoResolvido: {
+      terrenista: { fixo: 'o lucro do incorporador', resolvido: 'o preço máximo do terreno' },
+      incorporador: { fixo: 'o preço pedido pelo terreno', resolvido: 'o lucro do incorporador' },
+    },
+    fixo: 'Fixo',
+    resolvido: 'Resolvido',
+    mesmaConta: 'Trocar a leitura não altera nenhum dado da análise.',
+    anuncio: (opcao: string, frase: string) => `Leitura ${opcao}. ${frase}`,
+  },
+  // F16, leitura Incorporador: o preço pedido fica fixo e a resposta é o lucro que sobra (PRD 4.1).
+  margem: {
+    titulo: 'Lucro ao preço pedido',
+    margem: 'Margem sobre as vendas',
+    preco: 'Preço pedido',
+    // Mesma conta de sempre: o lucro a este preço menos o esperado é a sobra ou o déficit da outra leitura.
+    leitura: {
+      acima: 'Acima do esperado',
+      abaixo: 'Abaixo do esperado',
+      igual: 'Igual ao esperado',
+    },
+    esperado: (padrao: string, percentual: string, valor: string) => `Esperado no padrão ${padrao} (${percentual}%): ${valor}.`,
+    prejuizo: 'A este preço, as vendas não cobrem a obra, as despesas e o terreno: o resultado é prejuízo.',
   },
   potencial: {
     titulo: 'O que o projeto entrega',
@@ -68,6 +98,21 @@ export const TEXTOS_RESULTADO = {
       sobraDeficit: { rotulo: 'Sobra/déficit', formula: 'Resultado do terreno − preço pedido' },
     },
     fechamento: 'Os percentuais são calculados sobre o VGV e a coluna fecha: o resultado do terreno é 100% menos as três deduções.',
+    // Leitura Incorporador: o preço pedido entra no lugar do lucro, e o lucro é o que sobra.
+    legendaIncorporador: 'Composição de custos sobre o VGV, com o preço pedido fixo',
+    linhasIncorporador: {
+      lucroResultante: {
+        rotulo: 'Lucro resultante',
+        formula: 'VGV − custo de obra − despesas gerais − preço pedido: o que sobra para o incorporador a este preço',
+      },
+      lucroEsperado: { rotulo: 'Lucro esperado', formula: 'Percentual do VGV, definido pelo padrão de acabamento' },
+      diferenca: {
+        rotulo: 'Diferença para o esperado',
+        formula: 'Lucro resultante − lucro esperado. É a mesma sobra/déficit da leitura Terrenista',
+      },
+    },
+    fechamentoIncorporador:
+      'Os percentuais são calculados sobre o VGV e a coluna fecha: o lucro resultante é 100% menos a obra, as despesas e o preço pedido.',
   },
   despesas: {
     titulo: 'Despesas gerais',
