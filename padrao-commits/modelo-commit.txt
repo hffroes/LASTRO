@@ -1,0 +1,23 @@
+
+# <tipo>(<escopo>): <descrição em pt-BR, presente, minúscula, sem ponto, até 72>
+#
+# Corpo (opcional, uma linha em branco acima): explique o porquê, não o diff.
+# Cite a seção do PRD ou a decisão do plano quando houver (PRD 4.1, D-R6).
+#
+# Rodapés (opcional, uma linha em branco acima):
+#   Fase: F00
+#   Refs: <sha ou #PR>
+#   BREAKING CHANGE: <o que quebra e como migrar>
+#   Co-Authored-By: <agente> <noreply@anthropic.com>
+#
+# Tipos: feat fix docs style refactor perf test build ci chore revert
+#   feat = funcionalidade nova | fix = correção | style = só formatação
+#   Mudança visual (CSS, tokens) NÃO é style: use feat/fix/refactor + ui
+#
+# Escopos: motor parametros validacao api dados-externos layout inicio
+#   onboarding terreno produto resultado ui conteudo testes prd claude
+#   plan mapa-fases novas-implementacoes padrao-commits design-system
+#   replit dev deps   (reservados: acesso exportacao db)
+#
+# Quebra de compatibilidade: "!" antes dos dois-pontos e/ou BREAKING CHANGE.
+# Um commit = uma mudança lógica. Detalhes em padrao-commits/README.md
